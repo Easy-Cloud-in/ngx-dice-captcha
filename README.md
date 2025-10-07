@@ -86,6 +86,12 @@ ngx-dice-captcha-workspace/
 │   └── demo/                      # Demo application
 │       ├── src/
 │       └── public/
+├── docs/                          # Documentation files
+│   ├── API.md                     # API reference
+│   ├── CONTRIBUTING.md            # Contributing guidelines
+│   ├── SECURITY.md                # Security policy
+│   ├── MIGRATION.md               # Migration guide
+│   └── CODE_OF_CONDUCT.md         # Code of conduct
 ├── dist/                          # Build output
 ├── README.md                      # This file
 └── angular.json                   # Angular workspace configuration
@@ -110,6 +116,11 @@ The `ngx-dice-captcha` library provides:
 
 - [Library Documentation](projects/ngx-dice-captcha/README.md) - Complete API reference and usage examples
 - [Developer Manual](projects/ngx-dice-captcha/ngx-dice-captcha-developer-manual.md) - In-depth technical documentation
+- [API Reference](docs/API.md) - Complete API documentation
+- [Contributing Guide](docs/CONTRIBUTING.md) - How to contribute to the project
+- [Security Policy](docs/SECURITY.md) - Security guidelines and reporting
+- [Migration Guide](docs/MIGRATION.md) - Version migration instructions
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md) - Community guidelines
 
 ## 🤝 Contributing
 

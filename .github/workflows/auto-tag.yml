@@ -1,0 +1,190 @@
+name: Auto Tag and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'projects/ngx-dice-captcha/package.json'
+
+jobs:
+  auto-tag:
+    name: Create Tag and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history including tags
+
+      - name: Check NPM Token Configuration
+        id: check-npm
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "❌ NPM_TOKEN is not configured in repository secrets"
+            echo ""
+            echo "To configure NPM publishing:"
+            echo "1. Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
+            echo "2. Create a new 'Automation' token"
+            echo "3. Add it as NPM_TOKEN in repository secrets:"
+            echo "   Settings → Secrets and variables → Actions → New repository secret"
+            echo ""
+            echo "⚠️ Skipping auto-tag workflow - NPM not configured"
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+            echo "✅ NPM_TOKEN is configured"
+          fi
+
+      - name: Exit if NPM not configured
+        if: steps.check-npm.outputs.configured == 'false'
+        run: |
+          echo "## ⚠️ Auto-Tag Skipped" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "NPM is not configured for this repository." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### To Enable Auto-Publishing:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Create an NPM automation token at https://www.npmjs.com/settings" >> $GITHUB_STEP_SUMMARY
+          echo "2. Add it as \`NPM_TOKEN\` in repository secrets" >> $GITHUB_STEP_SUMMARY
+          echo "3. Push your changes again to trigger auto-tagging" >> $GITHUB_STEP_SUMMARY
+          exit 0
+
+      - name: Setup Node.js
+        if: steps.check-npm.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Read package.json version
+        if: steps.check-npm.outputs.configured == 'true'
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./projects/ngx-dice-captcha/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Package version: $VERSION"
+
+      - name: Check if tag exists locally
+        if: steps.check-npm.outputs.configured == 'true'
+        id: check-local-tag
+        run: |
+          TAG="v${{ steps.package-version.outputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "🏷️  Tag $TAG exists locally"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✨ Tag $TAG does not exist locally"
+          fi
+
+      - name: Check if tag exists on remote
+        if: steps.check-npm.outputs.configured == 'true'
+        id: check-remote-tag
+        run: |
+          TAG="v${{ steps.package-version.outputs.version }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "🏷️  Tag $TAG exists on remote"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✨ Tag $TAG does not exist on remote"
+          fi
+
+      - name: Determine if tag should be created
+        if: steps.check-npm.outputs.configured == 'true'
+        id: should-tag
+        run: |
+          LOCAL_EXISTS="${{ steps.check-local-tag.outputs.exists }}"
+          REMOTE_EXISTS="${{ steps.check-remote-tag.outputs.exists }}"
+
+          if [ "$LOCAL_EXISTS" = "true" ] || [ "$REMOTE_EXISTS" = "true" ]; then
+            echo "create=false" >> $GITHUB_OUTPUT
+            echo "⏭️  Skipping tag creation - tag already exists"
+          else
+            echo "create=true" >> $GITHUB_OUTPUT
+            echo "🎯 Tag will be created"
+          fi
+
+      - name: Skip summary (tag exists)
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'false'
+        run: |
+          echo "## ⏭️ Tag Already Exists" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This version has already been tagged. No action needed." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "To create a new release:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update version in \`projects/ngx-dice-captcha/package.json\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Commit and push changes" >> $GITHUB_STEP_SUMMARY
+
+      - name: Get latest commit message
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        id: commit-message
+        run: |
+          MESSAGE=$(git log -1 --pretty=%B)
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "📝 Commit message: $MESSAGE"
+
+      - name: Create and push tag
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        run: |
+          TAG="v${{ steps.package-version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+          echo "✅ Created and pushed tag: $TAG"
+
+      - name: Read CHANGELOG for release notes
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        id: changelog
+        run: |
+          VERSION="${{ steps.package-version.outputs.version }}"
+
+          # Try to extract version-specific changelog
+          if [ -f "CHANGELOG.md" ]; then
+            # Extract changelog section for this version
+            NOTES=$(sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+            
+            if [ -z "$NOTES" ]; then
+              NOTES="See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details."
+            fi
+          else
+            NOTES="Release version $VERSION"
+          fi
+
+          # Save to file to handle multiline
+          echo "$NOTES" > release_notes.txt
+          echo "✅ Extracted release notes"
+
+      - name: Create GitHub Release
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body_path: release_notes.txt
+          draft: false
+          prerelease: false
+
+      - name: Success summary
+        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        run: |
+          echo "## 🎉 Tag and Release Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What Happens Next?" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. ✅ GitHub release has been created" >> $GITHUB_STEP_SUMMARY
+          echo "2. 🔄 NPM publish workflow will be triggered automatically" >> $GITHUB_STEP_SUMMARY
+          echo "3. 📦 Package will be published to NPM after tests pass" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View release: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY

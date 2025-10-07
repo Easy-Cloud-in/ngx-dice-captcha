@@ -507,7 +507,7 @@ $theme: mat.define-light-theme(
 
 ## 🆕 Changelog
 
-See [CHANGELOG.md](../CHANGELOG.md) for the complete version history and recent updates.
+See [CHANGELOG.md](../../CHANGELOG.md) for the complete version history and recent updates.
 
 ## 🧪 Testing
 
@@ -619,7 +619,7 @@ export class ContactFormComponent {
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details.
+Contributions are welcome! Please read our [Contributing Guidelines](../../CONTRIBUTING.md) for details.
 
 ## 📄 License
 
@@ -634,16 +634,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📚 Documentation
 
-- [API Documentation](../../API_DOCUMENTATION.md)
-- [Usage Examples](../../USAGE_EXAMPLES.md)
-- [Migration Guide](MIGRATION.md)
-- [Changelog](CHANGELOG.md)
+- [Developer Manual](ngx-dice-captcha-developer-manual.md) - In-depth technical documentation
+- [API Documentation](../../API.md) - Complete API reference
+- [Migration Guide](../../MIGRATION.md) - Version migration guide
+- [Changelog](../../CHANGELOG.md) - Version history and updates
 
 ## 💬 Support
 
-- 📫 Email: support@example.com
+- 📫 Email: contact@easy-cloud.in
 - 🐛 Issues: [GitHub Issues](https://github.com/Easy-Cloud-in/ngx-dice-captcha/issues)
 - 💡 Discussions: [GitHub Discussions](https://github.com/Easy-Cloud-in/ngx-dice-captcha/discussions)
+- 📚 Documentation: [Full Documentation](../../README.md)
 
 ## 🗺️ Roadmap
 
