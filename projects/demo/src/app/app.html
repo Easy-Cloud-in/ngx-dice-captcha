@@ -1,0 +1,166 @@
+<div class="demo-container">
+  <header class="demo-header">
+    <h1>{{ title() }}</h1>
+    <p class="subtitle">Interactive 3D Dice CAPTCHA for Angular with Overlay Mode</p>
+  </header>
+
+  <main class="demo-content">
+    <section class="captcha-section">
+      <div class="info-card">
+        <h2>🎲 How it Works</h2>
+        <ol>
+          <li>Watch the dice roll and show their final values</li>
+          <li>Check the dice values displayed below for verification</li>
+          <li>Enter each individual die value in the overlay above</li>
+          <li>Submit your answers to verify your humanity!</li>
+          <li>Get partial feedback on correct dice</li>
+        </ol>
+        <p class="info-note">
+          ✨ <strong>Overlay Mode:</strong> A user-friendly experience with glassmorphism overlay
+          and progressive feedback! The dice values are displayed below for easy verification.
+        </p>
+      </div>
+
+      <div class="captcha-wrapper">
+        <ngx-dice-captcha [config]="captchaConfig" (verified)="onVerified($event)" (failed)="onFailed($event)"
+          (reset)="onReset()" (challengeGenerated)="onChallengeGenerated($event)" (diceRolled)="onDiceRolled($event)" />
+      </div>
+
+      <!-- Verification Result Popup -->
+      @if (verificationResult()) {
+      <ngx-verification-display [result]="verificationResult()" [showToken]="true" (retry)="onRetryVerification()"
+        (close)="onCloseVerification()">
+      </ngx-verification-display>
+      }
+
+      @if (currentDiceValues().length > 0) {
+      <div class="dice-values-display">
+        <h3>🎲 Rolled Dice Values (For Verification)</h3>
+        <div class="dice-values-grid">
+          @for (value of currentDiceValues(); track $index) {
+          <div class="dice-value-card">
+            <span class="dice-label">Dice {{ $index + 1 }}</span>
+            <span class="dice-value">{{ value }}</span>
+          </div>
+          }
+        </div>
+        <div class="sum-display">
+          <span class="sum-label">Sum:</span>
+          <span class="sum-value">{{ currentDiceSum() }}</span>
+        </div>
+        <p class="helper-text">
+          💡 Enter these values in the overlay above to verify your humanity
+        </p>
+      </div>
+      }
+
+      @if (verificationMessage()) {
+      <div class="result-card" [class.success]="isVerified()" [class.error]="!isVerified()">
+        <p class="result-message">{{ verificationMessage() }}</p>
+        @if (isVerified()) {
+        <p class="stats">✅ Verified in {{ attempts() }} attempt{{ attempts() === 1 ? '' : 's' }}</p>
+        }
+        @if (verificationDetails()) {
+        <details class="verification-details">
+          <summary>View Details</summary>
+          <pre>{{ verificationDetails() }}</pre>
+        </details>
+        }
+      </div>
+      }
+
+      @if (attempts() > 0) {
+      <div class="actions">
+        <button class="reset-button" (click)="resetDemo()">
+          🔄 Reset Demo
+        </button>
+      </div>
+      }
+    </section>
+
+    <section class="features-section">
+      <h2>✨ Features</h2>
+      <div class="features-grid">
+        <div class="feature-card highlight">
+          <div class="feature-icon">✨</div>
+          <h3>Overlay Mode</h3>
+          <p>Beautiful glassmorphism overlay with individual dice verification and progressive feedback</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎲</div>
+          <h3>3D Dice Physics</h3>
+          <p>Realistic dice rolling with Three.js and Cannon-es physics simulation</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Highly Customizable</h3>
+          <p>Configure colors, dice count, verification modes, overlay positions, and more</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">♿</div>
+          <h3>Accessible</h3>
+          <p>WCAG 2.1 AA compliant with ARIA labels, keyboard navigation, and screen reader support</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Responsive</h3>
+          <p>Auto-adjusts for desktop, tablet, and mobile with optional haptic feedback</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>i18n Ready</h3>
+          <p>Built-in internationalization support for multiple languages</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Angular 20+</h3>
+          <p>Built with latest Angular features, signals, and zoneless architecture</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure</h3>
+          <p>Rate limiting, session tracking, verification tokens, and backend validation support</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="usage-section">
+      <h2>📝 Quick Start</h2>
+      <div class="code-card">
+        <pre><code>// Install the package
+            npm install ngx-dice-captcha three cannon-es
+
+            // Import in your component
+            import {{ '{' }} NgxDiceCaptchaComponent, VerificationMode {{ '}' }} from 'ngx-dice-captcha';
+
+            // Use in your template
+            &lt;ngx-dice-captcha
+            [config]="{{'{'}}"
+            diceCount: 3,
+            verificationMode: VerificationMode.INDIVIDUAL_DICE,
+            overlayPosition: 'top-left',
+            showAttempts: true,
+            maxAttempts: 3
+            {{'}'}"
+            (verified)="onVerified($event)"
+            (failed)="onFailed($event)"
+            /&gt;</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="demo-footer">
+    <p>Made with ❤️ for the Angular community</p>
+    <div class="links">
+      <a href="https://github.com/Easy-Cloud-in/ngx-dice-captcha" target="_blank" rel="noopener">
+        GitHub
+      </a>
+      <a href="https://www.npmjs.com/package/ngx-dice-captcha" target="_blank" rel="noopener">
+        npm
+      </a>
+      <a href="https://github.com/Easy-Cloud-in/ngx-dice-captcha/blob/main/README.md" target="_blank" rel="noopener">
+        Documentation
+      </a>
+    </div>
+  </footer>
+</div>

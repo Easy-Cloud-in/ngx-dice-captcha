@@ -1,0 +1,53 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "paths": {
+      "ngx-dice-captcha": [
+        "./dist/ngx-dice-captcha"
+      ]
+    },
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": [
+      "ES2023",
+      "DOM"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/ngx-dice-captcha/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-dice-captcha/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/demo/tsconfig.spec.json"
+    }
+  ]
+}

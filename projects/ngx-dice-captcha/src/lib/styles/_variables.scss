@@ -1,0 +1,225 @@
+// NGX Dice CAPTCHA - SCSS Variables
+// Centralized styling configuration for the entire library
+
+// ============================================================================
+// DICE DIMENSIONS
+// ============================================================================
+$dice-size: 50px;
+$dice-border-radius: 5px;
+$dice-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+// ============================================================================
+// ANIMATION DURATIONS
+// ============================================================================
+$roll-duration: 2s;
+$settle-duration: 0.5s;
+$fade-duration: 0.3s;
+$slide-duration: 0.4s;
+$pop-duration: 0.3s;
+
+// ============================================================================
+// Z-INDEX LAYERS
+// ============================================================================
+$z-canvas: 1;
+$z-overlay: 2;
+$z-ui: 3;
+$z-modal: 1000;
+
+// ============================================================================
+// CANVAS DIMENSIONS
+// ============================================================================
+$canvas-max-width: 800px;
+$canvas-aspect-ratio: 1.7778; // 16/9
+$canvas-height-mobile: 300px;
+$canvas-height-desktop: 400px;
+$canvas-border-radius: 8px;
+
+// ============================================================================
+// SPACING
+// ============================================================================
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+$spacing-2xl: 32px;
+
+// ============================================================================
+// COLORS - PRIMARY PALETTE
+// ============================================================================
+$primary-gradient-start: #667eea;
+$primary-gradient-end: #764ba2;
+$primary-color: #667eea;
+$accent-color: #ff9800;
+$warn-color: #f44336;
+$success-color: #4caf50;
+$info-color: #2196f3;
+
+// ============================================================================
+// COLORS - NEUTRAL PALETTE
+// ============================================================================
+$background-light: #f5f5f5;
+$background-dark: #2c2c2c;
+$text-primary-light: #333;
+$text-primary-dark: #e0e0e0;
+$text-secondary-light: #666;
+$text-secondary-dark: #b0b0b0;
+$border-light: #e0e0e0;
+$border-dark: #4a4a4a;
+
+// ============================================================================
+// COLORS - STATUS MESSAGES
+// ============================================================================
+$error-bg-light: #ffebee;
+$error-bg-dark: #5d2626;
+$error-text-light: #c62828;
+$error-text-dark: #ff8a80;
+$error-border: #f44336;
+
+$success-bg-light: #e8f5e9;
+$success-bg-dark: #1b3e1f;
+$success-text-light: #2e7d32;
+$success-text-dark: #a5d6a7;
+$success-border: #4caf50;
+
+$info-bg-light: #e3f2fd;
+$info-bg-dark: #1a3a52;
+$info-text-light: #1565c0;
+$info-text-dark: #82b1ff;
+$info-border: #2196f3;
+
+$warning-bg-light: #fff3cd;
+$warning-bg-dark: #3e3e2b;
+$warning-text-light: #856404;
+$warning-text-dark: #ffd54f;
+$warning-border: #ffc107;
+
+// ============================================================================
+// SHADOWS
+// ============================================================================
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.2);
+$shadow-hover: 0 8px 10px rgba(0, 0, 0, 0.12), 0 3px 5px rgba(0, 0, 0, 0.08);
+
+// Dark mode shadows
+$shadow-dark-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+$shadow-dark-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+$shadow-dark-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+
+// ============================================================================
+// BORDERS
+// ============================================================================
+$border-width: 1px;
+$border-width-thick: 2px;
+$border-width-accent: 4px;
+$border-radius-sm: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 8px;
+$border-radius-xl: 12px;
+$border-radius-full: 50%;
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+$font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  sans-serif;
+$font-family-mono: 'Courier New', Courier, monospace;
+
+$font-size-xs: 11px;
+$font-size-sm: 12px;
+$font-size-base: 14px;
+$font-size-md: 15px;
+$font-size-lg: 16px;
+$font-size-xl: 18px;
+$font-size-2xl: 20px;
+$font-size-3xl: 24px;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.6;
+
+$letter-spacing-tight: -0.5px;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.5px;
+
+// ============================================================================
+// TRANSITIONS
+// ============================================================================
+$transition-fast: 0.15s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+$transition-timing: ease;
+$transition-timing-cubic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+// ============================================================================
+// BREAKPOINTS
+// ============================================================================
+$breakpoint-xs: 480px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// ============================================================================
+// DICE RESULT STYLES
+// ============================================================================
+$dice-result-size: 36px;
+$dice-result-size-mobile: 32px;
+$dice-result-size-small: 28px;
+$dice-result-font-size: 18px;
+$dice-result-font-size-mobile: 16px;
+$dice-result-font-size-small: 14px;
+
+// ============================================================================
+// OVERLAY & BACKDROP
+// ============================================================================
+$overlay-bg: rgba(0, 0, 0, 0.5);
+$overlay-bg-dark: rgba(0, 0, 0, 0.7);
+$backdrop-blur: 4px;
+$backdrop-blur-strong: 8px;
+
+// ============================================================================
+// ICON SIZES
+// ============================================================================
+$icon-size-sm: 18px;
+$icon-size-md: 20px;
+$icon-size-lg: 24px;
+$icon-size-xl: 48px;
+$icon-size-2xl: 64px;
+$icon-size-3xl: 80px;
+
+// ============================================================================
+// CARD STYLES
+// ============================================================================
+$card-padding: 24px;
+$card-padding-mobile: 16px;
+$card-border-radius: 12px;
+$card-max-width: 600px;
+
+// ============================================================================
+// BUTTON SIZES
+// ============================================================================
+$button-min-width: 120px;
+$button-min-width-lg: 140px;
+$button-height: 40px;
+$button-padding: 8px 16px;
+
+// ============================================================================
+// TIMER & PROGRESS
+// ============================================================================
+$progress-height: 4px;
+$progress-border-radius: 2px;
+
+// ============================================================================
+// OPACITY VALUES
+// ============================================================================
+$opacity-disabled: 0.6;
+$opacity-hover: 0.8;
+$opacity-overlay: 0.95;

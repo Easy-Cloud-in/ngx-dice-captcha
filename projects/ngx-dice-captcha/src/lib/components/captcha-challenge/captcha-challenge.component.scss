@@ -1,0 +1,370 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.challenge-card {
+  width: 100%;
+  max-width: $card-max-width;
+  margin: 0 auto;
+  @include transition(all);
+
+  &.expired {
+    opacity: $opacity-hover;
+    border: $border-width-thick solid $warn-color;
+  }
+}
+
+mat-card-header {
+  margin-bottom: $spacing-lg;
+
+  mat-card-title {
+    @include flex-row($spacing-sm);
+    align-items: center;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+  }
+
+  mat-card-subtitle {
+    margin-top: $spacing-sm;
+    font-size: $font-size-md;
+    line-height: $line-height-normal;
+  }
+}
+
+.challenge-icon {
+  color: $primary-color;
+}
+
+// Challenge Info Bar
+.challenge-info-bar {
+  @include flex-row($spacing-lg);
+  flex-wrap: wrap;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-lg;
+  background: $background-light;
+  border-radius: $border-radius-lg;
+}
+
+.info-item {
+  @include flex-row($spacing-sm);
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background: white;
+  border-radius: $border-radius-md;
+  @include shadow-sm;
+  flex: 1;
+  min-width: 140px;
+
+  mat-icon {
+    font-size: $icon-size-md;
+    width: $icon-size-md;
+    height: $icon-size-md;
+  }
+
+  &.primary mat-icon {
+    color: #3f51b5;
+  }
+
+  &.accent mat-icon {
+    color: $accent-color;
+  }
+
+  &.warn mat-icon {
+    color: $warn-color;
+  }
+}
+
+.info-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $text-secondary-light;
+  @include text-uppercase;
+}
+
+.info-value {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  margin-left: auto;
+}
+
+.dice-values {
+  @include flex-row(6px);
+  margin-left: auto;
+}
+
+.dice-value {
+  @include dice-value;
+  width: $dice-result-size-small;
+  height: $dice-result-size-small;
+  font-size: $dice-result-font-size-small;
+}
+
+// Answer Section
+.answer-section {
+  @include flex-row($spacing-md);
+  align-items: flex-start;
+  margin-bottom: $spacing-lg;
+}
+
+.answer-field {
+  flex: 1;
+
+  mat-icon {
+    color: $primary-color;
+  }
+}
+
+.hint-button {
+  margin-top: $spacing-xs;
+  color: $primary-color;
+
+  &:hover {
+    background: rgba($primary-color, 0.1);
+  }
+}
+
+// Hint Panel
+.hint-panel {
+  @include flex-row($spacing-md);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  background: $warning-bg-light;
+  border-left: $border-width-accent solid $warning-border;
+  border-radius: $border-radius-sm;
+  @include animation-fade-in;
+
+  .hint-icon {
+    color: $warning-border;
+    flex-shrink: 0;
+  }
+
+  .hint-text {
+    margin: 0;
+    font-size: $font-size-base;
+    line-height: $line-height-relaxed;
+    color: $text-secondary-light;
+  }
+}
+
+// Status Messages
+.status-message {
+  mat-icon {
+    flex-shrink: 0;
+  }
+
+  &.error {
+    @include status-error;
+  }
+
+  &.info {
+    @include status-info;
+  }
+
+  &.success {
+    @include status-success;
+  }
+}
+
+// Timer Progress Bar
+.timer-progress {
+  height: $progress-height;
+  background: $border-light;
+  border-radius: $progress-border-radius;
+  overflow: hidden;
+  margin-bottom: $spacing-lg;
+}
+
+.timer-progress-bar {
+  height: 100%;
+  @include transition(width, 1s, linear);
+  border-radius: $progress-border-radius;
+
+  &.primary {
+    background: linear-gradient(90deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
+  }
+
+  &.accent {
+    background: linear-gradient(90deg, $accent-color 0%, #ff5722 100%);
+  }
+
+  &.warn {
+    background: linear-gradient(90deg, $warn-color 0%, #d32f2f 100%);
+    animation: pulse 1s ease-in-out infinite;
+  }
+}
+
+// Card Actions
+mat-card-actions {
+  @include flex-row($spacing-md);
+  padding: $spacing-lg;
+  justify-content: flex-end;
+}
+
+.action-button {
+  @include flex-row($spacing-sm);
+  align-items: center;
+  min-width: $button-min-width-lg;
+  font-weight: $font-weight-semibold;
+  letter-spacing: $letter-spacing-wide;
+
+  mat-icon {
+    font-size: $icon-size-md;
+    width: $icon-size-md;
+    height: $icon-size-md;
+  }
+
+  &:disabled {
+    opacity: $opacity-disabled;
+  }
+}
+
+// Animations
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// Responsive Design
+@include mobile {
+  .challenge-card {
+    max-width: 100%;
+  }
+
+  .challenge-info-bar {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  .info-item {
+    min-width: 100%;
+  }
+
+  mat-card-actions {
+    flex-direction: column;
+
+    .action-button {
+      width: 100%;
+    }
+  }
+
+  .answer-section {
+    flex-direction: column;
+  }
+
+  .hint-button {
+    margin-top: 0;
+    align-self: flex-start;
+  }
+}
+
+@include xs-screen {
+  mat-card-header {
+    mat-card-title {
+      font-size: $font-size-xl;
+    }
+
+    mat-card-subtitle {
+      font-size: $font-size-base;
+    }
+  }
+
+  .info-label {
+    font-size: $font-size-xs;
+  }
+
+  .info-value {
+    font-size: $font-size-base;
+  }
+
+  .dice-value {
+    width: 24px;
+    height: 24px;
+    font-size: $font-size-sm;
+  }
+
+  .status-message {
+    font-size: 13px;
+  }
+}
+
+// Accessibility
+@include reduced-motion {
+  .challenge-card,
+  .dice-value,
+  .hint-panel,
+  .status-message,
+  .timer-progress-bar {
+    animation: none;
+    transition: none;
+  }
+}
+
+// Dark Mode Support
+@include dark-mode {
+  .challenge-info-bar {
+    background: #424242;
+  }
+
+  .info-item {
+    background: #303030;
+    @include shadow-dark-sm;
+  }
+
+  .info-label {
+    color: $text-secondary-dark;
+  }
+
+  .hint-panel {
+    background: $warning-bg-dark;
+    border-left-color: $warning-border;
+
+    .hint-text {
+      color: $text-primary-dark;
+    }
+  }
+
+  .timer-progress {
+    background: #424242;
+  }
+}
+
+// High Contrast Mode
+@include high-contrast {
+  .challenge-card {
+    border: $border-width-thick solid currentColor;
+  }
+
+  .info-item {
+    border: $border-width solid currentColor;
+  }
+
+  .action-button {
+    border: $border-width-thick solid currentColor;
+  }
+}

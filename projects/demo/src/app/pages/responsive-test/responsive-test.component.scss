@@ -1,0 +1,710 @@
+// Color palette
+$primary: #6366f1;
+$primary-dark: #4f46e5;
+$primary-light: #818cf8;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$info: #3b82f6;
+$bg-main: #0f172a;
+$bg-card: #1e293b;
+$bg-elevated: #334155;
+$text-primary: #f1f5f9;
+$text-secondary: #94a3b8;
+$border: #334155;
+$border-light: #475569;
+
+// Mixins
+@mixin card-style {
+  background: $bg-card;
+  border-radius: 16px;
+  border: 1px solid $border;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $border-light;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@mixin section-spacing {
+  margin-bottom: 4rem;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+    padding: 1rem;
+  }
+}
+
+// Main container
+.container-query-demo {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $bg-main 0%, #1a2332 100%);
+  color: $text-primary;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+// Back navigation
+.back-navigation {
+  margin-bottom: 2rem;
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $primary-light;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba($primary, 0.1);
+      color: $primary;
+      transform: translateX(-4px);
+    }
+  }
+}
+
+// Header
+.demo-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, $primary-light 0%, $primary 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: $text-secondary;
+    max-width: 600px;
+    margin: 0 auto 1rem;
+  }
+
+  .version-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
+  }
+}
+
+// Section styles
+section {
+  @include section-spacing;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: $text-primary;
+  }
+
+  .section-description {
+    color: $text-secondary;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 800px;
+  }
+}
+
+// Hero section - Interactive demo
+.hero-section {
+  @include card-style;
+
+  .interactive-demo {
+    .resize-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      button {
+        padding: 0.75rem 1.5rem;
+        background: $bg-elevated;
+        border: 2px solid $border;
+        border-radius: 12px;
+        color: $text-primary;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: $bg-card;
+          border-color: $primary;
+          transform: translateY(-2px);
+        }
+
+        &.active {
+          background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+          border-color: $primary;
+          color: white;
+          box-shadow: 0 4px 12px rgba($primary, 0.4);
+        }
+      }
+    }
+
+    .resizable-container-wrapper {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 400px;
+
+      .resizable-container {
+        position: relative;
+        transition: width 0.3s ease;
+        background: $bg-elevated;
+        border: 2px solid $primary;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 0 30px rgba($primary, 0.3);
+
+        // Container query container
+        container-type: inline-size;
+        container-name: captcha-container;
+
+        .container-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid $border;
+          font-size: 0.9rem;
+
+          .info-label {
+            color: $text-secondary;
+          }
+
+          .info-value {
+            color: $primary-light;
+            font-weight: 700;
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .resize-handle {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 80px;
+        background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+        border-radius: 8px 0 0 8px;
+        cursor: ew-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        user-select: none;
+        transition: all 0.2s ease;
+        box-shadow: -4px 0 12px rgba($primary, 0.4);
+
+        &:hover {
+          background: linear-gradient(135deg, $primary-light 0%, $primary 100%);
+          width: 50px;
+          box-shadow: -6px 0 16px rgba($primary, 0.6);
+        }
+
+        &:active {
+          background: $primary-dark;
+        }
+      }
+    }
+
+    .breakpoint-indicators {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+
+      .indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: $bg-elevated;
+        border-radius: 50px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        opacity: 0.5;
+
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: $text-secondary;
+          transition: all 0.3s ease;
+        }
+
+        &.active {
+          opacity: 1;
+          border-color: $success;
+          background: rgba($success, 0.1);
+
+          .dot {
+            background: $success;
+            box-shadow: 0 0 12px rgba($success, 0.6);
+          }
+
+          span {
+            color: $success;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Comparison section
+.comparison-section {
+  @include card-style;
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison-card {
+      @include card-style;
+      background: $bg-elevated;
+      padding: 1.5rem;
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .size-badge {
+          background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+          color: white;
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+      }
+
+      .captcha-container {
+        margin: 1.5rem auto;
+        border: 2px solid $border;
+        border-radius: 8px;
+        padding: 1rem;
+        background: $bg-card;
+
+        // Container query definition
+        container-type: inline-size;
+        container-name: captcha-demo;
+      }
+
+      .card-footer {
+        margin-top: 1rem;
+
+        .description {
+          color: $text-secondary;
+          font-size: 0.95rem;
+          margin-bottom: 0.75rem;
+        }
+
+        .breakpoint-tag {
+          display: inline-block;
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 600;
+
+          &[data-breakpoint='compact'] {
+            background: rgba($warning, 0.2);
+            color: $warning;
+          }
+
+          &[data-breakpoint='standard'] {
+            background: rgba($info, 0.2);
+            color: $info;
+          }
+
+          &[data-breakpoint='expanded'] {
+            background: rgba($success, 0.2);
+            color: $success;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Showcase section
+.showcase-section {
+  @include card-style;
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .showcase-item {
+      @include card-style;
+      background: $bg-elevated;
+      padding: 1.5rem;
+
+      .showcase-header {
+        margin-bottom: 1.5rem;
+
+        h3 {
+          font-size: 1.3rem;
+          margin-bottom: 0.5rem;
+        }
+
+        code {
+          display: block;
+          background: $bg-main;
+          color: $primary-light;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          font-family: 'Courier New', monospace;
+        }
+      }
+
+      .showcase-container {
+        border: 2px solid $border;
+        border-radius: 8px;
+        padding: 1rem;
+        background: $bg-card;
+        min-height: 300px;
+
+        // Container query definitions
+        container-type: inline-size;
+
+        &.fixed-container {
+          width: 600px;
+          height: 400px;
+          max-width: 100%;
+        }
+
+        &.fill-container {
+          width: 100%;
+          height: 400px;
+        }
+
+        &.responsive-container {
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        &.aspect-container {
+          width: 100%;
+          max-width: 700px;
+          margin: 0 auto;
+        }
+      }
+
+      .showcase-note {
+        margin-top: 1rem;
+        color: $text-secondary;
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+// Nested section
+.nested-section {
+  @include card-style;
+
+  .nested-demo {
+    .outer-container {
+      width: 100%;
+      background: rgba($primary, 0.1);
+      border: 2px dashed $primary;
+      border-radius: 12px;
+      padding: 2rem;
+
+      h4 {
+        color: $primary-light;
+        margin-bottom: 1rem;
+      }
+
+      .middle-container {
+        width: 80%;
+        background: rgba($info, 0.1);
+        border: 2px dashed $info;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 0 auto;
+
+        h5 {
+          color: $info;
+          margin-bottom: 1rem;
+        }
+
+        .inner-container {
+          width: 90%;
+          background: $bg-elevated;
+          border: 2px solid $success;
+          border-radius: 8px;
+          padding: 1.5rem;
+          margin: 0 auto;
+
+          // Container query for innermost container
+          container-type: inline-size;
+
+          .nested-note {
+            margin-top: 1rem;
+            color: $success;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Settings section
+.settings-section {
+  @include card-style;
+
+  .settings-panel {
+    display: grid;
+    gap: 2rem;
+
+    .setting-item {
+      background: $bg-elevated;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid $border;
+
+      .setting-label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+
+        input[type='checkbox'] {
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+          accent-color: $primary;
+        }
+      }
+
+      .threshold-input {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+
+        input[type='range'] {
+          flex: 1;
+          height: 8px;
+          border-radius: 4px;
+          background: $bg-main;
+          outline: none;
+          cursor: pointer;
+          accent-color: $primary;
+        }
+
+        .threshold-value {
+          min-width: 60px;
+          text-align: right;
+          font-weight: 700;
+          color: $primary-light;
+          font-size: 1.1rem;
+        }
+      }
+
+      .setting-description {
+        margin-top: 0.75rem;
+        color: $text-secondary;
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+// Details section
+.details-section {
+  @include card-style;
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .detail-card {
+      background: $bg-elevated;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid $border;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        border-color: $primary;
+        box-shadow: 0 8px 16px rgba($primary, 0.3);
+      }
+
+      .detail-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: $primary-light;
+      }
+
+      p {
+        color: $text-secondary;
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .code-example {
+    background: $bg-elevated;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid $border;
+
+    h4 {
+      color: $primary-light;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    pre {
+      background: $bg-main;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+
+      code {
+        color: $text-primary;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+    }
+  }
+}
+
+// Footer
+.demo-footer {
+  text-align: center;
+  padding: 3rem 2rem;
+
+  p {
+    font-size: 1.3rem;
+    color: $text-secondary;
+    font-weight: 600;
+  }
+}
+
+// Container Query Styles for ngx-dice-captcha
+// These demonstrate how the library responds to container sizes
+
+// Compact mode (< 400px)
+@container captcha-container (max-width: 400px) {
+  .resizable-container {
+    .container-info {
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  }
+}
+
+// Standard mode (400px - 700px)
+@container captcha-container (min-width: 400px) and (max-width: 700px) {
+  .resizable-container {
+    padding: 1.25rem;
+  }
+}
+
+// Expanded mode (> 700px)
+@container captcha-container (min-width: 700px) {
+  .resizable-container {
+    padding: 1.5rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .comparison-grid,
+  .showcase-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .demo-header h1 {
+    font-size: 2rem;
+  }
+
+  .hero-section .resizable-container-wrapper {
+    padding: 1rem;
+
+    .resize-handle {
+      display: none; // Hide on mobile for better UX
+    }
+  }
+
+  .nested-demo {
+    .outer-container,
+    .middle-container {
+      padding: 1rem;
+    }
+  }
+}

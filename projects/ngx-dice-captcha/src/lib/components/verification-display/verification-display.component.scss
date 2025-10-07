@@ -1,0 +1,606 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.verification-overlay {
+  // Use fixed positioning instead of absolute to ensure overlay covers viewport on all screen sizes
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  @include flex-center;
+  z-index: $z-modal;
+  padding: $spacing-lg;
+  @include animation-fade-in;
+
+  &.fade-in {
+    animation: fadeInScale 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+.verification-card {
+  width: 100%;
+  max-width: 500px;
+  padding: $spacing-xl;
+  text-align: center;
+  @include shadow-xl;
+  @include animation-slide-up;
+
+  &.success-card {
+    border-top: $border-width-accent solid $success-color;
+  }
+
+  &.error-card {
+    border-top: $border-width-accent solid $warn-color;
+  }
+}
+
+// Result Icon
+.result-icon-container {
+  margin-bottom: $spacing-xl;
+
+  &.animate {
+    animation: scaleIn 0.5s $transition-timing-cubic;
+  }
+}
+
+.result-icon {
+  font-size: $icon-size-3xl;
+  width: $icon-size-3xl;
+  height: $icon-size-3xl;
+  display: inline-block;
+
+  &.success {
+    color: $success-color;
+  }
+
+  &.error {
+    color: $warn-color;
+    animation: shake 0.5s ease;
+  }
+}
+
+// Header
+mat-card-header {
+  @include flex-column;
+  align-items: center;
+  margin-bottom: $spacing-xl;
+}
+
+.result-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+}
+
+.result-message {
+  font-size: $font-size-lg;
+  color: $text-secondary-light;
+  line-height: $line-height-normal;
+  margin-top: $spacing-sm;
+}
+
+// Content
+mat-card-content {
+  @include flex-column;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.attempts-info {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  background: $warning-bg-light;
+  border-left: $border-width-accent solid $warning-border;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $warning-text-light;
+
+  mat-icon {
+    color: $warning-border;
+  }
+}
+
+// Token Section
+.token-section {
+  padding: $spacing-lg;
+  background: $background-light;
+  border-radius: $border-radius-lg;
+  text-align: left;
+}
+
+.token-header {
+  @include flex-row($spacing-sm);
+  align-items: center;
+  margin-bottom: $spacing-md;
+
+  mat-icon {
+    color: $primary-color;
+  }
+
+  .token-label {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-primary-light;
+    @include text-uppercase;
+  }
+}
+
+.token-display {
+  @include flex-row($spacing-sm);
+  align-items: center;
+  padding: $spacing-md;
+  background: white;
+  border: $border-width solid $border-light;
+  border-radius: $border-radius-md;
+}
+
+.token-value {
+  flex: 1;
+  @include text-mono;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $text-primary-light;
+  @include text-truncate;
+  padding: $spacing-xs $spacing-sm;
+  background: #fafafa;
+  border-radius: $border-radius-sm;
+}
+
+.token-actions {
+  @include flex-row($spacing-xs);
+
+  button {
+    &.copied {
+      color: $success-color;
+      animation: bounce 0.5s ease;
+    }
+  }
+}
+
+.copy-success {
+  margin-top: $spacing-sm;
+  padding: $spacing-sm;
+  background: $success-bg-light;
+  color: $success-text-light;
+  border-radius: $border-radius-sm;
+  font-size: 13px;
+  font-weight: $font-weight-medium;
+  text-align: center;
+  @include animation-fade-in;
+}
+
+// Timestamp
+.timestamp-info {
+  @include flex-center;
+  gap: $spacing-sm;
+  font-size: 13px;
+  color: #999;
+
+  mat-icon {
+    font-size: $icon-size-sm;
+    width: $icon-size-sm;
+    height: $icon-size-sm;
+    color: #999;
+  }
+}
+
+// Actions
+mat-card-actions {
+  @include flex-row($spacing-md);
+  justify-content: center;
+  padding: 0;
+}
+
+.action-button {
+  @include flex-row($spacing-sm);
+  align-items: center;
+  min-width: $button-min-width;
+  font-weight: $font-weight-semibold;
+  letter-spacing: $letter-spacing-wide;
+
+  mat-icon {
+    font-size: $icon-size-md;
+    width: $icon-size-md;
+    height: $icon-size-md;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+// ============================================================================
+// CONTAINER QUERIES - Component responds to canvas container size
+// ============================================================================
+// These match the breakpoints defined in dice-canvas.component.scss
+// Small: < 500px, Medium: 501-800px, Large: 801-1200px, Extra Large: > 1200px
+
+// Small containers (< 500px width) - Compact mode
+@container dice-canvas (max-width: 500px) {
+  .verification-overlay {
+    padding: $spacing-sm;
+  }
+
+  .verification-card {
+    padding: 16px;
+    max-width: 90%;
+  }
+
+  .result-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .result-title {
+    font-size: $font-size-xl;
+  }
+
+  .result-message {
+    font-size: 13px;
+  }
+
+  mat-card-actions {
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    .action-button {
+      width: 100%;
+    }
+  }
+
+  .token-display {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-sm;
+  }
+
+  .token-value {
+    font-size: $font-size-xs;
+  }
+
+  .token-actions {
+    justify-content: center;
+  }
+
+  .attempts-info {
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-size-xs;
+  }
+}
+
+// Medium containers (501px - 800px)
+@container dice-canvas (min-width: 501px) and (max-width: 800px) {
+  .verification-overlay {
+    padding: $spacing-md;
+  }
+
+  .verification-card {
+    padding: 20px;
+    max-width: 450px;
+  }
+
+  .result-icon {
+    font-size: $icon-size-2xl;
+    width: $icon-size-2xl;
+    height: $icon-size-2xl;
+  }
+
+  .result-title {
+    font-size: $font-size-2xl;
+  }
+
+  .result-message {
+    font-size: $font-size-base;
+  }
+
+  mat-card-actions {
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+}
+
+// Large containers (801px - 1200px)
+@container dice-canvas (min-width: 801px) and (max-width: 1200px) {
+  .verification-card {
+    max-width: 500px;
+    padding: $spacing-xl;
+  }
+
+  .result-icon {
+    font-size: $icon-size-3xl;
+    width: $icon-size-3xl;
+    height: $icon-size-3xl;
+  }
+
+  .result-title {
+    font-size: $font-size-3xl;
+  }
+
+  .result-message {
+    font-size: $font-size-lg;
+  }
+}
+
+// Extra large containers (> 1200px)
+@container dice-canvas (min-width: 1201px) {
+  .verification-card {
+    max-width: 550px;
+    padding: calc($spacing-xl + 4px);
+  }
+
+  .result-icon {
+    font-size: calc($icon-size-3xl + 8px);
+    width: calc($icon-size-3xl + 8px);
+    height: calc($icon-size-3xl + 8px);
+  }
+
+  .result-title {
+    font-size: calc($font-size-3xl + 2px);
+  }
+
+  .result-message {
+    font-size: calc($font-size-lg + 1px);
+  }
+
+  .token-section {
+    padding: calc($spacing-lg + 2px);
+  }
+
+  .action-button {
+    padding: 12px 24px;
+    font-size: $font-size-base;
+  }
+}
+
+// ============================================================================
+// VIEWPORT MEDIA QUERIES - Fallback for browsers without container query support
+// ============================================================================
+
+@supports not (container-type: size) {
+  @include mobile {
+    .verification-overlay {
+      padding: $spacing-md;
+    }
+
+    .verification-card {
+      padding: 20px;
+    }
+
+    .result-icon {
+      font-size: $icon-size-2xl;
+      width: $icon-size-2xl;
+      height: $icon-size-2xl;
+    }
+
+    .result-title {
+      font-size: $font-size-2xl;
+    }
+
+    .result-message {
+      font-size: $font-size-base;
+    }
+
+    mat-card-actions {
+      flex-direction: column;
+
+      .action-button {
+        width: 100%;
+      }
+    }
+
+    .token-display {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .token-actions {
+      justify-content: center;
+    }
+  }
+
+  @include xs-screen {
+    .result-icon {
+      font-size: 56px;
+      width: 56px;
+      height: 56px;
+    }
+
+    .result-title {
+      font-size: $font-size-xl;
+    }
+
+    .result-message {
+      font-size: 13px;
+    }
+
+    .token-value {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Accessibility
+@include reduced-motion {
+  .verification-overlay,
+  .verification-card,
+  .result-icon-container,
+  .result-icon,
+  .copy-success,
+  .token-actions button {
+    animation: none;
+  }
+
+  .verification-card {
+    transition: none;
+  }
+}
+
+// Dark Mode Support
+@include dark-mode {
+  .verification-card {
+    background: $background-dark;
+    color: $text-primary-dark;
+
+    &.success-card {
+      border-top-color: #66bb6a;
+    }
+
+    &.error-card {
+      border-top-color: #ef5350;
+    }
+  }
+
+  .result-title {
+    color: $text-primary-dark;
+  }
+
+  .result-message {
+    color: $text-secondary-dark;
+  }
+
+  .result-icon {
+    &.success {
+      color: #66bb6a;
+    }
+
+    &.error {
+      color: #ef5350;
+    }
+  }
+
+  .attempts-info {
+    background: $warning-bg-dark;
+    color: $warning-text-dark;
+    border-left-color: $warning-border;
+  }
+
+  .token-section {
+    background: #3a3a3a;
+  }
+
+  .token-header .token-label {
+    color: $text-primary-dark;
+  }
+
+  .token-display {
+    background: $background-dark;
+    border-color: $border-dark;
+  }
+
+  .token-value {
+    background: #3a3a3a;
+    color: $text-primary-dark;
+  }
+
+  .copy-success {
+    background: $success-bg-dark;
+    color: $success-text-dark;
+  }
+
+  .timestamp-info {
+    color: #808080;
+
+    mat-icon {
+      color: #808080;
+    }
+  }
+}
+
+// High Contrast Mode
+@include high-contrast {
+  .verification-card {
+    border: 3px solid currentColor;
+  }
+
+  .token-display {
+    border-width: $border-width-thick;
+  }
+
+  .action-button {
+    border: $border-width-thick solid currentColor;
+  }
+}

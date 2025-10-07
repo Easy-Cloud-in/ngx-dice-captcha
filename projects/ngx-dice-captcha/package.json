@@ -1,0 +1,75 @@
+{
+  "name": "ngx-dice-captcha",
+  "version": "1.0.0",
+  "description": "A modern Angular 20 library implementing an interactive 3D dice-based CAPTCHA system with Three.js rendering and Cannon-es physics simulation",
+  "author": "Sakr.sr <contact@easy-cloud.in>",
+  "license": "MIT",
+  "homepage": "https://github.com/Easy-Cloud-in/ngx-dice-captcha#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Easy-Cloud-in/ngx-dice-captcha.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Easy-Cloud-in/ngx-dice-captcha/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "esm2022": "./dist/esm2022/ngx-dice-captcha.mjs",
+      "esm": "./dist/esm2022/ngx-dice-captcha.mjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "keywords": [
+    "angular",
+    "angular20",
+    "captcha",
+    "dice",
+    "3d",
+    "threejs",
+    "cannon-es",
+    "physics",
+    "security",
+    "verification",
+    "standalone",
+    "zoneless",
+    "material3",
+    "typescript"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "three": "^0.180.0",
+    "cannon-es": "^0.20.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": false
+    },
+    "cannon-es": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "ng build ngx-dice-captcha",
+    "test": "ng test ngx-dice-captcha"
+  }
+}

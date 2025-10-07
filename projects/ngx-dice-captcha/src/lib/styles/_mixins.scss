@@ -1,0 +1,517 @@
+// NGX Dice CAPTCHA - SCSS Mixins
+// Reusable styling patterns for consistent design
+
+@use './variables' as *;
+
+// ============================================================================
+// SHADOWS
+// ============================================================================
+
+// Apply dice shadow effect
+@mixin dice-shadow {
+  box-shadow: $dice-shadow;
+}
+
+// Apply small shadow
+@mixin shadow-sm {
+  box-shadow: $shadow-sm;
+}
+
+// Apply medium shadow
+@mixin shadow-md {
+  box-shadow: $shadow-md;
+}
+
+// Apply large shadow
+@mixin shadow-lg {
+  box-shadow: $shadow-lg;
+}
+
+// Apply extra large shadow
+@mixin shadow-xl {
+  box-shadow: $shadow-xl;
+}
+
+// Apply hover shadow effect
+@mixin shadow-hover {
+  box-shadow: $shadow-hover;
+}
+
+// Apply small dark mode shadow
+@mixin shadow-dark-sm {
+  box-shadow: $shadow-dark-sm;
+}
+
+// Apply medium dark mode shadow
+@mixin shadow-dark-md {
+  box-shadow: $shadow-dark-md;
+}
+
+// Apply large dark mode shadow
+@mixin shadow-dark-lg {
+  box-shadow: $shadow-dark-lg;
+}
+
+// ============================================================================
+// RESPONSIVE DESIGN
+// ============================================================================
+
+// Responsive canvas with aspect ratio
+@mixin responsive-canvas {
+  width: 100%;
+  max-width: $canvas-max-width;
+  aspect-ratio: $canvas-aspect-ratio;
+}
+
+// Media query for extra small devices
+@mixin xs-screen {
+  @media (max-width: $breakpoint-xs) {
+    @content;
+  }
+}
+
+// Media query for small devices
+@mixin sm-screen {
+  @media (max-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+// Media query for medium devices
+@mixin md-screen {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+// Media query for large devices
+@mixin lg-screen {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+// Media query for extra large devices
+@mixin xl-screen {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+// Media query for mobile devices (max 768px)
+@mixin mobile {
+  @media (max-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+// Media query for tablet devices (768px - 1024px)
+@mixin tablet {
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+// Media query for desktop devices (min 1024px)
+@mixin desktop {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+// ============================================================================
+// ACCESSIBILITY
+// ============================================================================
+
+// Reduced motion preference
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// Dark mode preference
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+// High contrast preference
+@mixin high-contrast {
+  @media (prefers-contrast: high) {
+    @content;
+  }
+}
+
+// ============================================================================
+// LAYOUT
+// ============================================================================
+
+// Flexbox center alignment
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flexbox column layout
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Flexbox row layout with gap
+@mixin flex-row($gap: $spacing-md) {
+  display: flex;
+  flex-direction: row;
+  gap: $gap;
+}
+
+// Grid layout
+@mixin grid($columns: 1, $gap: $spacing-lg) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+// Absolute centering
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Full absolute positioning
+@mixin absolute-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+// Text truncation with ellipsis
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Multi-line text truncation
+@mixin text-truncate-multiline($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Uppercase text with letter spacing
+@mixin text-uppercase {
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+}
+
+// Monospace font styling
+@mixin text-mono {
+  font-family: $font-family-mono;
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+// Fade in animation
+@mixin animation-fade-in($duration: $fade-duration) {
+  animation: fadeIn $duration $transition-timing;
+}
+
+// Slide up animation
+@mixin animation-slide-up($duration: $slide-duration) {
+  animation: slideUp $duration $transition-timing-cubic;
+}
+
+// Pop in animation
+@mixin animation-pop-in($duration: $pop-duration) {
+  animation: popIn $duration $transition-timing-cubic;
+}
+
+// Smooth transition
+@mixin transition($properties: all, $duration: $transition-normal, $timing: $transition-timing) {
+  transition: $properties $duration $timing;
+}
+
+// ============================================================================
+// BUTTONS
+// ============================================================================
+
+// Base button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: $button-min-width;
+  height: $button-height;
+  padding: $button-padding;
+  font-weight: $font-weight-semibold;
+  letter-spacing: $letter-spacing-wide;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  @include transition(all);
+
+  &:disabled {
+    opacity: $opacity-disabled;
+    cursor: not-allowed;
+  }
+}
+
+// Primary button
+@mixin button-primary {
+  @include button-base;
+  background: linear-gradient(135deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
+  color: white;
+
+  &:hover:not(:disabled) {
+    opacity: $opacity-hover;
+  }
+}
+
+// ============================================================================
+// CARDS
+// ============================================================================
+
+// Card base styles
+@mixin card-base {
+  padding: $card-padding;
+  border-radius: $card-border-radius;
+  @include shadow-md;
+  @include transition(all);
+
+  @include mobile {
+    padding: $card-padding-mobile;
+  }
+}
+
+// Card with border accent
+@mixin card-accent($color) {
+  @include card-base;
+  border-top: $border-width-accent solid $color;
+}
+
+// ============================================================================
+// OVERLAYS
+// ============================================================================
+
+// Overlay backdrop
+@mixin overlay-backdrop {
+  @include absolute-full;
+  background: $overlay-bg;
+  backdrop-filter: blur($backdrop-blur);
+}
+
+// Modal overlay
+@mixin modal-overlay {
+  @include absolute-full;
+  @include flex-center;
+  z-index: $z-modal;
+  padding: $spacing-lg;
+  @include animation-fade-in;
+}
+
+// ============================================================================
+// STATUS MESSAGES
+// ============================================================================
+
+// Status message base
+@mixin status-message-base {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  @include animation-fade-in;
+}
+
+// Error message
+@mixin status-error {
+  @include status-message-base;
+  background: $error-bg-light;
+  color: $error-text-light;
+  border-left: $border-width-accent solid $error-border;
+
+  @include dark-mode {
+    background: $error-bg-dark;
+    color: $error-text-dark;
+  }
+}
+
+// Success message
+@mixin status-success {
+  @include status-message-base;
+  background: $success-bg-light;
+  color: $success-text-light;
+  border-left: $border-width-accent solid $success-border;
+
+  @include dark-mode {
+    background: $success-bg-dark;
+    color: $success-text-dark;
+  }
+}
+
+// Info message
+@mixin status-info {
+  @include status-message-base;
+  background: $info-bg-light;
+  color: $info-text-light;
+  border-left: $border-width-accent solid $info-border;
+
+  @include dark-mode {
+    background: $info-bg-dark;
+    color: $info-text-dark;
+  }
+}
+
+// Warning message
+@mixin status-warning {
+  @include status-message-base;
+  background: $warning-bg-light;
+  color: $warning-text-light;
+  border-left: $border-width-accent solid $warning-border;
+
+  @include dark-mode {
+    background: $warning-bg-dark;
+    color: $warning-text-dark;
+  }
+}
+
+// ============================================================================
+// DICE STYLES
+// ============================================================================
+
+// Dice value display
+@mixin dice-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $dice-result-size;
+  height: $dice-result-size;
+  background: linear-gradient(135deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
+  color: white;
+  border-radius: $border-radius-lg;
+  font-size: $dice-result-font-size;
+  font-weight: $font-weight-bold;
+  @include shadow-sm;
+  @include animation-pop-in;
+
+  @include mobile {
+    width: $dice-result-size-mobile;
+    height: $dice-result-size-mobile;
+    font-size: $dice-result-font-size-mobile;
+  }
+}
+
+// ============================================================================
+// FOCUS STYLES
+// ============================================================================
+
+// Focus outline
+@mixin focus-outline($color: $primary-color) {
+  &:focus {
+    outline: $border-width-thick solid $color;
+    outline-offset: 2px;
+  }
+
+  @include high-contrast {
+    &:focus {
+      outline-width: 3px;
+    }
+  }
+}
+
+// Focus visible (for keyboard navigation)
+@mixin focus-visible($color: $primary-color) {
+  &:focus-visible {
+    outline: $border-width-thick solid $color;
+    outline-offset: 2px;
+  }
+}
+
+// ============================================================================
+// UTILITY MIXINS
+// ============================================================================
+
+// Visually hidden (for screen readers only)
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// Reset list styles
+@mixin list-reset {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// Reset button styles
+@mixin button-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+// Custom scrollbar
+@mixin custom-scrollbar(
+  $width: 8px,
+  $track-color: $background-light,
+  $thumb-color: $primary-color
+) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: $border-radius-full;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    opacity: $opacity-hover;
+  }
+}
+
+// Aspect ratio (fallback for older browsers)
+@mixin aspect-ratio($width, $height) {
+  aspect-ratio: $width / $height;
+
+  // Fallback for browsers that don't support aspect-ratio
+  @supports not (aspect-ratio: 1 / 1) {
+    position: relative;
+    &::before {
+      content: '';
+      display: block;
+      padding-bottom: percentage($height / $width);
+    }
+  }
+}

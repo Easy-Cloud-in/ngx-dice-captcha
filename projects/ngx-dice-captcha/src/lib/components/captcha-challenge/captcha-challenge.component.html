@@ -1,0 +1,152 @@
+<mat-card class="challenge-card" [class.expired]="isTimeout() || isAttemptsExhausted()" ngxDiceAccessibility
+    [enableKeyboardShortcuts]="true" (keyboardAction)="onKeyboardAction($event)" role="region"
+    [attr.aria-label]="i18n.ariaChallengeRegion">
+
+    <mat-card-header>
+        <mat-card-title>
+            <mat-icon class="challenge-icon" aria-hidden="true">casino</mat-icon>
+            {{ i18n.challengeTitle }}
+        </mat-card-title>
+        <mat-card-subtitle id="challenge-description">
+            {{ challenge().description }}
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- Challenge Info Bar -->
+        <div class="challenge-info-bar">
+            <!-- Timer -->
+            <div class="info-item timer" [class]="getTimerColor()" role="timer"
+                [attr.aria-label]="i18n.timeLabel + ': ' + timeRemainingFormatted()">
+                <mat-icon aria-hidden="true">schedule</mat-icon>
+                <span class="info-label">{{ i18n.timeLabel }}</span>
+                <span class="info-value">{{ timeRemainingFormatted() }}</span>
+            </div>
+
+            <!-- Attempts -->
+            <div class="info-item attempts" [class]="getAttemptsColor()"
+                [attr.aria-label]="i18n.attemptsLabel + ': ' + attemptsRemaining() + ' of ' + maxAttempts()">
+                <mat-icon aria-hidden="true">refresh</mat-icon>
+                <span class="info-label">{{ i18n.attemptsLabel }}</span>
+                <span class="info-value">{{ attemptsRemaining() }}/{{ maxAttempts() }}</span>
+            </div>
+
+            <!-- Dice Results (if available) -->
+            @if (diceResults().length > 0) {
+            <div class="info-item results" role="status" [attr.aria-label]="'Dice rolled: ' + diceResults().join(', ')">
+                <mat-icon aria-hidden="true">casino</mat-icon>
+                <span class="info-label">Rolled</span>
+                <div class="dice-values">
+                    @for (value of diceResults(); track $index) {
+                    <span class="dice-value" [attr.aria-label]="'Die ' + ($index + 1) + ': ' + value">{{ value }}</span>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Screen reader announcements -->
+        <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+            {{ announcement() }}
+        </div>
+
+        <!-- Answer Input -->
+        <div class="answer-section">
+            <mat-form-field appearance="outline" class="answer-field">
+                <mat-label>{{ i18n.answerLabel }}</mat-label>
+                <input matInput type="number" [value]="userAnswer() ?? ''"
+                    (input)="updateAnswer($any($event.target).value)"
+                    [disabled]="isSubmitting() || isTimeout() || isAttemptsExhausted()" (keyup.enter)="onEnterPressed()"
+                    [placeholder]="i18n.answerPlaceholder" [attr.aria-label]="i18n.answerLabel"
+                    [attr.aria-describedby]="'challenge-description ' + (validationError() ? 'validation-error' : '')"
+                    [attr.aria-invalid]="validationError() ? 'true' : 'false'" [attr.aria-required]="'true'" />
+                <mat-icon matPrefix aria-hidden="true">calculate</mat-icon>
+                @if (isSubmitting()) {
+                <mat-spinner matSuffix diameter="20" aria-label="Submitting answer"></mat-spinner>
+                }
+            </mat-form-field>
+
+            <!-- Validation Error -->
+            @if (validationError()) {
+            <div id="validation-error" class="validation-error" role="alert" aria-live="assertive">
+                {{ validationError() }}
+            </div>
+            }
+
+            <!-- Hint Button -->
+            @if (challenge().hint) {
+            <button mat-icon-button class="hint-button" (click)="toggleHint()"
+                [attr.aria-label]="showHint() ? 'Hide hint' : 'Show hint'" [attr.aria-expanded]="showHint()"
+                [attr.aria-controls]="'hint-panel'">
+                <mat-icon aria-hidden="true">{{ showHint() ? 'visibility_off' : 'help_outline' }}</mat-icon>
+            </button>
+            }
+        </div>
+
+        <!-- Hint Display -->
+        @if (showHint() && challenge().hint) {
+        <div id="hint-panel" class="hint-panel" role="region" aria-label="Challenge hint" aria-live="polite">
+            <mat-icon class="hint-icon" aria-hidden="true">lightbulb</mat-icon>
+            <p class="hint-text">{{ challenge().hint }}</p>
+        </div>
+        }
+
+        <!-- Status Messages -->
+        @if (isTimeout()) {
+        <div class="status-message error" role="alert" aria-live="assertive">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>{{ i18n.timeExpired }}</span>
+        </div>
+        }
+
+        @if (isAttemptsExhausted() && !isTimeout()) {
+        <div class="status-message error" role="alert" aria-live="assertive">
+            <mat-icon aria-hidden="true">block</mat-icon>
+            <span>{{ i18n.noAttemptsLeft }}</span>
+        </div>
+        }
+
+        @if (isRolling()) {
+        <div class="status-message info" role="status" aria-live="polite">
+            <mat-spinner diameter="20" aria-label="Loading"></mat-spinner>
+            <span>{{ i18n.rollingDice }}</span>
+        </div>
+        }
+
+        <!-- Timer Progress Bar -->
+        <div class="timer-progress" role="progressbar" [attr.aria-valuenow]="timeRemaining()" [attr.aria-valuemin]="0"
+            [attr.aria-valuemax]="timeoutSeconds()" [attr.aria-label]="'Time remaining: ' + timeRemainingFormatted()">
+            <div class="timer-progress-bar" [class]="getTimerColor()" [style.width.%]="progressPercent()"></div>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+        @if (isTimeout() || isAttemptsExhausted()) {
+        <!-- Retry Button -->
+        <button mat-raised-button color="primary" (click)="onRetry()" class="action-button"
+            [attr.aria-label]="i18n.retryButton">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            {{ i18n.retryButton }}
+        </button>
+        } @else {
+        <!-- Roll Dice Button -->
+        <button mat-raised-button color="primary" (click)="onRollDice()" [disabled]="!canRoll()" class="action-button"
+            [attr.aria-label]="diceResults().length > 0 ? 'Roll dice again' : i18n.rollDiceButton"
+            [attr.aria-disabled]="!canRoll()">
+            <mat-icon aria-hidden="true">casino</mat-icon>
+            {{ diceResults().length > 0 ? 'Roll Again' : i18n.rollDiceButton }}
+        </button>
+
+        <!-- Submit Answer Button -->
+        <button mat-raised-button color="accent" (click)="onSubmitAnswer()" [disabled]="!canSubmit()"
+            class="action-button" [attr.aria-label]="i18n.submitButton" [attr.aria-disabled]="!canSubmit()">
+            @if (isSubmitting()) {
+            <mat-spinner diameter="20" aria-label="Submitting"></mat-spinner>
+            } @else {
+            <mat-icon aria-hidden="true">check_circle</mat-icon>
+            }
+            {{ i18n.submitButton }}
+        </button>
+        }
+    </mat-card-actions>
+</mat-card>

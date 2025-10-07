@@ -1,0 +1,106 @@
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+
+.ngx-dice-captcha-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: $spacing-xl;
+  font-family: $font-family-base;
+
+  // Constrain width only on smaller screens
+  @include mobile {
+    max-width: 100%;
+  }
+
+  @include md-screen {
+    max-width: 1200px;
+  }
+
+  @include xl-screen {
+    max-width: 1400px;
+    padding: $spacing-2xl;
+  }
+}
+
+.captcha-content {
+  @include flex-column;
+  gap: $spacing-xl;
+  @include animation-fade-in($fade-duration);
+}
+
+.captcha-canvas {
+  width: 100%;
+  border-radius: $card-border-radius;
+  overflow: hidden;
+  @include shadow-lg;
+}
+
+.captcha-challenge {
+  width: 100%;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@include md-screen {
+  .captcha-content {
+    gap: $spacing-2xl;
+  }
+}
+
+@include lg-screen {
+  .captcha-content {
+    gap: $spacing-2xl;
+    max-width: 100%;
+  }
+
+  .captcha-canvas {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@include mobile {
+  .ngx-dice-captcha-container {
+    padding: $spacing-lg;
+  }
+
+  .captcha-content {
+    gap: $spacing-lg;
+  }
+}
+
+// Accessibility
+@include reduced-motion {
+  .captcha-content {
+    animation: none;
+  }
+}
+
+// Dark Mode Support
+@include dark-mode {
+  .ngx-dice-captcha-container {
+    color: $text-primary-dark;
+  }
+
+  .captcha-canvas {
+    @include shadow-lg;
+  }
+}
+
+// High Contrast Mode
+@include high-contrast {
+  .captcha-canvas {
+    border: $border-width-thick solid currentColor;
+  }
+}

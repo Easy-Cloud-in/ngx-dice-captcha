@@ -1,0 +1,79 @@
+<div class="dashboard-container">
+    <div class="dashboard-content">
+        <header class="dashboard-header">
+            <h1>✅ Welcome to the Dashboard</h1>
+            <p class="subtitle">You have successfully authenticated through ngx-dice-captcha</p>
+        </header>
+
+        <section class="verification-info">
+            <div class="success-card">
+                <div class="success-icon">🎉</div>
+                <h2>Authentication Successful!</h2>
+                <p>You have passed the dice captcha challenge and gained access to this protected area.</p>
+            </div>
+
+            @if (captchaState.verificationToken()) {
+            <div class="token-card">
+                <h3>🔐 Verification Token</h3>
+                <div class="token-display">
+                    <code>{{ captchaState.verificationToken() }}</code>
+                </div>
+                <p class="token-note">
+                    This token can be used for backend verification to ensure the captcha was completed successfully.
+                </p>
+            </div>
+            }
+
+            @if (captchaState.verificationResult()) {
+            <div class="details-card">
+                <h3>📊 Verification Details</h3>
+                <div class="details-grid">
+                    @if (captchaState.verificationResult()?.diceValues) {
+                    <div class="detail-item">
+                        <span class="detail-label">Dice Values:</span>
+                        <span class="detail-value">{{ captchaState.verificationResult()!.diceValues!.join(', ')
+                            }}</span>
+                    </div>
+                    }
+                    @if (captchaState.verificationResult()?.expectedSum !== undefined) {
+                    <div class="detail-item">
+                        <span class="detail-label">Expected Sum:</span>
+                        <span class="detail-value">{{ captchaState.verificationResult()!.expectedSum }}</span>
+                    </div>
+                    }
+                    @if (captchaState.verificationResult()?.timestamp) {
+                    <div class="detail-item">
+                        <span class="detail-label">Timestamp:</span>
+                        <span class="detail-value">{{ captchaState.verificationResult()!.timestamp | date:'medium'
+                            }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </section>
+
+        <section class="actions">
+            <button class="logout-button" (click)="logout()">
+                🔓 Logout & Return to Home
+            </button>
+        </section>
+
+        <section class="info-section">
+            <div class="info-card">
+                <h3>🎯 About This Demo</h3>
+                <p>
+                    This dashboard demonstrates route-based navigation with ngx-dice-captcha. The page is protected
+                    by an Angular route guard that verifies you've completed the captcha challenge on the home page.
+                </p>
+                <ul>
+                    <li>✅ No modal popups or alert dialogs</li>
+                    <li>✅ Seamless navigation through Angular routing</li>
+                    <li>✅ Protected route with authentication guard</li>
+                    <li>✅ Snackbar notifications for errors</li>
+                    <li>✅ Clean, minimal interface</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>

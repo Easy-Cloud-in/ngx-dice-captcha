@@ -1,0 +1,24 @@
+<div class="ngx-dice-captcha-container">
+    @if (currentChallenge()) {
+    <div class="captcha-content">
+        <!-- 3D Dice Canvas with Overlay -->
+        <ngx-dice-canvas #diceCanvas [diceCount]="effectiveConfig().diceCount" [diceType]="effectiveConfig().diceType"
+            [diceSize]="effectiveConfig().diceSize ?? 1.5" [showOverlay]="true" [overlayPosition]="overlayPosition()"
+            [isHorizontalLayout]="true" [isInCooldown]="isInCooldown()"
+            [cooldownTimeRemaining]="cooldownTimeRemaining()" [responsiveConfig]="effectiveResponsiveConfig()"
+            [resultsDisplayPosition]="effectiveConfig().resultsDisplayPosition ?? 'bottom-right'"
+            [maintainAspectRatio]="effectiveConfig().maintainAspectRatio ?? true"
+            [customAspectRatio]="effectiveConfig().customAspectRatio ?? 1.7778"
+            [fillContainer]="effectiveConfig().fillContainer ?? false"
+            [enableDynamicResize]="effectiveConfig().enableDynamicResize ?? true"
+            [resizeThreshold]="effectiveConfig().resizeThreshold ?? 50" (rollComplete)="onDiceRollComplete($event)"
+            (verificationRequested)="onVerificationRequested($event)" class="captcha-canvas">
+        </ngx-dice-canvas>
+    </div>
+    }
+
+    <!-- Verification Result Overlay -->
+    <ngx-verification-display [result]="verificationResult()" [showToken]="true" [autoHideDelay]="0"
+        (retry)="onVerificationRetry()" (close)="onVerificationClose()">
+    </ngx-verification-display>
+</div>

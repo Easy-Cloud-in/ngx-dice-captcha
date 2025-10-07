@@ -1,0 +1,60 @@
+<div class="dice-canvas-container" [class.rolling]="isRolling()" [class.reduced-motion]="reducedMotionActive()"
+    ngxDiceAccessibility [enableKeyboardShortcuts]="true" (keyboardAction)="onKeyboardAction($event)"
+    (reducedMotionChange)="onReducedMotionChange($event)" role="region" [attr.aria-label]="i18n.ariaCanvasRegion"
+    tabindex="0">
+
+    <canvas #canvas class="dice-canvas" role="img" [attr.aria-label]="i18n.canvasLabel"
+        [attr.aria-describedby]="'dice-description'" [attr.aria-live]="'polite'"
+        [attr.aria-busy]="isRolling()"></canvas>
+
+    <!-- Control Overlay for Overlay Captcha Mode -->
+    @if (showOverlay()) {
+    <ngx-control-overlay #controlOverlay [diceCount]="diceCount()" [isRolling]="isRolling()" [diceRolled]="diceRolled()"
+        [position]="overlayPosition()" [isHorizontal]="isHorizontalLayout()" [isInCooldown]="isInCooldown()"
+        [cooldownTimeRemaining]="cooldownTimeRemaining()" (rollClicked)="rollDice()" (reRollClicked)="rollDice()"
+        (verifyClicked)="onVerify($event)">
+    </ngx-control-overlay>
+    }
+
+    <!-- Hidden description for screen readers -->
+    <div id="dice-description" class="sr-only">
+        {{ i18n.canvasDescription }}
+        @if (isRolling()) {
+        {{ i18n.diceRolling }}
+        } @else if (diceResults().length > 0) {
+        {{ i18n.diceSettled }}
+        }
+    </div>
+
+    <!-- Screen reader announcements -->
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        {{ announcement() }}
+    </div>
+
+    @if (isRolling()) {
+    <div class="canvas-overlay" role="presentation">
+        <div class="rolling-indicator">
+            <div class="spinner" role="presentation"></div>
+            <span class="rolling-text" aria-hidden="true">{{ i18n.rollingDice }}</span>
+        </div>
+    </div>
+    }
+
+    @if (diceResults().length > 0 && !isRolling()) {
+    <div class="dice-results" [class]="'dice-results dice-results--' + resultsDisplayPosition()" role="status"
+        aria-live="polite" aria-label="Dice roll results">
+        <span class="results-label">{{ i18n.diceResult.split(':')[0] }}:</span>
+        @for (result of diceResults(); track $index) {
+        <span class="result-value" [attr.aria-label]="'Die ' + ($index + 1) + ' shows ' + result">{{ result }}</span>
+        }
+        <span class="sr-only">
+            Total: {{ getDiceTotal() }}
+        </span>
+    </div>
+    }
+
+    <!-- Keyboard instructions hint -->
+    <div class="keyboard-hint sr-only" role="note">
+        {{ i18n.keyboardInstructions }}
+    </div>
+</div>

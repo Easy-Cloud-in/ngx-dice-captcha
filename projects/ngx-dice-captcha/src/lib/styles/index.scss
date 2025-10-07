@@ -1,0 +1,35 @@
+// NGX Dice CAPTCHA - Main Styles Entry Point
+// Import this file to access all styling utilities
+
+// Import variables first (required by mixins and theme)
+@import './variables';
+
+// Import mixins (depends on variables)
+@import './mixins';
+
+// Import theme (depends on variables and uses Material)
+@import './theme';
+
+// ============================================================================
+// GLOBAL STYLES
+// ============================================================================
+
+// This file can be imported in your angular.json or component styles:
+//
+// Option 1: Global import in angular.json
+// "styles": [
+//   "node_modules/ngx-dice-captcha/styles/index.scss"
+// ]
+//
+// Option 2: Component-level import
+// @import 'ngx-dice-captcha/styles/index';
+//
+// Option 3: Import only what you need
+// @import 'ngx-dice-captcha/styles/variables';
+// @import 'ngx-dice-captcha/styles/mixins';
+
+// ============================================================================
+// EXPORT NOTE
+// ============================================================================
+// All variables, mixins, and theme configurations are now available for use
+// in your components and styles throughout your application.

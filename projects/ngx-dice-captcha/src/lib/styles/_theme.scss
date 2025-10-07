@@ -1,0 +1,319 @@
+// NGX Dice CAPTCHA - Material Theme Configuration
+// Angular Material 3 theming for consistent design language
+
+@use '@angular/material' as mat;
+@import './variables';
+
+// ============================================================================
+// MATERIAL CORE
+// ============================================================================
+@include mat.core();
+
+// ============================================================================
+// MATERIAL PALETTES
+// ============================================================================
+
+// Primary palette - Indigo
+$primary-palette: mat.define-palette(mat.$indigo-palette, 500, 300, 700);
+
+// Accent palette - Pink
+$accent-palette: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// Warn palette - Red
+$warn-palette: mat.define-palette(mat.$red-palette, 500, 300, 700);
+
+// ============================================================================
+// LIGHT THEME
+// ============================================================================
+$light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+    typography:
+      mat.define-typography-config(
+        $font-family: $font-family-base,
+      ),
+    density: 0,
+  )
+);
+
+// Apply light theme to all Material components
+@include mat.all-component-themes($light-theme);
+
+// ============================================================================
+// DARK THEME
+// ============================================================================
+$dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+    typography:
+      mat.define-typography-config(
+        $font-family: $font-family-base,
+      ),
+    density: 0,
+  )
+);
+
+// Apply dark theme when user prefers dark color scheme
+@media (prefers-color-scheme: dark) {
+  @include mat.all-component-colors($dark-theme);
+}
+
+// ============================================================================
+// CUSTOM MATERIAL OVERRIDES
+// ============================================================================
+
+// Card customization
+.mat-mdc-card {
+  border-radius: $card-border-radius !important;
+  @include shadow-md;
+
+  &:hover {
+    @include shadow-lg;
+  }
+}
+
+// Button customization
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  letter-spacing: $letter-spacing-wide !important;
+  font-weight: $font-weight-semibold !important;
+
+  &.mat-primary {
+    background: linear-gradient(
+      135deg,
+      $primary-gradient-start 0%,
+      $primary-gradient-end 100%
+    ) !important;
+  }
+}
+
+// Form field customization
+.mat-mdc-form-field {
+  width: 100%;
+
+  .mat-mdc-text-field-wrapper {
+    border-radius: $border-radius-md;
+  }
+}
+
+// Icon customization
+.mat-icon {
+  vertical-align: middle;
+}
+
+// Progress spinner customization
+.mat-mdc-progress-spinner {
+  circle {
+    stroke: $primary-color;
+  }
+}
+
+// ============================================================================
+// THEME MIXINS FOR COMPONENTS
+// ============================================================================
+
+// Apply theme to a component
+@mixin component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  // Component-specific theming can be added here
+  .ngx-dice-captcha-container {
+    background: mat.get-color-from-palette($background, card);
+    color: mat.get-color-from-palette($foreground, text);
+  }
+
+  .primary-color {
+    color: mat.get-color-from-palette($primary, default);
+  }
+
+  .accent-color {
+    color: mat.get-color-from-palette($accent, default);
+  }
+
+  .warn-color {
+    color: mat.get-color-from-palette($warn, default);
+  }
+}
+
+// ============================================================================
+// TYPOGRAPHY THEME
+// ============================================================================
+
+// Define custom typography
+$custom-typography: mat.define-typography-config(
+  $font-family: $font-family-base,
+  $headline-1: mat.define-typography-level(32px, 40px, $font-weight-bold),
+  $headline-2: mat.define-typography-level(28px, 36px, $font-weight-bold),
+  $headline-3: mat.define-typography-level(24px, 32px, $font-weight-semibold),
+  $headline-4: mat.define-typography-level(20px, 28px, $font-weight-semibold),
+  $headline-5: mat.define-typography-level(18px, 26px, $font-weight-medium),
+  $headline-6: mat.define-typography-level(16px, 24px, $font-weight-medium),
+  $body-1: mat.define-typography-level(16px, 24px, $font-weight-normal),
+  $body-2: mat.define-typography-level(14px, 20px, $font-weight-normal),
+  $subtitle-1: mat.define-typography-level(16px, 24px, $font-weight-medium),
+  $subtitle-2: mat.define-typography-level(14px, 20px, $font-weight-medium),
+  $caption: mat.define-typography-level(12px, 18px, $font-weight-normal),
+  $button: mat.define-typography-level(14px, 14px, $font-weight-semibold),
+);
+
+// Apply custom typography
+@include mat.typography-hierarchy($custom-typography);
+
+// ============================================================================
+// ELEVATION CUSTOMIZATION
+// ============================================================================
+
+// Custom elevation classes
+.elevation-0 {
+  box-shadow: none !important;
+}
+
+.elevation-1 {
+  @include shadow-sm;
+}
+
+.elevation-2 {
+  @include shadow-md;
+}
+
+.elevation-3 {
+  @include shadow-lg;
+}
+
+.elevation-4 {
+  @include shadow-xl;
+}
+
+// ============================================================================
+// COLOR UTILITY CLASSES
+// ============================================================================
+
+// Primary colors
+.bg-primary {
+  background: linear-gradient(135deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
+  color: white;
+}
+
+.text-primary {
+  color: $primary-color;
+}
+
+// Accent colors
+.bg-accent {
+  background-color: $accent-color;
+  color: white;
+}
+
+.text-accent {
+  color: $accent-color;
+}
+
+// Warn colors
+.bg-warn {
+  background-color: $warn-color;
+  color: white;
+}
+
+.text-warn {
+  color: $warn-color;
+}
+
+// Success colors
+.bg-success {
+  background-color: $success-color;
+  color: white;
+}
+
+.text-success {
+  color: $success-color;
+}
+
+// Info colors
+.bg-info {
+  background-color: $info-color;
+  color: white;
+}
+
+.text-info {
+  color: $info-color;
+}
+
+// ============================================================================
+// RESPONSIVE MATERIAL OVERRIDES
+// ============================================================================
+
+// Mobile adjustments
+@media (max-width: $breakpoint-md) {
+  .mat-mdc-card {
+    padding: $card-padding-mobile;
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-raised-button {
+    min-width: auto;
+    padding: 0 12px;
+  }
+}
+
+// ============================================================================
+// ACCESSIBILITY OVERRIDES
+// ============================================================================
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-outlined-button {
+    border: 2px solid currentColor !important;
+  }
+
+  .mat-mdc-card {
+    border: 2px solid currentColor;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-card {
+    transition: none !important;
+  }
+}
+
+// ============================================================================
+// COMPONENT-SPECIFIC THEME APPLICATIONS
+// ============================================================================
+
+// Apply theme to dice canvas
+.dice-canvas-container {
+  @include mat.elevation(2);
+}
+
+// Apply theme to challenge card
+.challenge-card {
+  @include mat.elevation(1);
+
+  &:hover {
+    @include mat.elevation(2);
+  }
+}
+
+// Apply theme to verification display
+.verification-card {
+  @include mat.elevation(3);
+}

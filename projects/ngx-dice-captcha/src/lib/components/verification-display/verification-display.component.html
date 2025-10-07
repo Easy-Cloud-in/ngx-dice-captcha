@@ -1,0 +1,107 @@
+@if (result()) {
+<div class="verification-overlay" [class.fade-in]="showAnimation()" ngxDiceAccessibility role="dialog"
+    [attr.aria-labelledby]="'result-title'" [attr.aria-describedby]="'result-message'" aria-modal="true">
+
+    <!-- Screen reader announcement -->
+    <div role="status" [attr.aria-live]="getAriaLivePriority()" aria-atomic="true" class="sr-only">
+        {{ announcement() }}
+    </div>
+
+    <mat-card [class]="getCardColorClass()" class="verification-card" role="region"
+        [attr.aria-label]="i18n.ariaResultRegion">
+        <!-- Result Icon -->
+        <div class="result-icon-container" [class.animate]="showAnimation()" role="img"
+            [attr.aria-label]="getResultStatusText()">
+            <mat-icon [class]="getIconColorClass()" class="result-icon" aria-hidden="true">
+                {{ getIconName() }}
+            </mat-icon>
+        </div>
+
+        <!-- Result Message -->
+        <mat-card-header>
+            <mat-card-title id="result-title" class="result-title">
+                {{ isSuccess() ? i18n.verificationSuccess : i18n.failure }}
+            </mat-card-title>
+            <mat-card-subtitle id="result-message" class="result-message">
+                {{ result()?.message }}
+            </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <!-- Attempts Remaining (on failure) -->
+            @if (isFailure() && result()?.attemptsRemaining !== undefined) {
+            <div class="attempts-info" role="status" aria-live="polite"
+                [attr.aria-label]="i18n.attemptsRemainingAnnouncement(result()?.attemptsRemaining ?? 0)">
+                <mat-icon aria-hidden="true">refresh</mat-icon>
+                <span>{{ result()?.attemptsRemaining }} attempt(s) remaining</span>
+            </div>
+            }
+
+            <!-- Security Token (on success) -->
+            @if (hasToken()) {
+            <div class="token-section" role="region" aria-label="Security token">
+                <div class="token-header">
+                    <mat-icon aria-hidden="true">vpn_key</mat-icon>
+                    <span class="token-label">Security Token</span>
+                </div>
+
+                <div class="token-display">
+                    <code class="token-value"
+                        [attr.aria-label]="tokenVisible() ? 'Token: ' + result()?.token : 'Token hidden. Click show button to reveal'">
+                        {{ tokenMasked() }}
+                    </code>
+
+                    <div class="token-actions">
+                        <!-- Toggle Visibility -->
+                        <button mat-icon-button (click)="toggleTokenVisibility()"
+                            [attr.aria-label]="tokenVisible() ? 'Hide token' : 'Show token'"
+                            [attr.aria-pressed]="tokenVisible()" matTooltip="{{ tokenVisible() ? 'Hide' : 'Show' }}">
+                            <mat-icon aria-hidden="true">{{ tokenVisible() ? 'visibility_off' : 'visibility'
+                                }}</mat-icon>
+                        </button>
+
+                        <!-- Copy to Clipboard -->
+                        <button mat-icon-button (click)="copyToken()"
+                            [attr.aria-label]="copySuccess() ? 'Token copied to clipboard' : 'Copy token to clipboard'"
+                            [matTooltip]="copySuccess() ? 'Copied!' : 'Copy'" [class.copied]="copySuccess()">
+                            <mat-icon aria-hidden="true">{{ copySuccess() ? 'done' : 'content_copy' }}</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                @if (copySuccess()) {
+                <div class="copy-success" role="status" aria-live="polite">
+                    Token copied to clipboard!
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Timestamp -->
+            @if (result()?.timestamp) {
+            <div class="timestamp-info" [attr.aria-label]="'Verified at ' + getFormattedTimestamp()">
+                <mat-icon aria-hidden="true">access_time</mat-icon>
+                <span>Verified at {{ getFormattedTimestamp() }}</span>
+            </div>
+            }
+        </mat-card-content>
+
+        <!-- Actions -->
+        <mat-card-actions>
+            @if (isFailure()) {
+            <button mat-raised-button color="primary" (click)="onRetry()" class="action-button"
+                [attr.aria-label]="i18n.retryButton">
+                <mat-icon aria-hidden="true">refresh</mat-icon>
+                {{ i18n.retryButton }}
+            </button>
+            }
+
+            <button mat-raised-button [color]="isSuccess() ? 'primary' : 'accent'" (click)="onClose()"
+                class="action-button" aria-label="Close verification dialog">
+                <mat-icon aria-hidden="true">close</mat-icon>
+                Close
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+}

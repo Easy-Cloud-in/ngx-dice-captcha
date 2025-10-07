@@ -1,0 +1,52 @@
+<div class="home-container">
+    <div class="home-content">
+        <header class="home-header">
+            <h1>🎲 NGX Dice Captcha</h1>
+            <p class="subtitle">Verify your humanity with an interactive 3D dice challenge</p>
+            <div class="header-actions">
+                <a routerLink="/responsive-test" class="test-link">
+                    📐 View Responsive Test Page
+                </a>
+            </div>
+        </header>
+
+        <section class="captcha-section">
+            <!-- Refresh Button -->
+            <div class="captcha-controls">
+                <button type="button" class="refresh-button" (click)="refreshCaptcha()" [disabled]="isRefreshing()"
+                    title="Get a new challenge">
+                    <span class="refresh-icon">🔄</span>
+                    <span class="refresh-text">Refresh Challenge</span>
+                </button>
+            </div>
+
+            <div class="captcha-wrapper">
+                @if (showCaptcha()) {
+                <ngx-dice-captcha #captcha [config]="captchaConfig" (verified)="onVerified($event)"
+                    (failed)="onFailed($event)" (diceRolled)="onDiceRolled($event)" />
+                }
+            </div>
+
+            @if (currentDiceValues().length > 0) {
+            <div class="dice-values-display">
+                <h3>🎲 Rolled Dice Values</h3>
+                <div class="dice-values-grid">
+                    @for (value of currentDiceValues(); track $index) {
+                    <div class="dice-value-card">
+                        <span class="dice-label">Dice {{ $index + 1 }}</span>
+                        <span class="dice-value">{{ value }}</span>
+                    </div>
+                    }
+                </div>
+                <div class="sum-display">
+                    <span class="sum-label">Total:</span>
+                    <span class="sum-value">{{ currentDiceSum() }}</span>
+                </div>
+                <p class="helper-text">
+                    💡 Enter these values in the overlay above to proceed
+                </p>
+            </div>
+            }
+        </section>
+    </div>
+</div>
