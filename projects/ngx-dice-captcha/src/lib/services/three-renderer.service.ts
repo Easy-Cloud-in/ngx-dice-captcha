@@ -63,6 +63,10 @@ export class ThreeRendererService {
   private ambientLight?: THREE.AmbientLight;
   private directionalLight?: THREE.DirectionalLight;
 
+  // Environment map for reflections
+  private envMap?: THREE.Texture;
+  private pmremGenerator?: THREE.PMREMGenerator;
+
   // State
   private isInitialized = false;
   private isRenderLoopRunning = false;
@@ -139,6 +143,9 @@ export class ThreeRendererService {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Create environment map for reflections
+    this.setupEnvironmentMap();
 
     // Setup lighting
     this.setupLighting();
@@ -258,27 +265,86 @@ export class ThreeRendererService {
   }
 
   /**
-   * Sets up scene lighting with ambient and directional lights.
+   * Creates a procedural environment map for realistic reflections.
    *
-   * Creates an ambient light for general illumination and a directional
-   * light with shadow mapping configured for realistic dice rendering.
+   * Generates a simple gradient-based environment map using PMREMGenerator
+   * to provide realistic reflections on shiny dice surfaces without requiring
+   * external texture files. This provides excellent results for the clearcoat
+   * and reflective materials.
+   *
+   * @private
+   */
+  private setupEnvironmentMap(): void {
+    if (!this.renderer || !this.scene) return;
+
+    // Create a simple gradient scene for the environment map
+    const envScene = new THREE.Scene();
+
+    // Create a gradient background
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const context = canvas.getContext('2d');
+
+    if (context) {
+      // Create a radial gradient from white center to light blue edges
+      const gradient = context.createRadialGradient(256, 256, 0, 256, 256, 256);
+      gradient.addColorStop(0, '#ffffff');
+      gradient.addColorStop(0.5, '#f0f4f8');
+      gradient.addColorStop(1, '#e0e8f0');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 512, 512);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      envScene.background = texture;
+    }
+
+    // Generate environment map using PMREM (for better quality reflections)
+    this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+    this.pmremGenerator.compileEquirectangularShader();
+
+    const renderTarget = this.pmremGenerator.fromScene(envScene, 0.04);
+    this.envMap = renderTarget.texture;
+
+    // Set as scene environment for all PBR materials
+    this.scene.environment = this.envMap;
+  }
+
+  /**
+   * Returns the environment map for use in dice materials.
+   *
+   * @returns Environment map texture or undefined if not initialized
+   * @public
+   */
+  getEnvironmentMap(): THREE.Texture | undefined {
+    return this.envMap;
+  }
+
+  /**
+   * Sets up scene lighting optimized for shiny PBR materials.
+   *
+   * Creates a sophisticated lighting setup with ambient, directional, and point lights
+   * to showcase the clearcoat and reflectivity of the dice materials.
+   * The lighting is carefully balanced to create highlights, shadows, and depth.
    *
    * @private
    */
   private setupLighting(): void {
     if (!this.scene) return;
 
-    // Balanced ambient light for better contrast
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Lower ambient light to reduce center washout
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
     this.scene.add(this.ambientLight);
 
-    // Main directional light for shadows and depth
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    this.directionalLight.position.set(5, 10, 7);
+    // Main directional light positioned more to the side for better angles
+    // This creates better definition on dice faces
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
+    this.directionalLight.position.set(8, 12, 5); // More to the side, higher up
     this.directionalLight.castShadow = true;
 
     // Configure shadow properties with higher quality
-    this.directionalLight.shadow.mapSize.width = 2048; // Increased from 1024
+    this.directionalLight.shadow.mapSize.width = 2048;
     this.directionalLight.shadow.mapSize.height = 2048;
     this.directionalLight.shadow.camera.near = 0.5;
     this.directionalLight.shadow.camera.far = 50;
@@ -290,14 +356,19 @@ export class ThreeRendererService {
 
     this.scene.add(this.directionalLight);
 
-    // Add a secondary fill light from the opposite side for better visibility
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-    fillLight.position.set(-5, 5, -7);
+    // Move point light further from center to reduce middle washout
+    const pointLight = new THREE.PointLight(0xffffff, 0.25, 50);
+    pointLight.position.set(-8, 10, -6); // Further from center
+    this.scene.add(pointLight);
+
+    // Secondary fill light from opposite side - positioned to avoid center overlap
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
+    fillLight.position.set(-7, 6, -8); // More angled, less centered
     this.scene.add(fillLight);
 
-    // Add a subtle rim light from behind for better depth perception
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
-    rimLight.position.set(0, 3, -10);
+    // Rim light from behind-side for better edge definition without center brightness
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.18);
+    rimLight.position.set(2, 4, -12); // Further back and to side
     this.scene.add(rimLight);
   }
 
@@ -918,6 +989,16 @@ export class ThreeRendererService {
       this.camera = undefined;
     }
 
+    // Dispose environment map and PMREM generator
+    if (this.pmremGenerator) {
+      this.pmremGenerator.dispose();
+      this.pmremGenerator = undefined;
+    }
+    if (this.envMap) {
+      this.envMap.dispose();
+      this.envMap = undefined;
+    }
+
     // Clear other references
     this.ambientLight = undefined;
     this.directionalLight = undefined;
@@ -1001,19 +1082,26 @@ export class ThreeRendererService {
       'envMap',
       'lightMap',
       'emissiveMap',
+      'clearcoatMap',
+      'clearcoatNormalMap',
+      'clearcoatRoughnessMap',
     ];
 
     textureProperties.forEach((prop) => {
-      const texture = (material as THREE.MeshStandardMaterial)[
-        prop as keyof THREE.MeshStandardMaterial
-      ] as THREE.Texture | undefined;
-      if (texture) {
+      const texture = (material as any)[prop] as THREE.Texture | undefined;
+      if (texture && texture.dispose) {
         texture.dispose();
       }
     });
 
     // Dispose material-specific resources
-    if (material instanceof THREE.MeshStandardMaterial) {
+    if (material instanceof THREE.MeshPhysicalMaterial) {
+      // Physical material cleanup (includes clearcoat maps)
+      material.envMap?.dispose();
+      material.clearcoatMap?.dispose();
+      material.clearcoatNormalMap?.dispose();
+      material.clearcoatRoughnessMap?.dispose();
+    } else if (material instanceof THREE.MeshStandardMaterial) {
       // Standard material cleanup
       material.envMap?.dispose();
     } else if (material instanceof THREE.MeshBasicMaterial) {

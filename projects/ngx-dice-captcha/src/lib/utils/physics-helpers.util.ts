@@ -17,11 +17,15 @@ export const DEFAULT_PHYSICS_CONFIG: PhysicsConfig = {
 
 /**
  * Threshold for determining if a dice has settled (stopped moving)
+ * Lower thresholds ensure dice are truly settled before reading values
+ * Optimized for fast settling with high damping values
  */
 export const SETTLEMENT_THRESHOLD = {
-  velocity: 0.01,
-  angularVelocity: 0.01,
-  checkDuration: 500, // milliseconds
+  velocity: 0.05, // Initial detection threshold
+  angularVelocity: 0.05, // Initial detection threshold
+  confirmationVelocity: 0.02, // Final confirmation threshold
+  confirmationAngularVelocity: 0.02, // Final confirmation threshold
+  checkDuration: 250, // milliseconds - reduced for faster response
 };
 
 /**

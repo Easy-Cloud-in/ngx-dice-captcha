@@ -37,31 +37,6 @@ export interface DiceConfig {
   envMap?: THREE.Texture;
 }
 
-/**
- * Service responsible for creating dice with 3D geometry and physics properties.
- *
- * Factory service that creates complete dice objects with both Three.js meshes
- * for rendering and Cannon-es bodies for physics simulation. Supports multiple
- * dice types (D6, D8, D12, D20) with configurable materials and properties.
- *
- * @example
- * ```typescript
- * const config: DiceConfig = {
- *   type: DiceType.D6,
- *   size: 1,
- *   material: { color: 0xff0000, roughness: 0.5 },
- *   position: new THREE.Vector3(0, 5, 0),
- *   castShadow: true
- * };
- *
- * const dice = diceFactory.createDice(config);
- * scene.add(dice.mesh);
- * physicsWorld.addBody(dice.body);
- * ```
- *
- * @public
- * @since 1.0.0
- */
 @Injectable()
 export class DiceFactoryService {
   private readonly defaultMaterialConfig: MaterialConfig = {
@@ -460,8 +435,8 @@ export class DiceFactoryService {
     const body = new CANNON.Body({
       mass,
       shape,
-      linearDamping: 0.7, // Higher damping for faster settling
-      angularDamping: 0.7, // Higher damping for faster settling
+      linearDamping: 0.3,
+      angularDamping: 0.3,
     });
 
     return body;
@@ -695,10 +670,13 @@ export class DiceFactoryService {
     const colorVariation = faceNumber * 0x101010; // Slight variation per face
     const faceColor = Math.min(baseColor + colorVariation, 0xffffff);
 
-    return new THREE.MeshStandardMaterial({
+    return new THREE.MeshPhysicalMaterial({
       color: faceColor,
       metalness: config.metalness || this.defaultMaterialConfig.metalness,
       roughness: config.roughness || this.defaultMaterialConfig.roughness,
+      clearcoat: config.clearcoat || this.defaultMaterialConfig.clearcoat,
+      clearcoatRoughness:
+        config.clearcoatRoughness || this.defaultMaterialConfig.clearcoatRoughness,
     });
   }
 
@@ -724,21 +702,52 @@ export class DiceFactoryService {
     context.clearRect(0, 0, size, size);
 
     try {
-      // Light cream background for better contrast
-      context.fillStyle = '#f0f0f0'; // Lighter but still contrasting
+      // Create a subtle gradient background for more realistic appearance
+      // Using a slightly off-white color instead of pure white
+      const gradient = context.createRadialGradient(
+        size / 2,
+        size / 2,
+        0,
+        size / 2,
+        size / 2,
+        size / 2
+      );
+      gradient.addColorStop(0, '#f8f8f8');
+      gradient.addColorStop(0.7, '#f2f2f2');
+      gradient.addColorStop(1, '#e8e8e8');
+      context.fillStyle = gradient;
       context.fillRect(0, 0, size, size);
 
-      // Add border for definition
-      context.strokeStyle = '#999999';
-      context.lineWidth = Math.max(2, size / 64);
+      // Add subtle inner border for depth
+      context.strokeStyle = '#d0d0d0';
+      context.lineWidth = 2;
+      context.strokeRect(4, 4, size - 8, size - 8);
+
+      // Add outer border for definition
+      context.strokeStyle = '#b8b8b8';
+      context.lineWidth = 3;
       context.strokeRect(2, 2, size - 4, size - 4);
 
-      // Draw dots
+      // Draw dots with improved appearance
       context.fillStyle = '#333333'; // Dark but not pure black
       const dotRadius = size * 0.12; // Larger dots for visibility
       const positions = this.getDotPositions(faceNumber, size);
 
       positions.forEach((pos) => {
+        // Create gradient for dots for more realistic appearance
+        const dotGradient = context.createRadialGradient(
+          pos.x - dotRadius / 3,
+          pos.y - dotRadius / 3,
+          0,
+          pos.x,
+          pos.y,
+          dotRadius
+        );
+        dotGradient.addColorStop(0, '#333333');
+        dotGradient.addColorStop(0.7, '#000000');
+        dotGradient.addColorStop(1, '#111111');
+
+        context.fillStyle = dotGradient;
         context.beginPath();
         context.arc(pos.x, pos.y, dotRadius, 0, Math.PI * 2);
         context.fill();
@@ -790,21 +799,51 @@ export class DiceFactoryService {
       throw new Error('Failed to get canvas 2D context');
     }
 
-    // Light cream background for better contrast
-    context.fillStyle = '#faf8f0';
+    // Create a subtle gradient background for more realistic appearance
+    // Using a slightly off-white color instead of pure white
+    const gradient = context.createRadialGradient(
+      size / 2,
+      size / 2,
+      0,
+      size / 2,
+      size / 2,
+      size / 2
+    );
+    gradient.addColorStop(0, '#f8f8f8');
+    gradient.addColorStop(0.7, '#f2f2f2');
+    gradient.addColorStop(1, '#e8e8e8');
+    context.fillStyle = gradient;
     context.fillRect(0, 0, size, size);
 
-    // Add subtle border for definition
-    context.strokeStyle = '#e0ddd0';
+    // Add subtle inner border for depth
+    context.strokeStyle = '#d0d0d0';
     context.lineWidth = 2;
-    context.strokeRect(1, 1, size - 2, size - 2);
+    context.strokeRect(4, 4, size - 8, size - 8);
+
+    // Add outer border for definition
+    context.strokeStyle = '#b8b8b8';
+    context.lineWidth = 3;
+    context.strokeRect(2, 2, size - 4, size - 4);
 
     // Draw dots with better contrast
-    context.fillStyle = '#1a1a1a';
     const dotRadius = size * 0.1; // Slightly larger for better visibility
     const positions = this.getDotPositions(faceNumber, size);
 
     positions.forEach((pos) => {
+      // Create gradient for dots for more realistic appearance
+      const dotGradient = context.createRadialGradient(
+        pos.x - dotRadius / 3,
+        pos.y - dotRadius / 3,
+        0,
+        pos.x,
+        pos.y,
+        dotRadius
+      );
+      dotGradient.addColorStop(0, '#333333');
+      dotGradient.addColorStop(0.7, '#000000');
+      dotGradient.addColorStop(1, '#111111');
+
+      context.fillStyle = dotGradient;
       context.beginPath();
       context.arc(pos.x, pos.y, dotRadius, 0, Math.PI * 2);
       context.fill();
@@ -851,7 +890,7 @@ export class DiceFactoryService {
   /**
    * Disposes of the texture atlas.
    *
-   * Should be called when the service is no longer needed.
+   * Should be called when the factory is no longer needed.
    *
    * @private
    */

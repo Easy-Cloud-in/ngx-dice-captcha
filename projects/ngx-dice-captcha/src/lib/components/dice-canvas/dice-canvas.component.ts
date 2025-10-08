@@ -1050,21 +1050,17 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
           dropHeight + Math.random() * 0.5,
           startZ
         ),
-        material: {
-          color: 0xe8e8e8, // Light gray for better contrast against white background
-          metalness: 0.1,
-          roughness: 0.7,
-        },
         castShadow: true,
         receiveShadow: true,
+        envMap: this.threeRenderer.getEnvironmentMap(), // Add environment map for reflections
       };
 
       const dice = this.diceFactory.createDice(config);
       this.dice.push(dice);
 
-      // Add damping for faster settling
-      dice.body.linearDamping = 0.4; // Slows down linear motion over time
-      dice.body.angularDamping = 0.4; // Slows down rotation over time
+      // Enhanced damping for fast, reliable settling
+      dice.body.linearDamping = 0.8; // Very high damping for rapid stabilization
+      dice.body.angularDamping = 0.8; // Very high damping for rapid stabilization
 
       // Add to scene and physics world
       this.threeRenderer.addToScene(dice.mesh);
@@ -1189,6 +1185,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    *
    * Monitors linear and angular velocities. When all dice are stable,
    * calculates face values, emits results, and announces to screen readers.
+   * Uses proper low thresholds and confirmation delay to ensure accurate settling.
    *
    * @private
    */
@@ -1196,24 +1193,33 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
     const allStopped = this.dice.every((dice) => {
       const velocity = dice.body.velocity.length();
       const angularVelocity = dice.body.angularVelocity.length();
-      // Increased thresholds for faster settling detection
-      return velocity < 0.3 && angularVelocity < 0.3;
+      // Use proper low thresholds for accurate settling detection
+      return velocity < 0.05 && angularVelocity < 0.05;
     });
 
     if (allStopped) {
-      // Reduced delay for faster response
-      const delay = this.reducedMotionActive() ? 50 : 200;
+      // Reduced confirmation delay for faster response while maintaining accuracy
+      const delay = this.reducedMotionActive() ? 50 : 250;
       setTimeout(() => {
-        this.ngZone.run(() => {
-          const results = this.dice.map((dice) => this.getDiceFaceValue(dice));
-          this.diceResults.set(results);
-          this.isRolling.set(false);
-
-          // Announce results to screen readers
-          this.announcement.set(this.i18n.diceRolledAnnouncement(results));
-
-          this.rollComplete.emit(results);
+        // Double-check that dice are still stopped before emitting results
+        const stillStopped = this.dice.every((dice) => {
+          const velocity = dice.body.velocity.length();
+          const angularVelocity = dice.body.angularVelocity.length();
+          return velocity < 0.02 && angularVelocity < 0.02;
         });
+
+        if (stillStopped) {
+          this.ngZone.run(() => {
+            const results = this.dice.map((dice) => this.getDiceFaceValue(dice));
+            this.diceResults.set(results);
+            this.isRolling.set(false);
+
+            // Announce results to screen readers
+            this.announcement.set(this.i18n.diceRolledAnnouncement(results));
+
+            this.rollComplete.emit(results);
+          });
+        }
       }, delay);
     }
   }
