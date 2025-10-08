@@ -1,6 +1,165 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+// Dice Values Section
+.dice-values-section {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.15) 0%,
+      rgba(118, 75, 162, 0.15) 100%
+    );
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+}
+
+.dice-values-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+
+  .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: rgba(102, 126, 234, 1);
+  }
+}
+
+.dice-values-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(102, 126, 234, 1);
+  letter-spacing: 0.02em;
+}
+
+.dice-values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.dice-value-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-color: rgba(102, 126, 234, 0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+}
+
+.dice-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.dice-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: rgba(102, 126, 234, 1);
+  line-height: 1;
+}
+
+.total-sum-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.4);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.25) 0%,
+      rgba(118, 75, 162, 0.25) 100%
+    );
+    border-color: rgba(102, 126, 234, 0.5);
+  }
+}
+
+.sum-label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: rgba(102, 126, 234, 1);
+  letter-spacing: 0.05em;
+}
+
+.sum-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: rgba(102, 126, 234, 1);
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.user-input-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(240, 147, 251, 0.1);
+  border: 1px dashed rgba(240, 147, 251, 0.4);
+  border-radius: 8px;
+
+  .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: rgba(240, 147, 251, 0.8);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(240, 147, 251, 0.15);
+    border-color: rgba(240, 147, 251, 0.5);
+  }
+}
+
+.info-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
 .verification-overlay {
   // Use fixed positioning instead of absolute to ensure overlay covers viewport on all screen sizes
   position: fixed;
@@ -23,15 +182,23 @@
   max-width: 500px;
   padding: $spacing-xl;
   text-align: center;
-  @include shadow-xl;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1) !important;
   @include animation-slide-up;
 
   &.success-card {
-    border-top: $border-width-accent solid $success-color;
+    border-top: 4px solid $success-color;
   }
 
   &.error-card {
-    border-top: $border-width-accent solid $warn-color;
+    border-top: 4px solid $warn-color;
+  }
+
+  // Enhanced elevation on hover
+  transition: box-shadow 0.3s ease !important;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
   }
 }
 
@@ -107,8 +274,9 @@ mat-card-content {
 .token-section {
   padding: $spacing-lg;
   background: $background-light;
-  border-radius: $border-radius-lg;
+  border-radius: 12px;
   text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .token-header {
@@ -134,7 +302,12 @@ mat-card-content {
   padding: $spacing-md;
   background: white;
   border: $border-width solid $border-light;
-  border-radius: $border-radius-md;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary-color;
+  }
 }
 
 .token-value {
@@ -146,7 +319,7 @@ mat-card-content {
   @include text-truncate;
   padding: $spacing-xs $spacing-sm;
   background: #fafafa;
-  border-radius: $border-radius-sm;
+  border-radius: 6px;
 }
 
 .token-actions {
@@ -200,11 +373,31 @@ mat-card-actions {
   min-width: $button-min-width;
   font-weight: $font-weight-semibold;
   letter-spacing: $letter-spacing-wide;
+  border-radius: 24px !important;
+  padding: 10px 24px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
 
   mat-icon {
     font-size: $icon-size-md;
     width: $icon-size-md;
     height: $icon-size-md;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+    &:hover:not(:disabled) {
+      transform: none;
+    }
   }
 }
 

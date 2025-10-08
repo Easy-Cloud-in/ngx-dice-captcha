@@ -64,13 +64,46 @@ $dark-theme: mat.define-dark-theme(
 // Apply dark theme when user prefers dark color scheme
 @media (prefers-color-scheme: dark) {
   @include mat.all-component-colors($dark-theme);
+
+  // Override: Keep dice canvas background light even in dark mode
+  .dice-canvas-container {
+    background-color: $canvas-background-color !important;
+  }
 }
 
 // ============================================================================
 // CUSTOM MATERIAL OVERRIDES
 // ============================================================================
 
-// Card customization
+// Material 3 Component Token Overrides - Centralized
+@include mat.card-overrides(
+  (
+    elevated-container-shape: 12px,
+    outlined-container-shape: 12px,
+  )
+);
+
+@include mat.button-overrides(
+  (
+    protected-container-shape: 20px,
+    protected-label-text-weight: 600,
+  )
+);
+
+@include mat.form-field-overrides(
+  (
+    outlined-container-shape: 8px,
+    outlined-label-text-weight: 600,
+  )
+);
+
+@include mat.icon-button-overrides(
+  (
+    container-shape: 50%,
+  )
+);
+
+// Additional custom Card styling
 .mat-mdc-card {
   border-radius: $card-border-radius !important;
   @include shadow-md;
@@ -80,7 +113,7 @@ $dark-theme: mat.define-dark-theme(
   }
 }
 
-// Button customization
+// Additional custom Button styling
 .mat-mdc-button,
 .mat-mdc-raised-button,
 .mat-mdc-unelevated-button,

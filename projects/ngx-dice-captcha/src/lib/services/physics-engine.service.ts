@@ -71,8 +71,8 @@ export class PhysicsEngineService {
     // Set default contact material properties for faster settling
     const defaultMaterial = new CANNON.Material('default');
     const defaultContactMaterial = new CANNON.ContactMaterial(defaultMaterial, defaultMaterial, {
-      friction: 0.6, // Increased friction for faster stopping
-      restitution: 0.2, // Reduced bounciness for quicker settling
+      friction: 0.7, // Increased friction for faster stopping (from 0.6)
+      restitution: 0.15, // Further reduced bounciness for quicker settling (from 0.2)
     });
     this.world.addContactMaterial(defaultContactMaterial);
     this.world.defaultContactMaterial = defaultContactMaterial;

@@ -4,20 +4,14 @@
 .control-overlay {
   position: absolute;
   z-index: 1000;
-  padding: 0.375rem 0.5rem;
-
-  // Prevent overlay from affecting parent container size
+  padding: 0.5rem;
   pointer-events: auto;
   will-change: transform;
   max-width: calc(100% - 1rem);
-
-  // Glassmorphism effect - more subtle
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(31, 38, 135, 0.1);
+
+  // Apply Material 3 glassmorphism
+  @include material-glassmorphism-overlay;
 
   // Animation
   animation: overlayFadeIn 180ms ease-out;
@@ -33,7 +27,7 @@
     }
   }
 
-  // Smooth position transitions - Requirement 5.7
+  // Smooth position transitions
   &.animating-position {
     transition: top 300ms ease-in-out, right 300ms ease-in-out, bottom 300ms ease-in-out,
       left 300ms ease-in-out, transform 300ms ease-in-out;
@@ -47,13 +41,6 @@
     &.animating-position {
       transition: none;
     }
-  }
-
-  // Dark mode support
-  @media (prefers-color-scheme: dark) {
-    background: rgba(0, 0, 0, 0.25);
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -89,7 +76,7 @@
   .controls-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem;
+    gap: 0.5rem;
     min-width: 160px;
     max-width: 200px;
   }
@@ -99,252 +86,210 @@
   .controls-wrapper {
     display: flex;
     flex-direction: row;
-    gap: 0.375rem;
+    gap: 0.5rem;
     align-items: center;
     flex-wrap: nowrap;
     max-width: 100%;
   }
 }
 
-// Controls wrapper - default is now horizontal
+// Controls wrapper - horizontal by default
 .controls-wrapper {
   display: flex;
   flex-direction: row;
-  gap: 0.375rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
-// Buttons - More compact
+// Material Button Customization
 .btn-roll,
 .btn-verify {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  padding: 0.375rem 0.625rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 120ms ease;
-  min-height: 30px;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  line-height: 36px !important;
   white-space: nowrap;
   flex-shrink: 0;
+  border-radius: 20px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  &:not(:disabled):hover {
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
   }
 
-  &:not(:disabled):active {
+  &:active:not(:disabled) {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
     transform: translateY(0);
   }
 
+  ::ng-deep .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    margin-right: 6px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:not(:disabled):hover {
+    transition: none !important;
+    &:hover:not(:disabled) {
       transform: none;
     }
   }
 }
 
 .btn-roll {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  @include material-button-gradient(#667eea, #764ba2);
 }
 
 .btn-verify {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  @include material-button-gradient(#f093fb, #f5576c);
 }
 
-.btn-icon {
-  font-size: 0.875rem;
-  line-height: 1;
-}
-
-.btn-text {
-  font-size: 0.75rem;
-}
-
-// Inputs group - always horizontal now
+// Inputs group - always horizontal
 .inputs-group {
   display: flex;
   flex-direction: row;
-  gap: 0.375rem;
+  gap: 0.5rem;
   align-items: center;
   flex: 0 1 auto;
 }
 
 .dice-inputs {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.375rem;
   flex-wrap: nowrap;
-}
-
-.dice-input-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 0.125rem;
   align-items: center;
 }
 
-.dice-label {
-  font-size: 0.625rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  min-width: 18px;
+// Material Form Field Customization
+.dice-input-field {
+  @include material-form-field-compact;
+  width: 52px !important;
 
-  @media (prefers-color-scheme: dark) {
-    color: rgba(255, 255, 255, 0.9);
-  }
-}
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      min-height: 36px;
+    }
 
-.dice-input {
-  width: 32px;
-  height: 30px;
-  padding: 0.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-align: center;
-  transition: all 120ms ease;
-
-  // Remove spinners
-  -moz-appearance: textfield;
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.35);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
-  }
-
-  &:invalid {
-    border-color: rgba(245, 87, 108, 0.5);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(0, 0, 0, 0.25);
-    border-color: rgba(255, 255, 255, 0.2);
-
-    &:focus {
-      background: rgba(0, 0, 0, 0.35);
+    .mat-mdc-text-field-wrapper:hover {
+      background: rgba(255, 255, 255, 0.15);
       border-color: rgba(255, 255, 255, 0.4);
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-}
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent;
+    }
 
-// Sum input wrapper - more compact
-.sum-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.375rem;
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 5px;
-  border: 1px solid rgba(102, 126, 234, 0.2);
-  flex-shrink: 0;
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(102, 126, 234, 0.18);
-    border-color: rgba(102, 126, 234, 0.35);
-  }
-}
-
-.sum-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
-  min-width: 12px;
-
-  @media (prefers-color-scheme: dark) {
-    color: rgba(255, 255, 255, 0.95);
-  }
-}
-
-.sum-input {
-  width: 50px;
-  height: 30px;
-  padding: 0.25rem 0.375rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-align: center;
-  transition: all 120ms ease;
-
-  // Remove spinners
-  -moz-appearance: textfield;
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 500;
-    font-size: 0.75rem;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
-  }
-
-  &:invalid {
-    border-color: rgba(245, 87, 108, 0.5);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(0, 0, 0, 0.25);
-    border-color: rgba(255, 255, 255, 0.25);
-
-    &:focus {
-      background: rgba(0, 0, 0, 0.35);
+    .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+      background: rgba(255, 255, 255, 0.15);
       border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+      color: white;
+      text-align: center;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      caret-color: white;
+    }
+
+    .mat-mdc-floating-label {
+      color: rgba(255, 255, 255, 0.75) !important;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .mat-mdc-text-field-wrapper {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.25);
+      }
+
+      .mat-mdc-text-field-wrapper:hover {
+        background: rgba(0, 0, 0, 0.35);
+      }
     }
   }
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
+.sum-input-field {
+  @include material-form-field-compact;
+  width: 80px !important;
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.4);
+      border-radius: 20px !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      min-height: 36px;
+    }
+
+    .mat-mdc-text-field-wrapper:hover {
+      background: rgba(102, 126, 234, 0.25);
+      border-color: rgba(102, 126, 234, 0.5);
+    }
+
+    .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+      background: rgba(102, 126, 234, 0.25);
+      border-color: rgba(102, 126, 234, 0.6);
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+      color: white;
+      text-align: center;
+      font-size: 0.9375rem;
+      font-weight: 800;
+      caret-color: white;
+    }
+
+    .mat-mdc-floating-label {
+      color: rgba(255, 255, 255, 0.85) !important;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .mat-form-field-prefix {
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: rgba(255, 255, 255, 0.8);
+        margin-right: 6px;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .mat-mdc-text-field-wrapper {
+        background: rgba(102, 126, 234, 0.25);
+        border-color: rgba(102, 126, 234, 0.4);
+      }
+
+      .mat-mdc-text-field-wrapper:hover {
+        background: rgba(102, 126, 234, 0.3);
+      }
+    }
   }
 }
 
-// Cooldown message
+// Cooldown message with Material icon
 .cooldown-message {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.75rem;
   padding: 0.75rem;
   background: linear-gradient(135deg, rgba(245, 87, 108, 0.18) 0%, rgba(240, 147, 251, 0.18) 100%);
   border: 1.5px solid rgba(245, 87, 108, 0.35);
@@ -376,8 +321,10 @@
 }
 
 .cooldown-icon {
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: rgba(255, 255, 255, 0.9);
   flex-shrink: 0;
 }
 
@@ -409,80 +356,86 @@
   letter-spacing: 0.05em;
 }
 
-// Horizontal layout is now the default, no additional adjustments needed
-
 // ============================================================================
 // CONTAINER QUERIES - Component responds to canvas container size
 // ============================================================================
-// These match the breakpoints defined in dice-canvas.component.scss
-// Small: < 500px, Medium: 501-800px, Large: 801-1200px, Extra Large: > 1200px
 
 // Small containers (< 500px width) - Compact mode
 @container dice-canvas (max-width: 500px) {
   .control-overlay {
-    padding: 0.25rem 0.375rem;
+    padding: 0.375rem;
     max-width: calc(100% - 0.75rem);
   }
 
   .controls-wrapper {
-    gap: 0.25rem;
+    gap: 0.375rem;
   }
 
   .btn-roll,
   .btn-verify {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.6875rem;
-    min-height: 28px;
-    gap: 0.1875rem;
+    min-height: 28px !important;
+    padding: 0 10px !important;
+    font-size: 0.6875rem !important;
+    line-height: 28px !important;
+
+    ::ng-deep .mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      margin-right: 3px;
+    }
   }
 
-  .btn-icon {
-    font-size: 0.75rem;
+  .dice-input-field {
+    width: 40px !important;
+
+    ::ng-deep {
+      .mat-mdc-form-field-infix {
+        padding: 0.25rem 0.375rem;
+        min-height: 26px;
+      }
+
+      input {
+        font-size: 0.75rem;
+      }
+
+      .mat-mdc-floating-label {
+        font-size: 0.5625rem;
+      }
+    }
   }
 
-  .btn-text {
-    font-size: 0.6875rem;
-  }
+  .sum-input-field {
+    width: 60px !important;
 
-  .dice-input {
-    width: 26px;
-    height: 28px;
-    font-size: 0.75rem;
-    padding: 0.1875rem;
-  }
+    ::ng-deep {
+      .mat-mdc-form-field-infix {
+        padding: 0.25rem 0.375rem;
+        min-height: 26px;
+      }
 
-  .sum-input {
-    width: 42px;
-    height: 28px;
-    font-size: 0.75rem;
-    padding: 0.1875rem 0.25rem;
-  }
+      input {
+        font-size: 0.75rem;
+      }
 
-  .dice-label {
-    font-size: 0.5625rem;
-    min-width: 16px;
-  }
+      .mat-mdc-floating-label {
+        font-size: 0.5625rem;
+      }
 
-  .sum-label {
-    font-size: 0.625rem;
-    min-width: 10px;
+      .mat-form-field-prefix .mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
   }
 
   .inputs-group {
-    gap: 0.25rem;
+    gap: 0.375rem;
   }
 
   .dice-inputs {
-    gap: 0.1875rem;
-  }
-
-  .dice-input-wrapper {
-    gap: 0.0625rem;
-  }
-
-  .sum-input-wrapper {
-    padding: 0.1875rem 0.3125rem;
-    gap: 0.1875rem;
+    gap: 0.25rem;
   }
 
   .cooldown-message {
@@ -491,7 +444,9 @@
   }
 
   .cooldown-icon {
-    font-size: 1.25rem;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
   .cooldown-title {
@@ -506,705 +461,36 @@
 // Medium containers (501px - 800px)
 @container dice-canvas (min-width: 501px) and (max-width: 800px) {
   .control-overlay {
-    padding: 0.3125rem 0.4375rem;
-  }
-
-  .controls-wrapper {
-    gap: 0.3125rem;
+    padding: 0.5rem;
   }
 
   .btn-roll,
   .btn-verify {
-    padding: 0.3125rem 0.5625rem;
-    font-size: 0.75rem;
-    min-height: 30px;
+    min-height: 34px !important;
+    font-size: 0.8125rem !important;
+    line-height: 34px !important;
   }
 
-  .btn-icon {
-    font-size: 0.875rem;
-  }
-
-  .btn-text {
-    font-size: 0.75rem;
-  }
-
-  .dice-input {
-    width: 30px;
-    height: 30px;
-    font-size: 0.875rem;
-  }
-
-  .sum-input {
-    width: 48px;
-    height: 30px;
-    font-size: 0.875rem;
-  }
-
-  .dice-label {
-    font-size: 0.625rem;
-  }
-
-  .sum-label {
-    font-size: 0.6875rem;
+  .dice-input-field,
+  .sum-input-field {
+    ::ng-deep {
+      input {
+        font-size: 0.875rem;
+      }
+    }
   }
 }
 
-// Large containers (801px - 1200px)
-@container dice-canvas (min-width: 801px) and (max-width: 1200px) {
+// Large containers (> 800px)
+@container dice-canvas (min-width: 801px) {
   .control-overlay {
-    padding: 0.5625rem 0.75rem;
-  }
-
-  .overlay-top-left,
-  .overlay-top-right,
-  .overlay-top-center {
-    top: 0.875rem;
-  }
-
-  .overlay-bottom-left,
-  .overlay-bottom-right {
-    bottom: 0.875rem;
-  }
-
-  .overlay-top-left {
-    left: 0.875rem;
-  }
-
-  .overlay-top-right {
-    right: 0.875rem;
-  }
-
-  .overlay-bottom-left {
-    left: 0.875rem;
-  }
-
-  .overlay-bottom-right {
-    right: 0.875rem;
-  }
-
-  .controls-wrapper {
-    gap: 0.5625rem;
+    padding: 0.625rem;
   }
 
   .btn-roll,
   .btn-verify {
-    padding: 0.5625rem 1rem;
-    font-size: 0.9375rem;
-    min-height: 38px;
-    gap: 0.3125rem;
-  }
-
-  .btn-icon {
-    font-size: 1.0625rem;
-  }
-
-  .btn-text {
-    font-size: 0.9375rem;
-  }
-
-  .dice-input {
-    width: 38px;
-    height: 38px;
-    font-size: 1.0625rem;
-    padding: 0.3125rem;
-  }
-
-  .sum-input {
-    width: 62px;
-    height: 38px;
-    font-size: 1.0625rem;
-    padding: 0.3125rem 0.4375rem;
-  }
-
-  .dice-label {
-    font-size: 0.75rem;
-    min-width: 22px;
-  }
-
-  .sum-label {
-    font-size: 0.9375rem;
-    min-width: 14px;
-  }
-
-  .inputs-group {
-    gap: 0.5625rem;
-  }
-
-  .dice-inputs {
-    gap: 0.4375rem;
-  }
-
-  .dice-input-wrapper {
-    gap: 0.1875rem;
-  }
-
-  .sum-input-wrapper {
-    padding: 0.4375rem 0.5625rem;
-    gap: 0.3125rem;
-  }
-
-  .cooldown-message {
-    padding: 0.875rem;
-    gap: 0.75rem;
-  }
-
-  .cooldown-icon {
-    font-size: 1.625rem;
-  }
-
-  .cooldown-title {
-    font-size: 0.875rem;
-  }
-
-  .cooldown-timer {
-    font-size: 1.1875rem;
-  }
-}
-
-// Extra large containers (> 1200px)
-@container dice-canvas (min-width: 1201px) {
-  .control-overlay {
-    padding: 0.75rem 1rem;
-  }
-
-  .overlay-top-left,
-  .overlay-top-right,
-  .overlay-top-center {
-    top: 1.25rem;
-  }
-
-  .overlay-bottom-left,
-  .overlay-bottom-right {
-    bottom: 1.25rem;
-  }
-
-  .overlay-top-left {
-    left: 1.25rem;
-  }
-
-  .overlay-top-right {
-    right: 1.25rem;
-  }
-
-  .overlay-bottom-left {
-    left: 1.25rem;
-  }
-
-  .overlay-bottom-right {
-    right: 1.25rem;
-  }
-
-  .controls-wrapper {
-    gap: 0.75rem;
-  }
-
-  .btn-roll,
-  .btn-verify {
-    padding: 0.75rem 1.25rem;
-    font-size: 1.0625rem;
-    min-height: 44px;
-  }
-
-  .btn-icon {
-    font-size: 1.25rem;
-  }
-
-  .btn-text {
-    font-size: 1.0625rem;
-  }
-
-  .dice-input {
-    width: 44px;
-    height: 44px;
-    font-size: 1.125rem;
-  }
-
-  .sum-input {
-    width: 72px;
-    height: 44px;
-    font-size: 1.125rem;
-  }
-
-  .dice-label {
-    font-size: 0.875rem;
-    min-width: 24px;
-  }
-
-  .sum-label {
-    font-size: 1.0625rem;
-  }
-
-  .inputs-group {
-    gap: 0.75rem;
-  }
-
-  .dice-inputs {
-    gap: 0.5rem;
-  }
-
-  .dice-input-wrapper {
-    gap: 0.25rem;
-  }
-
-  .sum-input-wrapper {
-    padding: 0.5rem 0.625rem;
-    gap: 0.375rem;
-  }
-
-  .cooldown-message {
-    padding: 1rem;
-    gap: 0.875rem;
-  }
-
-  .cooldown-icon {
-    font-size: 1.75rem;
-  }
-
-  .cooldown-title {
-    font-size: 1rem;
-  }
-
-  .cooldown-timer {
-    font-size: 1.375rem;
-  }
-}
-
-// ============================================================================
-// VIEWPORT MEDIA QUERIES - Fallback for browsers without container query support
-// ============================================================================
-
-// Compact mode for small screens (< 600px) - Requirement 5.1
-@supports not (container-type: size) {
-  @media (max-width: 599px) {
-    .control-overlay {
-      padding: 0.25rem 0.375rem;
-      max-width: calc(100% - 0.75rem);
-    }
-
-    .controls-wrapper {
-      gap: 0.25rem;
-    }
-
-    .btn-roll,
-    .btn-verify {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.6875rem;
-      min-height: 28px;
-      gap: 0.1875rem;
-    }
-
-    .btn-icon {
-      font-size: 0.75rem;
-    }
-
-    .btn-text {
-      font-size: 0.6875rem;
-    }
-
-    .dice-input {
-      width: 26px;
-      height: 28px;
-      font-size: 0.75rem;
-      padding: 0.1875rem;
-    }
-
-    .sum-input {
-      width: 42px;
-      height: 28px;
-      font-size: 0.75rem;
-      padding: 0.1875rem 0.25rem;
-    }
-
-    .dice-label {
-      font-size: 0.5625rem;
-      min-width: 16px;
-    }
-
-    .sum-label {
-      font-size: 0.625rem;
-      min-width: 10px;
-    }
-
-    .inputs-group {
-      gap: 0.25rem;
-    }
-
-    .dice-inputs {
-      gap: 0.1875rem;
-    }
-
-    .dice-input-wrapper {
-      gap: 0.0625rem;
-    }
-
-    .sum-input-wrapper {
-      padding: 0.1875rem 0.3125rem;
-      gap: 0.1875rem;
-    }
-
-    .cooldown-message {
-      padding: 0.5rem;
-      gap: 0.5rem;
-    }
-
-    .cooldown-icon {
-      font-size: 1.25rem;
-    }
-
-    .cooldown-title {
-      font-size: 0.75rem;
-    }
-
-    .cooldown-timer {
-      font-size: 1rem;
-    }
-  }
-
-  // Mobile optimizations (600px - 768px)
-  @media (min-width: 600px) and (max-width: 768px) {
-    .control-overlay {
-      padding: 0.3125rem 0.4375rem;
-    }
-
-    .btn-roll,
-    .btn-verify {
-      padding: 0.3125rem 0.5625rem;
-      font-size: 0.75rem;
-      min-height: 30px;
-    }
-
-    .btn-icon {
-      font-size: 0.875rem;
-    }
-
-    .btn-text {
-      font-size: 0.75rem;
-    }
-
-    .dice-input {
-      width: 30px;
-      height: 30px;
-      font-size: 0.875rem;
-    }
-
-    .sum-input {
-      width: 48px;
-      height: 30px;
-      font-size: 0.875rem;
-    }
-
-    .dice-label {
-      font-size: 0.625rem;
-    }
-
-    .sum-label {
-      font-size: 0.6875rem;
-    }
-  }
-
-  // Expanded mode for large screens (> 1024px) - Requirement 5.2
-  @media (min-width: 1025px) {
-    .control-overlay {
-      padding: 0.5625rem 0.75rem;
-    }
-
-    .overlay-top-left,
-    .overlay-top-right,
-    .overlay-top-center {
-      top: 0.875rem;
-    }
-
-    .overlay-bottom-left,
-    .overlay-bottom-right {
-      bottom: 0.875rem;
-    }
-
-    .overlay-top-left {
-      left: 0.875rem;
-    }
-
-    .overlay-top-right {
-      right: 0.875rem;
-    }
-
-    .overlay-bottom-left {
-      left: 0.875rem;
-    }
-
-    .overlay-bottom-right {
-      right: 0.875rem;
-    }
-
-    .controls-wrapper {
-      gap: 0.5625rem;
-    }
-
-    .btn-roll,
-    .btn-verify {
-      padding: 0.5625rem 1rem;
-      font-size: 0.9375rem;
-      min-height: 38px;
-      gap: 0.3125rem;
-    }
-
-    .btn-icon {
-      font-size: 1.0625rem;
-    }
-
-    .btn-text {
-      font-size: 0.9375rem;
-    }
-
-    .dice-input {
-      width: 38px;
-      height: 38px;
-      font-size: 1.0625rem;
-      padding: 0.3125rem;
-    }
-
-    .sum-input {
-      width: 62px;
-      height: 38px;
-      font-size: 1.0625rem;
-      padding: 0.3125rem 0.4375rem;
-    }
-
-    .dice-label {
-      font-size: 0.75rem;
-      min-width: 22px;
-    }
-
-    .sum-label {
-      font-size: 0.9375rem;
-      min-width: 14px;
-    }
-
-    .inputs-group {
-      gap: 0.5625rem;
-    }
-
-    .dice-inputs {
-      gap: 0.4375rem;
-    }
-
-    .dice-input-wrapper {
-      gap: 0.1875rem;
-    }
-
-    .sum-input-wrapper {
-      padding: 0.4375rem 0.5625rem;
-      gap: 0.3125rem;
-    }
-
-    .cooldown-message {
-      padding: 0.875rem;
-      gap: 0.75rem;
-    }
-
-    .cooldown-icon {
-      font-size: 1.625rem;
-    }
-
-    .cooldown-title {
-      font-size: 0.875rem;
-    }
-
-    .cooldown-timer {
-      font-size: 1.1875rem;
-    }
-  }
-
-  // Extra large screen optimizations
-  @media (min-width: 1280px) {
-    .control-overlay {
-      padding: 0.625rem 0.75rem;
-    }
-
-    .overlay-top-left,
-    .overlay-top-right,
-    .overlay-top-center {
-      top: 1rem;
-    }
-
-    .overlay-bottom-left,
-    .overlay-bottom-right {
-      bottom: 1rem;
-    }
-
-    .overlay-top-left {
-      left: 1rem;
-    }
-
-    .overlay-top-right {
-      right: 1rem;
-    }
-
-    .overlay-bottom-left {
-      left: 1rem;
-    }
-
-    .overlay-bottom-right {
-      right: 1rem;
-    }
-
-    .controls-wrapper {
-      gap: 0.625rem;
-    }
-
-    .btn-roll,
-    .btn-verify {
-      padding: 0.625rem 1rem;
-      font-size: 0.9375rem;
-      min-height: 40px;
-    }
-
-    .btn-icon {
-      font-size: 1.125rem;
-    }
-
-    .btn-text {
-      font-size: 0.9375rem;
-    }
-
-    .dice-input {
-      width: 40px;
-      height: 40px;
-      font-size: 1.0625rem;
-    }
-
-    .sum-input {
-      width: 65px;
-      height: 40px;
-      font-size: 1.0625rem;
-    }
-
-    .dice-label {
-      font-size: 0.75rem;
-      min-width: 22px;
-    }
-
-    .sum-label {
-      font-size: 0.9375rem;
-    }
-  }
-
-  // Ultra-wide display optimizations (2000px and above) - Requirements 6.6, 6.7
-  @media (min-width: 2000px) {
-    .control-overlay {
-      // Increase control overlay size (Requirement 6.6)
-      padding: 0.75rem 1rem;
-    }
-
-    .overlay-top-left,
-    .overlay-top-right,
-    .overlay-top-center {
-      top: 1.25rem;
-    }
-
-    .overlay-bottom-left,
-    .overlay-bottom-right {
-      bottom: 1.25rem;
-    }
-
-    .overlay-top-left {
-      left: 1.25rem;
-    }
-
-    .overlay-top-right {
-      right: 1.25rem;
-    }
-
-    .overlay-bottom-left {
-      left: 1.25rem;
-    }
-
-    .overlay-bottom-right {
-      right: 1.25rem;
-    }
-
-    .controls-wrapper {
-      gap: 0.75rem;
-    }
-
-    // Larger buttons for ultra-wide (Requirement 6.6)
-    .btn-roll,
-    .btn-verify {
-      padding: 0.75rem 1.25rem;
-      font-size: 1.0625rem; // Larger font sizes (Requirement 6.7)
-      min-height: 44px;
-    }
-
-    .btn-icon {
-      font-size: 1.25rem;
-    }
-
-    .btn-text {
-      font-size: 1.0625rem;
-    }
-
-    // Larger inputs for ultra-wide (Requirement 6.6)
-    .dice-input {
-      width: 44px;
-      height: 44px;
-      font-size: 1.125rem; // Larger font sizes (Requirement 6.7)
-    }
-
-    .sum-input {
-      width: 72px;
-      height: 44px;
-      font-size: 1.125rem; // Larger font sizes (Requirement 6.7)
-    }
-
-    .dice-label {
-      font-size: 0.875rem; // Larger font sizes (Requirement 6.7)
-      min-width: 24px;
-    }
-
-    .sum-label {
-      font-size: 1.0625rem; // Larger font sizes (Requirement 6.7)
-    }
-
-    // Adjust margins and padding (Requirement 6.7)
-    .inputs-group {
-      gap: 0.75rem;
-    }
-
-    .dice-inputs {
-      gap: 0.5rem;
-    }
-
-    .dice-input-wrapper {
-      gap: 0.25rem;
-    }
-
-    .sum-input-wrapper {
-      padding: 0.5rem 0.625rem;
-      gap: 0.375rem;
-    }
-
-    .cooldown-message {
-      padding: 1rem;
-      gap: 0.875rem;
-    }
-
-    .cooldown-icon {
-      font-size: 1.75rem;
-    }
-
-    .cooldown-title {
-      font-size: 1rem;
-    }
-
-    .cooldown-timer {
-      font-size: 1.375rem;
-    }
-  }
-}
-
-// Ensure inputs are accessible and touch-friendly
-@media (hover: none) and (pointer: coarse) {
-  .dice-input,
-  .sum-input {
-    font-size: 16px; // Prevents zoom on iOS
+    min-height: 36px !important;
+    padding: 0 16px !important;
+    line-height: 36px !important;
   }
 }

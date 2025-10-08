@@ -67,12 +67,12 @@ export class DiceFactoryService {
   private readonly defaultMaterialConfig: MaterialConfig = {
     color: 0xf8f8f8, // Slightly off-white for more realistic appearance
     opacity: 1,
-    metalness: 0.05, // Very low metalness for plastic
-    roughness: 0.25, // Slightly higher roughness for more realistic plastic
-    clearcoat: 0.6, // Reduced clearcoat for less extreme shine
-    clearcoatRoughness: 0.2, // Slightly rougher clearcoat
-    envMapIntensity: 0.8, // Reduced environment intensity
-    reflectivity: 0.3, // Much lower reflectivity
+    metalness: 0.02, // Reduced from 0.05 for less reflection
+    roughness: 0.4, // Increased from 0.25 for better contrast
+    clearcoat: 0.3, // Reduced from 0.6 for less shine
+    clearcoatRoughness: 0.4, // Increased from 0.2 for more diffuse reflection
+    envMapIntensity: 0.5, // Reduced from 0.8 for better face visibility
+    reflectivity: 0.1, // Reduced from 0.3 for better dot/number readability
     emissive: 0x222222, // Very subtle emissive color for depth
     emissiveIntensity: 0.05, // Very low emissive intensity
   };

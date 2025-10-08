@@ -28,6 +28,41 @@
         </mat-card-header>
 
         <mat-card-content>
+            <!-- Rolled Dice Values -->
+            @if (result(); as res) {
+            @if (res.diceValues && res.diceValues.length > 0) {
+            <div class="dice-values-section" role="region" aria-label="Rolled dice values">
+                <div class="dice-values-header">
+                    <mat-icon aria-hidden="true">casino</mat-icon>
+                    <span class="dice-values-label">🎲 Rolled Dice Values</span>
+                </div>
+
+                <div class="dice-values-grid">
+                    @for (value of res.diceValues; track $index) {
+                    <div class="dice-value-item">
+                        <span class="dice-label">Dice {{ $index + 1 }}</span>
+                        <span class="dice-value">{{ value }}</span>
+                    </div>
+                    }
+                </div>
+
+                @if (res.expectedSum !== undefined) {
+                <div class="total-sum-display">
+                    <span class="sum-label">Total:</span>
+                    <span class="sum-value">{{ res.expectedSum }}</span>
+                </div>
+                }
+
+                @if (res.userDiceInputs || res.userSumInput !== undefined) {
+                <div class="user-input-info">
+                    <mat-icon aria-hidden="true">edit</mat-icon>
+                    <span class="info-text">💡 Enter these values in the overlay above to proceed</span>
+                </div>
+                }
+            </div>
+            }
+            }
+
             <!-- Attempts Remaining (on failure) -->
             @if (isFailure() && result()?.attemptsRemaining !== undefined) {
             <div class="attempts-info" role="status" aria-live="polite"

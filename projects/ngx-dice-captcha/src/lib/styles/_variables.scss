@@ -223,3 +223,15 @@ $progress-border-radius: 2px;
 $opacity-disabled: 0.6;
 $opacity-hover: 0.8;
 $opacity-overlay: 0.95;
+
+// ============================================================================
+// CANVAS BACKGROUND
+// ============================================================================
+// Paper white color for a clean, subtle background
+$canvas-background-color: #fafaf8;
+// Optional: SVG pattern overlay (you can customize or remove this)
+// To use a custom SVG pattern, replace the data URL below with your own
+// To disable the pattern, set this to 'none'
+$canvas-background-image: none;
+$canvas-background-attachment: fixed;
+$canvas-background-size: cover;

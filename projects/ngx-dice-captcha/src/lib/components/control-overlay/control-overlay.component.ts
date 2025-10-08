@@ -1,6 +1,21 @@
-import { Component, input, output, signal, computed, effect, ElementRef, inject, linkedSignal } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  linkedSignal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 /**
  * Control overlay component that displays dice roll and verification controls.
@@ -31,7 +46,15 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'ngx-control-overlay',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatCardModule,
+  ],
   templateUrl: './control-overlay.component.html',
   styleUrls: ['./control-overlay.component.scss'],
 })
@@ -98,7 +121,9 @@ export class ControlOverlayComponent {
    * Results display position (for overlap detection)
    * @since v2.2
    */
-  resultsDisplayPosition = input<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>('bottom-right');
+  resultsDisplayPosition = input<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>(
+    'bottom-right'
+  );
 
   /**
    * Canvas dimensions for positioning calculations
@@ -271,7 +296,12 @@ export class ControlOverlayComponent {
    * Requirements: 5.3, 5.4, 5.5, 5.6, 5.7
    * @since v2.2
    */
-  private calculateOptimalPosition(): 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' {
+  private calculateOptimalPosition():
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'top-center' {
     const width = this.canvasWidth();
     const height = this.canvasHeight();
     const resultsPos = this.resultsDisplayPosition();
@@ -345,15 +375,26 @@ export class ControlOverlayComponent {
     isPortrait: boolean
   ): 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' {
     // Priority order for alternative positions based on results position
-    const alternatives: Record<string, ('top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center')[]> = {
-      'bottom-right': isPortrait ? ['top-center', 'top-left', 'bottom-left'] : ['top-left', 'top-right', 'bottom-left'],
-      'bottom-left': isPortrait ? ['top-center', 'top-right', 'bottom-right'] : ['top-right', 'top-left', 'bottom-right'],
-      'top-right': isPortrait ? ['top-center', 'top-left', 'bottom-left', 'bottom-right'] : ['top-left', 'bottom-left', 'bottom-right'],
-      'top-left': isPortrait ? ['top-center', 'top-right', 'bottom-right', 'bottom-left'] : ['top-right', 'bottom-right', 'bottom-left'],
+    const alternatives: Record<
+      string,
+      ('top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center')[]
+    > = {
+      'bottom-right': isPortrait
+        ? ['top-center', 'top-left', 'bottom-left']
+        : ['top-left', 'top-right', 'bottom-left'],
+      'bottom-left': isPortrait
+        ? ['top-center', 'top-right', 'bottom-right']
+        : ['top-right', 'top-left', 'bottom-right'],
+      'top-right': isPortrait
+        ? ['top-center', 'top-left', 'bottom-left', 'bottom-right']
+        : ['top-left', 'bottom-left', 'bottom-right'],
+      'top-left': isPortrait
+        ? ['top-center', 'top-right', 'bottom-right', 'bottom-left']
+        : ['top-right', 'bottom-right', 'bottom-left'],
     };
 
     const alternativeList = alternatives[resultsPos] || ['top-left'];
-    
+
     // Return first alternative that doesn't overlap
     for (const alt of alternativeList) {
       if (!this.detectOverlap(alt, resultsPos)) {
@@ -378,7 +419,7 @@ export class ControlOverlayComponent {
   } {
     const element = this.elementRef.nativeElement as HTMLElement;
     const overlay = element.querySelector('.control-overlay') as HTMLElement;
-    
+
     if (!overlay) {
       return { top: 0, right: 0, bottom: 0, left: 0 };
     }
@@ -400,10 +441,12 @@ export class ControlOverlayComponent {
    * Requirement: 5.7
    * @since v2.2
    */
-  animatePositionChange(newPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center'): void {
+  animatePositionChange(
+    newPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center'
+  ): void {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
+
     if (prefersReducedMotion) {
       // No animation, instant change
       return;

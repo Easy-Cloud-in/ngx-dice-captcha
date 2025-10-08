@@ -1,10 +1,10 @@
-<div class="control-overlay" [class]="getPositionClass() + ' ' + getLayoutClass()" role="region"
+<mat-card class="control-overlay" [class]="getPositionClass() + ' ' + getLayoutClass()" role="region"
     aria-label="Dice CAPTCHA controls">
 
     <!-- Cooldown Message -->
     @if (isInCooldown()) {
     <div class="cooldown-message" role="alert" aria-live="polite">
-        <span class="cooldown-icon" aria-hidden="true">⏱️</span>
+        <mat-icon class="cooldown-icon" aria-hidden="true">schedule</mat-icon>
         <div class="cooldown-text">
             <p class="cooldown-title">Too Many Failed Attempts</p>
             <p class="cooldown-timer">Try again in {{ formatCooldownTime() }}</p>
@@ -16,9 +16,10 @@
     @if (!isInCooldown()) {
     <div class="controls-wrapper">
         <!-- Roll/Re-Roll Button -->
-        <button class="btn-roll" type="button" [disabled]="!canRoll()" (click)="onRoll()" [attr.aria-busy]="isRolling()"
+        <button mat-raised-button color="primary" class="btn-roll" type="button" [disabled]="!canRoll()"
+            (click)="onRoll()" [attr.aria-busy]="isRolling()"
             [attr.aria-label]="diceRolled() ? 'Re-roll dice' : 'Roll dice to start verification'">
-            <span class="btn-icon" aria-hidden="true">🎲</span>
+            <mat-icon aria-hidden="true">casino</mat-icon>
             <span class="btn-text">
                 @if (diceRolled()) {
                 Re-Roll
@@ -33,31 +34,32 @@
         <div class="inputs-group">
             <div class="dice-inputs" role="group" aria-label="Enter dice values">
                 @for (index of diceIndices(); track index) {
-                <div class="dice-input-wrapper">
-                    <label [for]="'dice-input-' + index" class="dice-label">D{{ index + 1 }}</label>
-                    <input [id]="'dice-input-' + index" type="number" class="dice-input" min="1" max="6" step="1"
-                        [value]="diceInputs()[index] ?? ''" (input)="updateDiceInput(index, $any($event.target).value)"
+                <mat-form-field class="dice-input-field" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>ca D{{ index + 1 }}</mat-label>
+                    <input matInput type="number" min="1" max="6" step="1" [value]="diceInputs()[index] ?? ''"
+                        (input)="updateDiceInput(index, $any($event.target).value)"
                         [attr.aria-label]="'Enter value for die ' + (index + 1)" placeholder="-" inputmode="numeric"
                         pattern="[1-6]" />
-                </div>
+                </mat-form-field>
                 }
             </div>
 
-            <div class="sum-input-wrapper">
-                <label for="sum-input" class="sum-label">Σ</label>
-                <input id="sum-input" type="number" class="sum-input" min="1" max="120" step="1"
-                    [value]="sumInput() ?? ''" (input)="updateSumInput($any($event.target).value)"
-                    aria-label="Enter the total sum of all dice" placeholder="Sum" inputmode="numeric" />
-            </div>
+            <mat-form-field class="sum-input-field" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Sum</mat-label>
+                <mat-icon matPrefix aria-hidden="true">functions</mat-icon>
+                <input matInput type="number" min="1" max="120" step="1" [value]="sumInput() ?? ''"
+                    (input)="updateSumInput($any($event.target).value)" aria-label="Enter the total sum of all dice"
+                    placeholder="Total" inputmode="numeric" />
+            </mat-form-field>
         </div>
 
         <!-- Verify Button -->
-        <button class="btn-verify" type="button" [disabled]="!canVerify()" (click)="onVerify()"
-            aria-label="Verify your dice values and sum">
-            <span class="btn-icon" aria-hidden="true">✓</span>
+        <button mat-raised-button color="accent" class="btn-verify" type="button" [disabled]="!canVerify()"
+            (click)="onVerify()" aria-label="Verify your dice values and sum">
+            <mat-icon aria-hidden="true">check_circle</mat-icon>
             <span class="btn-text">Verify</span>
         </button>
         }
     </div>
     }
-</div>
+</mat-card>

@@ -122,9 +122,9 @@ export class ThreeRendererService {
    * @private
    */
   private initializeSceneInternal(canvas: HTMLCanvasElement): void {
-    // Create scene with paper white background for better dice contrast
+    // Create scene with transparent background to show CSS background pattern
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xfffef9); // Paper white background
+    this.scene.background = null; // Transparent to show CSS background
 
     // Create camera
     const aspect = canvas.clientWidth / canvas.clientHeight;
@@ -132,17 +132,21 @@ export class ThreeRendererService {
     this.camera.position.set(0, 5, 10);
     this.camera.lookAt(0, 0, 0);
 
-    // Create renderer with alpha channel enabled for transparency
+    // Create renderer with transparency enabled
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
-      alpha: true, // Enable transparency
-      failIfMajorPerformanceCaveat: false, // Don't fail on performance issues
+      alpha: true, // Enable transparency to show CSS background
+      premultipliedAlpha: false, // Disable premultiplied alpha for proper blending
+      preserveDrawingBuffer: false,
+      failIfMajorPerformanceCaveat: false,
     });
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Set clear color to fully transparent
+    this.renderer.setClearColor(0xffffff, 0); // White with 0 alpha = fully transparent
 
     // Create environment map for reflections
     this.setupEnvironmentMap();
@@ -333,42 +337,37 @@ export class ThreeRendererService {
   private setupLighting(): void {
     if (!this.scene) return;
 
-    // Lower ambient light to reduce center washout
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
+    // Reduce ambient light to improve contrast and shadow visibility
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
     this.scene.add(this.ambientLight);
 
-    // Main directional light positioned more to the side for better angles
-    // This creates better definition on dice faces
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
-    this.directionalLight.position.set(8, 12, 5); // More to the side, higher up
+    // Main directional light - position for better shadow definition
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    this.directionalLight.position.set(10, 15, 8); // More angled position for better shadows
     this.directionalLight.castShadow = true;
 
-    // Configure shadow properties with higher quality
-    this.directionalLight.shadow.mapSize.width = 2048;
-    this.directionalLight.shadow.mapSize.height = 2048;
+    // Enhanced shadow configuration for better quality
+    this.directionalLight.shadow.mapSize.width = 4096; // Increased resolution
+    this.directionalLight.shadow.mapSize.height = 4096;
     this.directionalLight.shadow.camera.near = 0.5;
     this.directionalLight.shadow.camera.far = 50;
-    this.directionalLight.shadow.camera.left = -10;
-    this.directionalLight.shadow.camera.right = 10;
-    this.directionalLight.shadow.camera.top = 10;
-    this.directionalLight.shadow.camera.bottom = -10;
-    this.directionalLight.shadow.bias = -0.0001; // Reduce shadow acne
+    this.directionalLight.shadow.camera.left = -15;
+    this.directionalLight.shadow.camera.right = 15;
+    this.directionalLight.shadow.camera.top = 15;
+    this.directionalLight.shadow.camera.bottom = -15;
+    this.directionalLight.shadow.bias = -0.0005;
+    this.directionalLight.shadow.normalBias = 0.02; // Helps with shadow acne
 
     this.scene.add(this.directionalLight);
 
-    // Move point light further from center to reduce middle washout
-    const pointLight = new THREE.PointLight(0xffffff, 0.25, 50);
-    pointLight.position.set(-8, 10, -6); // Further from center
-    this.scene.add(pointLight);
-
-    // Secondary fill light from opposite side - positioned to avoid center overlap
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
-    fillLight.position.set(-7, 6, -8); // More angled, less centered
+    // Reduce fill light intensity to prevent center washout
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.15); // Reduced from 0.25
+    fillLight.position.set(-8, 8, -10);
     this.scene.add(fillLight);
 
-    // Rim light from behind-side for better edge definition without center brightness
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.18);
-    rimLight.position.set(2, 4, -12); // Further back and to side
+    // Rim light for edge definition
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    rimLight.position.set(5, 5, -15);
     this.scene.add(rimLight);
   }
 

@@ -298,7 +298,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
     this.adjustCamera();
 
     // Initialize physics world with stronger gravity for faster settling
-    this.physicsEngine.initializeWorld(new CANNON.Vec3(0, -25, 0));
+    this.physicsEngine.initializeWorld(new CANNON.Vec3(0, -30, 0));
 
     // Create ground plane
     this.createGroundPlane();
@@ -515,21 +515,22 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    * @since 2.2.0 Enhanced to store geometry, material, and scale references
    */
   private createGroundPlane(): void {
-    // Create visual ground plane scaled to scene (fully transparent, no borders)
+    // Create visual ground plane scaled to scene (fully transparent to show background pattern)
     this.groundGeometry = new THREE.PlaneGeometry(this.sceneScale.width, this.sceneScale.depth);
     this.groundMaterial = new THREE.MeshStandardMaterial({
       transparent: true,
-      opacity: 0, // Fully transparent - dice will appear to float on the background
+      opacity: 0, // Fully transparent to show CSS background pattern
       roughness: 0.8,
       metalness: 0.1,
       side: THREE.DoubleSide,
       depthWrite: false, // Prevents z-fighting and border artifacts
+      color: 0xffffff, // White color (though transparent)
     });
     this.groundMesh = new THREE.Mesh(this.groundGeometry, this.groundMaterial);
     this.groundMesh.rotation.x = -Math.PI / 2;
-    this.groundMesh.receiveShadow = true; // Still receives shadows for visual depth
+    this.groundMesh.receiveShadow = true; // Receives shadows for visual depth
     this.groundMesh.position.y = -1;
-    this.groundMesh.visible = false; // Make completely invisible (no borders/lines)
+    this.groundMesh.visible = true; // Make visible to show shadows
 
     this.threeRenderer.addToScene(this.groundMesh);
 
@@ -1160,7 +1161,18 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
 
       // Drop from top-center and let gravity + random forces create natural rolling
       // This uses the full ground plane evenly
-      const forceFactor = this.reducedMotionActive() ? 0.3 : 0.5;
+      // Increased force factors for faster animation across all screen sizes
+      const canvas = this.canvasElement().nativeElement;
+      const isSmallScreen = canvas.clientWidth <= 700;
+      let forceFactor: number;
+
+      if (this.reducedMotionActive()) {
+        forceFactor = 0.4; // Increased from 0.3 for slightly faster reduced motion
+      } else if (isSmallScreen) {
+        forceFactor = 0.9; // Increased from 0.75 for faster animation on small screens
+      } else {
+        forceFactor = 0.7; // Increased from 0.5 for faster animation on normal screens
+      }
 
       // Apply gentle random forces in all horizontal directions for varied rolling
       const force = new CANNON.Vec3(
