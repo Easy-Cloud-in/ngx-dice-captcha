@@ -21,10 +21,7 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "esm2022": "./dist/esm2022/ngx-dice-captcha.mjs",
-      "esm": "./dist/esm2022/ngx-dice-captcha.mjs",
-      "default": "./dist/index.js"
+      "import": "./dist/fesm2022/ngx-dice-captcha.mjs"
     }
   },
   "keywords": [
@@ -67,9 +64,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "scripts": {
-    "build": "ng build ngx-dice-captcha",
-    "test": "ng test ngx-dice-captcha"
   }
 }
