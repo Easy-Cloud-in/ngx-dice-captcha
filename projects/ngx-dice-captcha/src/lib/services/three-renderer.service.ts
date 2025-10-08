@@ -122,9 +122,10 @@ export class ThreeRendererService {
    * @private
    */
   private initializeSceneInternal(canvas: HTMLCanvasElement): void {
-    // Create scene with transparent background to show CSS background pattern
+    // Create scene with transparent background so CSS/container shows through
     this.scene = new THREE.Scene();
-    this.scene.background = null; // Transparent to show CSS background
+    // Make scene background transparent (use renderer alpha to reveal canvas/container background)
+    this.scene.background = null;
 
     // Create camera
     const aspect = canvas.clientWidth / canvas.clientHeight;
@@ -137,7 +138,7 @@ export class ThreeRendererService {
       canvas,
       antialias: true,
       alpha: true, // Enable transparency to show CSS background
-      premultipliedAlpha: false, // Disable premultiplied alpha for proper blending
+      premultipliedAlpha: true, // Use premultiplied alpha for correct CSS compositing
       preserveDrawingBuffer: false,
       failIfMajorPerformanceCaveat: false,
     });
@@ -145,10 +146,26 @@ export class ThreeRendererService {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    // Set clear color to fully transparent
-    this.renderer.setClearColor(0xffffff, 0); // White with 0 alpha = fully transparent
 
-    // Create environment map for reflections
+    // Configure transparency and color management for CSS background to show through
+    this.renderer.setClearColor(0x000000, 0); // Fully transparent clear color (alpha = 0)
+    this.renderer.setClearAlpha(0); // Explicitly enforce transparent clears
+    this.renderer.toneMapping = THREE.NoToneMapping; // Prevent tone mapping color shifts
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace; // Proper color space handling
+
+    // Ensure canvas element CSS is transparent (defensive against global overrides)
+    canvas.style.background = 'transparent';
+    canvas.style.backgroundColor = 'transparent';
+    this.renderer.domElement.style.background = 'transparent';
+    this.renderer.domElement.style.backgroundColor = 'transparent';
+
+    // Ensure auto clear is enabled for proper transparency
+    this.renderer.autoClear = true;
+    this.renderer.autoClearColor = true;
+    this.renderer.autoClearDepth = true;
+    this.renderer.autoClearStencil = true;
+
+    // Re-enable environment map for proper material rendering
     this.setupEnvironmentMap();
 
     // Setup lighting
@@ -311,7 +328,7 @@ export class ThreeRendererService {
     const renderTarget = this.pmremGenerator.fromScene(envScene, 0.04);
     this.envMap = renderTarget.texture;
 
-    // Set as scene environment for all PBR materials
+    // Set as scene environment for all PBR materials to enable reflections
     this.scene.environment = this.envMap;
   }
 
@@ -427,6 +444,35 @@ export class ThreeRendererService {
 
       this.renderer.setSize(width, height, false);
       this.renderer.setPixelRatio(Math.min(pixelRatio, 2));
+      // Re-assert transparent clear on resize to prevent any overrides
+      this.renderer.setClearColor(0x000000, 0);
+      this.renderer.setClearAlpha(0);
+      // Fallback during resize for opaque WebGL contexts (alpha:false)
+      try {
+        const gl = this.renderer.getContext() as WebGLRenderingContext;
+        const attrs = gl.getContextAttributes ? gl.getContextAttributes() : undefined;
+        const alphaSupported = attrs ? !!attrs.alpha : true;
+        if (!alphaSupported) {
+          const parent = this.canvas?.parentElement as HTMLElement | null;
+          let bg = '#fff8e7'; // default to SCSS $canvas-background-color
+          try {
+            const style = parent ? getComputedStyle(parent) : undefined;
+            const bgc = (style?.backgroundColor || style?.background || '').toString();
+            if (
+              bgc &&
+              bgc !== 'transparent' &&
+              bgc !== 'rgba(0,0,0,0)' &&
+              !bgc.includes('gradient')
+            ) {
+              bg = bgc;
+            }
+          } catch {}
+          const color = new THREE.Color();
+          color.setStyle(bg);
+          this.renderer.setClearColor(color, 1);
+          this.renderer.setClearAlpha(1);
+        }
+      } catch {}
 
       // Restore camera position
       this.camera.position.copy(cameraPosition);

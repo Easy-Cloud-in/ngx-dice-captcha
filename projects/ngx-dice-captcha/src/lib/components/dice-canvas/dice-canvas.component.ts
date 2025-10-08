@@ -236,7 +236,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    * @private
    * @since 2.2.0
    */
-  private groundMaterial?: THREE.MeshStandardMaterial;
+  private groundMaterial?: THREE.ShadowMaterial;
 
   /**
    * Previous scene scale dimensions for delta calculation.
@@ -483,7 +483,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Height remains constant - physics ground plane is at y = -1
+    // Height remains constant - physics ground plane is at y = -8
     this.sceneScale.height = 12;
   }
 
@@ -515,22 +515,19 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    * @since 2.2.0 Enhanced to store geometry, material, and scale references
    */
   private createGroundPlane(): void {
-    // Create visual ground plane scaled to scene (fully transparent to show background pattern)
+    // Create visual ground plane scaled to scene matching the scene background color
     this.groundGeometry = new THREE.PlaneGeometry(this.sceneScale.width, this.sceneScale.depth);
-    this.groundMaterial = new THREE.MeshStandardMaterial({
+    this.groundMaterial = new THREE.ShadowMaterial({
+      color: 0x000000,
       transparent: true,
-      opacity: 0, // Fully transparent to show CSS background pattern
-      roughness: 0.8,
-      metalness: 0.1,
-      side: THREE.DoubleSide,
-      depthWrite: false, // Prevents z-fighting and border artifacts
-      color: 0xffffff, // White color (though transparent)
+      opacity: 0.25,
     });
+    this.groundMaterial.depthWrite = false; // Prevent ground from occluding dice
     this.groundMesh = new THREE.Mesh(this.groundGeometry, this.groundMaterial);
     this.groundMesh.rotation.x = -Math.PI / 2;
-    this.groundMesh.receiveShadow = true; // Receives shadows for visual depth
-    this.groundMesh.position.y = -1;
-    this.groundMesh.visible = true; // Make visible to show shadows
+    this.groundMesh.receiveShadow = true; // Receive shadows
+    this.groundMesh.position.y = -3; // Positioned to keep dice visible and readable
+    this.groundMesh.visible = true; // Show only shadows, not a solid plane
 
     this.threeRenderer.addToScene(this.groundMesh);
 
@@ -546,7 +543,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       material: groundPhysicsMaterial,
     });
     this.groundPlane.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-    this.groundPlane.position.y = -1;
+    this.groundPlane.position.y = -3; // Match visual ground plane position
 
     this.physicsEngine.addBody(this.groundPlane);
   }
@@ -585,7 +582,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
 
     // Note: No need to remove/re-add mesh to scene
     // Just updating geometry is sufficient
-    // The Y position remains fixed at -1, preventing height growth
+    // The Y position remains fixed at -3, preventing height growth
   }
 
   /**
@@ -652,7 +649,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
     }
 
     // Ensure ground plane is at correct Y position
-    this.groundPlane.position.y = -1;
+    this.groundPlane.position.y = -3; // Match visual ground plane position
 
     // Wake all physics bodies to recalculate boundaries
     this.physicsEngine.wakeAllBodies();
@@ -685,16 +682,16 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
 
     // Update wall positions: [0]=Back, [1]=Front, [2]=Left, [3]=Right
     // Back wall (North)
-    this.walls[0].position.set(0, wallHeight / 2 - 1, -areaDepth);
+    this.walls[0].position.set(0, wallHeight / 2 - 3, -areaDepth);
 
     // Front wall (South)
-    this.walls[1].position.set(0, wallHeight / 2 - 1, areaDepth);
+    this.walls[1].position.set(0, wallHeight / 2 - 3, areaDepth);
 
     // Left wall (East)
-    this.walls[2].position.set(-areaWidth, wallHeight / 2 - 1, 0);
+    this.walls[2].position.set(-areaWidth, wallHeight / 2 - 3, 0);
 
     // Right wall (West)
-    this.walls[3].position.set(areaWidth, wallHeight / 2 - 1, 0);
+    this.walls[3].position.set(areaWidth, wallHeight / 2 - 3, 0);
 
     // Check if wall shapes need to be updated due to aspect ratio change
     this.updateWallShapes();
@@ -750,7 +747,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Back wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: -areaDepth,
         width: areaWidth * 2 + wallThickness * 2,
         height: wallHeight,
@@ -759,7 +756,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Front wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: areaDepth,
         width: areaWidth * 2 + wallThickness * 2,
         height: wallHeight,
@@ -768,7 +765,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Left wall
       {
         x: -areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,
@@ -777,7 +774,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Right wall
       {
         x: areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,
@@ -873,11 +870,11 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    */
   private createBoundaryWalls(): void {
     // Increased wall height to prevent dice from jumping over
-    const wallHeight = 15; // Increased from 10
-    const wallThickness = 1.0; // Increased from 0.5 for better containment
+    const wallHeight = 35; // Increased from 25 for better containment
+    const wallThickness = 2.0; // Increased from 1.0 for better containment
 
     // Add safety margin to ensure walls fully contain the dice area
-    const safetyMargin = 0.5; // Add 0.5 units of margin
+    const safetyMargin = 2.0; // Increased safety margin for better containment
     const areaWidth = this.sceneScale.width / 2 - safetyMargin;
     const areaDepth = this.sceneScale.depth / 2 - safetyMargin;
 
@@ -886,7 +883,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Back wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: -areaDepth,
         width: areaWidth * 2 + wallThickness * 2, // Extend to corners
         height: wallHeight,
@@ -895,7 +892,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Front wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: areaDepth,
         width: areaWidth * 2 + wallThickness * 2, // Extend to corners
         height: wallHeight,
@@ -904,7 +901,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Left wall
       {
         x: -areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,
@@ -913,7 +910,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Right wall
       {
         x: areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 3, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,
@@ -950,11 +947,11 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
 
     // Step 2: Create new walls with updated scene scale
     // Match the values from createBoundaryWalls for consistency
-    const wallHeight = 15; // Increased from 10
-    const wallThickness = 1.0; // Increased from 0.5
+    const wallHeight = 35; // Increased from 25 for better containment
+    const wallThickness = 2.0; // Increased from 1.0 for better containment
 
     // Add safety margin to ensure walls fully contain the dice area
-    const safetyMargin = 0.5;
+    const safetyMargin = 2.0; // Increased safety margin for better containment
     const areaWidth = this.sceneScale.width / 2 - safetyMargin;
     const areaDepth = this.sceneScale.depth / 2 - safetyMargin;
 
@@ -963,7 +960,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Back wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 8, // Match ground plane position
         z: -areaDepth,
         width: areaWidth * 2 + wallThickness * 2, // Extend to corners
         height: wallHeight,
@@ -972,7 +969,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Front wall
       {
         x: 0,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 8, // Match ground plane position
         z: areaDepth,
         width: areaWidth * 2 + wallThickness * 2, // Extend to corners
         height: wallHeight,
@@ -981,7 +978,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Left wall
       {
         x: -areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 8, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,
@@ -990,7 +987,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       // Right wall
       {
         x: areaWidth,
-        y: wallHeight / 2 - 1,
+        y: wallHeight / 2 - 8, // Match ground plane position
         z: 0,
         width: wallThickness,
         height: wallHeight,

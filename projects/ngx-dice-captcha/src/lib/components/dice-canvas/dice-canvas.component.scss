@@ -15,9 +15,16 @@
   border-radius: $canvas-border-radius;
   overflow: visible; // Changed from hidden to visible to allow positioned elements to show
   background-color: $canvas-background-color;
-  // background-image: $canvas-background-image;
+
+  // Subtle dot pattern for visual appeal
+  background-image: radial-gradient(circle at 25px 25px, rgba(0, 0, 0, 0.08) 2px, transparent 2px),
+    radial-gradient(circle at 75px 75px, rgba(0, 0, 0, 0.08) 2px, transparent 2px),
+    radial-gradient(circle at 25px 75px, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 75px 25px, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 100px 100px, 100px 100px;
+  background-position: 0 0, 25px 25px, 0 0, 50px 50px;
+
   background-attachment: $canvas-background-attachment;
-  background-size: $canvas-background-size;
   // @include shadow-md;
   // @include transition(box-shadow);
 
@@ -631,7 +638,9 @@
 // Dark mode support
 @include dark-mode {
   .dice-canvas-container {
-    background: linear-gradient(135deg, #434343 0%, #000000 100%);
+    // Keep light canvas background in dark mode to show through transparent WebGL
+    background-color: $canvas-background-color !important;
+    background-image: $canvas-background-image;
   }
 
   .rolling-indicator {

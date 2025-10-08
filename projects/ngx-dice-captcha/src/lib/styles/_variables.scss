@@ -227,11 +227,21 @@ $opacity-overlay: 0.95;
 // ============================================================================
 // CANVAS BACKGROUND
 // ============================================================================
-// Paper white color for a clean, subtle background
-$canvas-background-color: #fafaf8;
+// ============================================================================
+// CANVAS BACKGROUND - SINGLE SOURCE OF TRUTH
+// ============================================================================
+// Change ONLY this variable to update canvas background color everywhere
+// The WebGL renderer and ground plane are fully transparent to show this color
+$canvas-background-color: #fff8e7; // Light yellow (current)
+
+// Examples:
+// $canvas-background-color: #e6f3ff; // Light blue
+// $canvas-background-color: #ffe6f3; // Light pink
+// $canvas-background-color: #f0ffe6; // Light green
+// $canvas-background-color: #f8f8f8; // Light gray
 // Optional: SVG pattern overlay (you can customize or remove this)
 // To use a custom SVG pattern, replace the data URL below with your own
 // To disable the pattern, set this to 'none'
 $canvas-background-image: none;
-$canvas-background-attachment: fixed;
+$canvas-background-attachment: scroll;
 $canvas-background-size: cover;
