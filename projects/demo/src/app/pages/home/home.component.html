@@ -3,20 +3,15 @@
         <header class="home-header">
             <h1>🎲 NGX Dice Captcha</h1>
             <p class="subtitle">Verify your humanity with an interactive 3D dice challenge</p>
-            <div class="header-actions">
-                <a routerLink="/responsive-test" class="test-link">
-                    📐 View Responsive Test Page
-                </a>
-            </div>
         </header>
 
+        <!-- Captcha Demo Section -->
         <section class="captcha-section">
-            <!-- Refresh Button -->
-            <div class="captcha-controls">
+            <div class="section-title">
+                <h2>Try It Out</h2>
                 <button type="button" class="refresh-button" (click)="refreshCaptcha()" [disabled]="isRefreshing()"
                     title="Get a new challenge">
                     <span class="refresh-icon">🔄</span>
-                    <span class="refresh-text">Refresh Challenge</span>
                 </button>
             </div>
 
@@ -26,27 +21,99 @@
                     (failed)="onFailed($event)" (diceRolled)="onDiceRolled($event)" />
                 }
             </div>
-
-            @if (currentDiceValues().length > 0) {
-            <div class="dice-values-display">
-                <h3>🎲 Rolled Dice Values</h3>
-                <div class="dice-values-grid">
-                    @for (value of currentDiceValues(); track $index) {
-                    <div class="dice-value-card">
-                        <span class="dice-label">Dice {{ $index + 1 }}</span>
-                        <span class="dice-value">{{ value }}</span>
-                    </div>
-                    }
-                </div>
-                <div class="sum-display">
-                    <span class="sum-label">Total:</span>
-                    <span class="sum-value">{{ currentDiceSum() }}</span>
-                </div>
-                <p class="helper-text">
-                    💡 Enter these values in the overlay above to proceed
-                </p>
-            </div>
-            }
         </section>
+
+        <!-- Features & Info Grid -->
+        <div class="info-grid">
+            <div class="features-card">
+                <h2>✨ Key Features</h2>
+                <ul class="features-list">
+                    <li>
+                        <span class="feature-icon">🎲</span>
+                        <div>
+                            <strong>Realistic 3D Dice</strong>
+                            <p>Physics-based rolling with Three.js & Cannon-es</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🎨</span>
+                        <div>
+                            <strong>Customizable Themes</strong>
+                            <p>Full control over colors and visual effects</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feature-icon">♿</span>
+                        <div>
+                            <strong>Accessible</strong>
+                            <p>WCAG 2.1 compliant with keyboard navigation</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📱</span>
+                        <div>
+                            <strong>Responsive</strong>
+                            <p>Automatic layout adaptation for all devices</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⚡</span>
+                        <div>
+                            <strong>High Performance</strong>
+                            <p>Built with Angular 20 signals & zoneless</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🔒</span>
+                        <div>
+                            <strong>Secure</strong>
+                            <p>Rate limiting & verification tokens</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="developer-card">
+                <h2>👨‍💻 Developer</h2>
+                <div class="developer-info">
+                    <div class="developer-avatar">👤</div>
+                    <div class="developer-details">
+                        <h3>Sakr.sr</h3>
+                        <p class="developer-email">contact&#64;easy-cloud.in</p>
+                        <a href="https://easy-cloud.in" target="_blank" rel="noopener" class="developer-website">
+                            🌐 easy-cloud.in
+                        </a>
+                        <div class="developer-links">
+                            <a href="https://github.com/Easy-Cloud-in" target="_blank" rel="noopener" class="dev-link"
+                                title="GitHub Profile">
+                                <span>🐙</span> GitHub
+                            </a>
+                            <a href="https://www.npmjs.com/~sakr.sr" target="_blank" rel="noopener" class="dev-link"
+                                title="NPM Profile">
+                                <span>📦</span> NPM
+                            </a>
+                            <a href="https://www.linkedin.com/company/easy-cloud-in" target="_blank" rel="noopener"
+                                class="dev-link" title="LinkedIn">
+                                <span>💼</span> LinkedIn
+                            </a>
+                            <a href="https://twitter.com/EasyCloudIn" target="_blank" rel="noopener" class="dev-link"
+                                title="Twitter/X">
+                                <span>🐦</span> Twitter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-card">
+            <a routerLink="/responsive-test" class="action-button">
+                📐 Responsive Test
+            </a>
+            <a href="https://github.com/Easy-Cloud-in/ngx-dice-captcha#readme" target="_blank" rel="noopener"
+                class="action-button secondary">
+                📖 Documentation
+            </a>
+        </div>
     </div>
 </div>

@@ -1,326 +1,193 @@
-<div class="container-query-demo">
-    <div class="back-navigation">
-        <a routerLink="/" class="back-link">← Back to Home</a>
-    </div>
-
-    <header class="demo-header">
-        <h1>📦 Container Query Demonstration</h1>
-        <p class="subtitle">See how ngx-dice-captcha adapts to its container size using @container queries</p>
-        <div class="version-badge">v2.2.0</div>
+<div class="responsive-test-container">
+    <!-- Header -->
+    <header class="page-header">
+        <button mat-icon-button class="back-button" (click)="goHome()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="header-content">
+            <h1>📱 Responsive Showcase</h1>
+            <p class="subtitle">Experience ngx-dice-captcha across different screen sizes</p>
+        </div>
     </header>
 
-    <!-- Interactive Container Demo -->
-    <section class="hero-section">
-        <h2>🎯 Interactive Container Resize</h2>
-        <p class="section-description">Drag the handle to resize the container and watch the captcha adapt in real-time
-        </p>
+    <!-- Material 3 Tabs -->
+    <mat-card class="tabs-card">
+        <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)"
+            animationDuration="300ms" mat-stretch-tabs="false" class="screen-tabs">
+            @for (screen of screenSizes; track screen.id) {
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="tab-label">
+                        <mat-icon>{{ screen.icon }}</mat-icon>
+                        <span class="tab-text">{{ screen.name }}</span>
+                    </div>
+                </ng-template>
 
-        <div class="interactive-demo">
-            <div class="resize-controls">
-                <button (click)="setContainerWidth(300)" [class.active]="interactiveWidth() === 300">
-                    📱 Small (300px)
-                </button>
-                <button (click)="setContainerWidth(500)" [class.active]="interactiveWidth() === 500">
-                    💻 Medium (500px)
-                </button>
-                <button (click)="setContainerWidth(800)" [class.active]="interactiveWidth() === 800">
-                    🖥️ Large (800px)
-                </button>
-                <button (click)="setContainerWidth(1200)" [class.active]="interactiveWidth() === 1200">
-                    🎬 XL (1200px)
-                </button>
-            </div>
+                <!-- Defer loading for performance -->
+                @defer (on viewport; on timer(500ms)) {
+                <div class="screen-preview">
+                    <!-- Screen Info Card -->
+                    <mat-card class="info-card">
+                        <mat-card-header>
+                            <mat-icon mat-card-avatar>{{ screen.icon }}</mat-icon>
+                            <mat-card-title>{{ screen.name }}</mat-card-title>
+                            <mat-card-subtitle>{{ screen.description }}</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <div class="specs">
+                                <mat-chip-set>
+                                    <mat-chip>
+                                        <mat-icon>aspect_ratio</mat-icon>
+                                        {{ screen.width }}×{{ screen.height }}
+                                    </mat-chip>
+                                    <mat-chip>
+                                        <mat-icon>casino</mat-icon>
+                                        {{ screen.diceCount }} dice
+                                    </mat-chip>
+                                    <mat-chip [highlighted]="true">
+                                        {{ screen.category }}
+                                    </mat-chip>
+                                </mat-chip-set>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
 
-            <div class="resize-controls" style="margin-top: 15px; border-top: 2px solid #e0e0e0; padding-top: 15px;">
-                <button (click)="toggleAutoStart()" [class.active]="autoStartEnabled()"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold;">
-                    {{ autoStartEnabled() ? '✅ AutoStart: ON' : '⏸️ AutoStart: OFF' }}
-                </button>
-                <span style="padding: 0 10px; color: #666; font-size: 14px;">
-                    Click to {{ autoStartEnabled() ? 'Disable' : 'Enable' }} dice auto-animation for all sizes
-                </span>
-            </div>
+                    <!-- Device Frame -->
+                    <div class="device-frame" [class]="'device-' + screen.category">
+                        <div class="device-screen" [style.width.px]="screen.width" [style.height.px]="screen.height">
+                            <div class="screen-content">
+                                <!-- Dice Captcha -->
+                                <div class="captcha-wrapper">
+                                    <ngx-dice-captcha [config]="getCaptchaConfig(screen.id)" [autoStart]="true"
+                                        (verified)="onVerified($event, screen.name)" />
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="resizable-container-wrapper">
-                <div class="resizable-container" [style.width.px]="interactiveWidth()" #resizableContainer>
-                    <ngx-dice-captcha [config]="{
-              diceCount: 3,
-              fillContainer: false,
-              maintainAspectRatio: true,
-              enableDynamicResize: true,
-              resizeThreshold: 50
-            }" [autoStart]="autoStartEnabled()" (verified)="onVerificationResult($event, 'Interactive')">
-                    </ngx-dice-captcha>
-
-                    <div class="container-info">
-                        <span class="info-label">Container Width:</span>
-                        <span class="info-value">{{ interactiveWidth() }}px</span>
+                        <!-- Device Details -->
+                        <div class="device-details">
+                            <div class="detail-item">
+                                <mat-icon>straighten</mat-icon>
+                                <span>Width: {{ screen.width }}px</span>
+                            </div>
+                            <div class="detail-item">
+                                <mat-icon>height</mat-icon>
+                                <span>Height: {{ screen.height }}px</span>
+                            </div>
+                            <div class="detail-item">
+                                <mat-icon>casino</mat-icon>
+                                <span>Dice: {{ screen.diceCount }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="resize-handle" (mousedown)="startResize($event)" (touchstart)="startResize($event)">
-                    ⋮⋮
+                } @placeholder {
+                <div class="loading-placeholder">
+                    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+                    <p>Loading {{ screen.name }} preview...</p>
                 </div>
-            </div>
-
-            <div class="breakpoint-indicators">
-                <div class="indicator" [class.active]="interactiveWidth() < 400">
-                    <div class="dot"></div>
-                    <span>&lt; 400px: Compact Mode</span>
+                } @loading (minimum 300ms) {
+                <div class="loading-placeholder">
+                    <mat-icon class="loading-icon spinning">sync</mat-icon>
+                    <p>Preparing {{ screen.name }} view...</p>
                 </div>
-                <div class="indicator" [class.active]="interactiveWidth() >= 400 && interactiveWidth() < 700">
-                    <div class="dot"></div>
-                    <span>400-700px: Standard Mode</span>
-                </div>
-                <div class="indicator" [class.active]="interactiveWidth() >= 700">
-                    <div class="dot"></div>
-                    <span>≥ 700px: Expanded Mode</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Side-by-Side Comparison -->
-    <section class="comparison-section">
-        <h2>🔄 Side-by-Side Container Comparison</h2>
-        <p class="section-description">Multiple instances showing different container sizes simultaneously</p>
-
-        <div class="resize-controls" style="margin-bottom: 20px; justify-content: center;">
-            <button (click)="toggleAutoStart()" [class.active]="autoStartEnabled()"
-                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; font-size: 16px; padding: 12px 24px;">
-                {{ autoStartEnabled() ? '✅ AutoStart: ON' : '⏸️ AutoStart: OFF' }}
-            </button>
-            <span style="padding: 0 15px; color: #666; font-size: 14px; display: inline-block; max-width: 300px;">
-                Click to {{ autoStartEnabled() ? 'disable' : 'enable' }} auto-animation for all captcha instances
-            </span>
-        </div>
-
-        <div class="comparison-grid">
-            @for (size of containerSizes; track size.width) {
-            <div class="comparison-card" [attr.data-size]="size.name">
-                <div class="card-header">
-                    <h3>{{ size.emoji }} {{ size.name }}</h3>
-                    <span class="size-badge">{{ size.width }}px</span>
-                </div>
-
-                <div class="captcha-container" [style.width.px]="size.width">
-                    <ngx-dice-captcha [config]="{
-                diceCount: size.diceCount,
-                fillContainer: false,
-                maintainAspectRatio: true,
-                enableDynamicResize: true,
-                resizeThreshold: 50
-              }" [autoStart]="autoStartEnabled()" (verified)="onVerificationResult($event, size.name)">
-                    </ngx-dice-captcha>
-                </div>
-
-                <div class="card-footer">
-                    <p class="description">{{ size.description }}</p>
-                    <div class="breakpoint-tag" [attr.data-breakpoint]="size.breakpoint">
-                        {{ size.breakpoint }}
-                    </div>
-                </div>
-            </div>
+                }
+            </mat-tab>
             }
+        </mat-tab-group>
+    </mat-card>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>✨ Responsive Features</h2>
+        <div class="features-grid">
+            <mat-card class="feature-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar class="feature-icon">devices</mat-icon>
+                    <mat-card-title>Multi-Device Support</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    Seamlessly adapts from mobile phones to ultrawide displays with optimized dice counts
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="feature-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar class="feature-icon">auto_awesome</mat-icon>
+                    <mat-card-title>Smart Scaling</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    Automatically adjusts dice size and layout based on available screen space
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="feature-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar class="feature-icon">speed</mat-icon>
+                    <mat-card-title>Performance Optimized</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    Uses Angular defer loading for efficient rendering and smooth tab transitions
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="feature-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar class="feature-icon">touch_app</mat-icon>
+                    <mat-card-title>Touch Friendly</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    Optimized touch interactions for mobile devices with haptic feedback support
+                </mat-card-content>
+            </mat-card>
         </div>
     </section>
 
-    <!-- Container Types Showcase -->
-    <section class="showcase-section">
-        <h2>🎨 Container Types & Configurations</h2>
-        <p class="section-description">Different container configurations and their behaviors</p>
-
-        <div class="resize-controls" style="margin-bottom: 20px; justify-content: center;">
-            <button (click)="toggleAutoStart()" [class.active]="autoStartEnabled()"
-                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; font-size: 16px; padding: 12px 24px;">
-                {{ autoStartEnabled() ? '✅ AutoStart: ON' : '⏸️ AutoStart: OFF' }}
-            </button>
-        </div>
-
-        <div class="showcase-grid">
-            <!-- Fixed Size Container -->
-            <div class="showcase-item">
-                <div class="showcase-header">
-                    <h3>Fixed Container</h3>
-                    <code>width: 600px, height: 400px</code>
+    <!-- Quick Reference -->
+    <mat-card class="reference-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar>info</mat-icon>
+            <mat-card-title>Screen Size Reference</mat-card-title>
+            <mat-card-subtitle>Recommended dice counts for different viewports</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="reference-table">
+                <div class="reference-row header">
+                    <span>Screen Type</span>
+                    <span>Width Range</span>
+                    <span>Dice Count</span>
                 </div>
-                <div class="showcase-container fixed-container">
-                    <ngx-dice-captcha [config]="{
-              diceCount: 3,
-              fillContainer: false,
-              maintainAspectRatio: true,
-              enableDynamicResize: true
-            }" [autoStart]="autoStartEnabled()">
-                    </ngx-dice-captcha>
+                <div class="reference-row">
+                    <span>📱 Mobile Small</span>
+                    <span>320px - 374px</span>
+                    <span>2 dice</span>
                 </div>
-                <p class="showcase-note">Maintains aspect ratio within fixed dimensions</p>
-            </div>
-
-            <!-- Fill Container Mode -->
-            <div class="showcase-item">
-                <div class="showcase-header">
-                    <h3>Fill Container Mode</h3>
-                    <code>fillContainer: true</code>
+                <div class="reference-row">
+                    <span>📱 Mobile Medium</span>
+                    <span>375px - 413px</span>
+                    <span>2-3 dice</span>
                 </div>
-                <div class="showcase-container fill-container">
-                    <ngx-dice-captcha [config]="{
-              diceCount: 3,
-              fillContainer: true,
-              maintainAspectRatio: false,
-              enableDynamicResize: true
-            }" [autoStart]="autoStartEnabled()">
-                    </ngx-dice-captcha>
+                <div class="reference-row">
+                    <span>📱 Mobile Large</span>
+                    <span>414px - 767px</span>
+                    <span>3 dice</span>
                 </div>
-                <p class="showcase-note">Stretches to fill entire container space</p>
-            </div>
-
-            <!-- Responsive Container -->
-            <div class="showcase-item">
-                <div class="showcase-header">
-                    <h3>Responsive Container</h3>
-                    <code>width: 100%, max-width: 800px</code>
+                <div class="reference-row">
+                    <span>💻 Tablet</span>
+                    <span>768px - 1023px</span>
+                    <span>4 dice</span>
                 </div>
-                <div class="showcase-container responsive-container">
-                    <ngx-dice-captcha [config]="{
-              diceCount: 4,
-              fillContainer: false,
-              maintainAspectRatio: true,
-              enableDynamicResize: true
-            }" [autoStart]="autoStartEnabled()">
-                    </ngx-dice-captcha>
+                <div class="reference-row">
+                    <span>🖥️ Desktop</span>
+                    <span>1024px - 1919px</span>
+                    <span>4-5 dice</span>
                 </div>
-                <p class="showcase-note">Adapts to available width with container queries</p>
-            </div>
-
-            <!-- Aspect Ratio Variants -->
-            <div class="showcase-item">
-                <div class="showcase-header">
-                    <h3>Custom Aspect (2:1)</h3>
-                    <code>customAspectRatio: 2.0</code>
-                </div>
-                <div class="showcase-container aspect-container">
-                    <ngx-dice-captcha [config]="{
-              diceCount: 3,
-              fillContainer: false,
-              maintainAspectRatio: true,
-              customAspectRatio: 2.0,
-              enableDynamicResize: true
-            }" [autoStart]="autoStartEnabled()">
-                    </ngx-dice-captcha>
-                </div>
-                <p class="showcase-note">Custom 2:1 aspect ratio for ultra-wide layouts</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Nested Containers Test -->
-    <section class="nested-section">
-        <h2>🔗 Nested Container Test</h2>
-        <p class="section-description">Testing @container queries in nested layouts</p>
-
-        <div class="resize-controls" style="margin-bottom: 20px; justify-content: center;">
-            <button (click)="toggleAutoStart()" [class.active]="autoStartEnabled()"
-                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; font-size: 16px; padding: 12px 24px;">
-                {{ autoStartEnabled() ? '✅ AutoStart: ON' : '⏸️ AutoStart: OFF' }}
-            </button>
-        </div>
-
-        <div class="nested-demo">
-            <div class="outer-container">
-                <h4>Outer Container (100%)</h4>
-                <div class="middle-container">
-                    <h5>Middle Container (80%)</h5>
-                    <div class="inner-container">
-                        <ngx-dice-captcha [config]="{
-                diceCount: 3,
-                fillContainer: false,
-                maintainAspectRatio: true,
-                enableDynamicResize: true
-              }" [autoStart]="autoStartEnabled()">
-                        </ngx-dice-captcha>
-                        <p class="nested-note">Captcha adapts to innermost container</p>
-                    </div>
+                <div class="reference-row">
+                    <span>🎬 Ultrawide</span>
+                    <span>1920px+</span>
+                    <span>6+ dice</span>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Dynamic Resize Toggle -->
-    <section class="settings-section">
-        <h2>⚙️ Configuration Options</h2>
-
-        <div class="settings-panel">
-            <div class="setting-item">
-                <label class="setting-label">
-                    <input type="checkbox" [checked]="autoStartEnabled()" (change)="toggleAutoStart()">
-                    <span>Enable Auto Start</span>
-                </label>
-                <p class="setting-description">
-                    When enabled, dice animations start automatically without manual trigger
-                </p>
-            </div>
-
-            <div class="setting-item">
-                <label class="setting-label">
-                    <input type="checkbox" [checked]="enableDynamicResize()" (change)="toggleDynamicResize()">
-                    <span>Enable Dynamic Resize</span>
-                </label>
-                <p class="setting-description">
-                    When enabled, captcha automatically resizes when container size changes
-                </p>
-            </div>
-
-            <div class="setting-item">
-                <label class="setting-label">Resize Threshold</label>
-                <div class="threshold-input">
-                    <input type="range" min="10" max="100" [value]="resizeThreshold()"
-                        (input)="updateResizeThreshold($event)">
-                    <span class="threshold-value">{{ resizeThreshold() }}px</span>
-                </div>
-                <p class="setting-description">
-                    Minimum size change required to trigger resize
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Technical Details -->
-    <section class="details-section">
-        <h2>📚 How Container Queries Work</h2>
-
-        <div class="details-grid">
-            <div class="detail-card">
-                <div class="detail-icon">🎯</div>
-                <h3>Container-based</h3>
-                <p>Styles respond to container size, not viewport size</p>
-            </div>
-
-            <div class="detail-card">
-                <div class="detail-icon">📏</div>
-                <h3>Flexible Layouts</h3>
-                <p>Perfect for component-level responsive design</p>
-            </div>
-
-            <div class="detail-card">
-                <div class="detail-icon">🔄</div>
-                <h3>Dynamic Sizing</h3>
-                <p>Automatically adapts when container resizes</p>
-            </div>
-
-            <div class="detail-card">
-                <div class="detail-icon">⚡</div>
-                <h3>Performance</h3>
-                <p>Efficient ResizeObserver-based detection</p>
-            </div>
-        </div>
-
-        <div class="code-example">
-            <h4>Example Configuration</h4>
-            <pre><code>{{ exampleCode }}</code></pre>
-        </div>
-    </section>
-
-    <footer class="demo-footer">
-        <p>🚀 Try resizing your browser window or containers to see the magic! 🎲</p>
-    </footer>
+        </mat-card-content>
+    </mat-card>
 </div>

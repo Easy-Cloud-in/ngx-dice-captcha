@@ -29,12 +29,12 @@ export class HomeComponent {
     diceCount: 3,
     diceType: DiceType.D6,
     difficulty: Difficulty.MEDIUM,
-    diceSize: 1.3, // Make dice bigger (default is 1.5)
+    diceSize: 1.2,
     verificationMode: VerificationMode.INDIVIDUAL_DICE,
     overlayPosition: 'top-left',
     showTimer: false,
     showAttempts: true,
-    compactMode: false,
+    compactMode: true,
     maxAttempts: 3,
     timeout: 0,
     enableHaptics: false,
@@ -62,8 +62,7 @@ export class HomeComponent {
 
     // Show snackbar at top center
     this.snackBar.open(
-      `❌ Verification failed. ${remaining} attempt${
-        remaining === 1 ? '' : 's'
+      `❌ Verification failed. ${remaining} attempt${remaining === 1 ? '' : 's'
       } remaining. Please retry.`,
       'Dismiss',
       {

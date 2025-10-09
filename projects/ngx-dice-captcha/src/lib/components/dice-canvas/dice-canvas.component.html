@@ -47,9 +47,9 @@
         @for (result of diceResults(); track $index) {
         <span class="result-value" [attr.aria-label]="'Die ' + ($index + 1) + ' shows ' + result">{{ result }}</span>
         }
-        <span class="results-separator">|</span>
+        <span class="results-separator"> = </span>
         <span class="results-sum" [attr.aria-label]="'Total sum: ' + getDiceTotal()">
-            Σ {{ getDiceTotal() }}
+            {{ getDiceTotal() }}
         </span>
     </div>
     }

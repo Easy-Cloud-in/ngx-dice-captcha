@@ -1,108 +1,79 @@
-// CSS Variables for responsive captcha sizing
-// Note: With container queries in the library component, these are less critical
-// but kept for backward compatibility and explicit control if needed
 :host {
-  --captcha-aspect-ratio-desktop: 24 / 12;
-  --captcha-aspect-ratio-mobile: 4 / 3;
-  --captcha-gap-desktop: 1rem;
-  --captcha-gap-mobile: 0.75rem;
-}
-
-.header-actions {
-  margin-top: 1.5rem;
-
-  .test-link {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --hover-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
 
 .home-container {
-  min-height: 100%;
-  min-width: 100%;
-
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
+  background: var(--primary-gradient);
+  padding: 2rem 1rem;
 }
 
 .home-content {
-  max-width: 1200px;
+  max-width: 900px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .home-header {
   text-align: center;
   color: white;
-  margin-bottom: 3rem;
+  margin-bottom: 0;
 
   h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    margin: 0 0 1rem;
+    margin: 0 0 0.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .subtitle {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     opacity: 0.95;
     margin: 0;
   }
 }
 
+// Captcha Section - Centered
 .captcha-section {
   background: white;
-  // outline: solid red 2px;
   border-radius: 16px;
-  padding: 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  // box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
 
-.captcha-controls {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-bottom: 1.5rem;
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 0;
+      color: #333;
+    }
+  }
 }
 
 .refresh-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-gradient);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 
   .refresh-icon {
     font-size: 1.2rem;
@@ -110,13 +81,9 @@
     transition: transform 0.3s ease;
   }
 
-  .refresh-text {
-    display: inline-block;
-  }
-
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 
     .refresh-icon {
       transform: rotate(180deg);
@@ -146,137 +113,222 @@
   }
 }
 
-.info-card {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 12px;
+.captcha-wrapper {
+  width: 100%;
+  max-height: 450px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+
+  ngx-dice-captcha {
+    width: 100%;
+    max-width: 800px;
+    display: block;
+
+    ::ng-deep .ngx-dice-captcha-container {
+      max-width: none !important;
+      width: 100%;
+    }
+  }
+}
+
+// Info Grid - Two columns below captcha
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.features-card,
+.developer-card {
+  background: white;
+  border-radius: 16px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hover-shadow);
+  }
 
   h2 {
     font-size: 1.5rem;
     margin: 0 0 1rem;
     color: #333;
   }
-
-  ol {
-    margin: 0 0 1rem;
-    padding-left: 1.5rem;
-    line-height: 1.8;
-    color: #555;
-  }
-
-  .info-note {
-    background: rgba(102, 126, 234, 0.1);
-    border-left: 4px solid #667eea;
-    padding: 1rem;
-    margin: 1rem 0 0;
-    border-radius: 4px;
-    color: #333;
-  }
 }
 
-.captcha-wrapper {
-  width: 100%;
-  height: auto;
-  margin: 2rem 0;
-  position: relative;
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-  & ngx-dice-captcha {
-    width: 100%;
-    display: block;
-    position: relative;
-
-    // Minimal overrides - let the component's container queries handle responsiveness
-    ::ng-deep .ngx-dice-captcha-container {
-      max-width: none !important;
-      width: 100%;
-      padding: 0 !important;
-    }
-
-    // Optional: Control gap between canvas and other elements
-    ::ng-deep .captcha-content {
-      gap: var(--captcha-gap-desktop);
-    }
-
-    // Let the library component handle canvas sizing via container queries
-    // Remove forced aspect-ratio and min-height to prevent conflicts
-  }
-}
-
-.dice-values-display {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border: 2px solid #e9ecef;
-
-  h3 {
-    font-size: 1.25rem;
-    margin: 0 0 1rem;
-    color: #333;
-    text-align: center;
-  }
-
-  .dice-values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  li {
+    display: flex;
     gap: 1rem;
-    margin-bottom: 1rem;
-  }
+    align-items: start;
 
-  .dice-value-card {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .feature-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
 
-    .dice-label {
+    strong {
       display: block;
-      font-size: 0.875rem;
+      color: #333;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    p {
+      margin: 0;
       color: #666;
-      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
     }
-
-    .dice-value {
-      display: block;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #667eea;
-    }
-  }
-
-  .sum-display {
-    text-align: center;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 8px;
-    margin-bottom: 1rem;
-
-    .sum-label {
-      font-size: 0.875rem;
-      color: rgba(255, 255, 255, 0.9);
-      margin-right: 0.5rem;
-    }
-
-    .sum-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: white;
-    }
-  }
-
-  .helper-text {
-    text-align: center;
-    color: #666;
-    margin: 0;
-    font-size: 0.875rem;
   }
 }
 
+.developer-info {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+
+  .developer-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .developer-details {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 0.25rem;
+      font-size: 1.2rem;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .developer-email {
+      margin: 0 0 0.5rem;
+      color: #666;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+
+    .developer-website {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.developer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .dev-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.65rem;
+    background: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--primary-gradient);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    span {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.actions-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hover-shadow);
+  }
+
+  .action-button {
+    flex: 1;
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    background: var(--primary-gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    &.secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      box-shadow: none;
+
+      &:hover {
+        background: #f8f9ff;
+      }
+    }
+  }
+}
+
+// Responsive Design
 @media (max-width: 768px) {
   .home-container {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .home-content {
+    gap: 1.5rem;
   }
 
   .home-header {
@@ -289,22 +341,31 @@
     }
   }
 
-  .captcha-section {
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .captcha-section,
+  .features-card,
+  .developer-card,
+  .actions-card {
     padding: 1rem;
   }
 
-  .captcha-wrapper {
-    margin: 1rem 0;
+  .actions-card {
+    flex-direction: column;
+  }
 
-    ngx-dice-captcha {
-      // Let container queries handle mobile sizing
-      ::ng-deep .captcha-content {
-        gap: var(--captcha-gap-mobile);
-      }
+  .features-list li {
+    gap: 0.75rem;
+
+    .feature-icon {
+      font-size: 1.25rem;
     }
   }
 
-  .dice-values-display .dice-values-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  .captcha-wrapper {
+    max-height: 400px;
   }
 }

@@ -1,205 +1,180 @@
-import { Component, signal, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 import { NgxDiceCaptchaComponent } from 'ngx-dice-captcha';
 
-interface ContainerSize {
+interface ScreenSize {
+  id: string;
   name: string;
-  emoji: string;
+  icon: string;
   width: number;
+  height: number;
   diceCount: number;
   description: string;
-  breakpoint: string;
+  category: 'mobile' | 'tablet' | 'desktop';
 }
 
 @Component({
   selector: 'app-responsive-test',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgxDiceCaptchaComponent],
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    NgxDiceCaptchaComponent,
+  ],
   templateUrl: './responsive-test.component.html',
   styleUrls: ['./responsive-test.component.scss'],
 })
-export class ResponsiveTestComponent implements OnDestroy {
-  @ViewChild('resizableContainer', { read: ElementRef }) resizableContainer?: ElementRef;
+export class ResponsiveTestComponent {
+  protected readonly selectedIndex = signal<number>(0);
+  protected readonly captchaConfigs = new Map<string, any>();
 
-  // Interactive resize state
-  protected readonly interactiveWidth = signal<number>(600);
-  protected readonly enableDynamicResize = signal<boolean>(true);
-  protected readonly resizeThreshold = signal<number>(50);
-  protected readonly autoStartEnabled = signal<boolean>(true);
+  constructor(private router: Router) {
+    this.initializeCaptchaConfigs();
+  }
 
-  // Resize tracking
-  private isResizing = false;
-  private startX = 0;
-  private startWidth = 0;
+  private initializeCaptchaConfigs(): void {
+    this.screenSizes.forEach(screen => {
+      this.captchaConfigs.set(screen.id, {
+        diceCount: screen.diceCount,
+        fillContainer: true,
+        maintainAspectRatio: false,
+        enableDynamicResize: true,
+        theme: {
+          primaryColor: '#667eea',
+          backgroundColor: '#f0f0f0',
+          diceColor: '#ffffff',
+          dotColor: '#000000',
+          enableShadows: true,
+          enableAmbientLight: true,
+        },
+        showTimer: true,
+        showAttempts: true,
+        compactMode: screen.category === 'mobile',
+      });
+    });
+  }
 
-  // Container sizes for side-by-side comparison
-  protected readonly containerSizes: ContainerSize[] = [
+
+
+  protected readonly screenSizes: ScreenSize[] = [
     {
-      name: 'Tiny',
-      emoji: '📱',
-      width: 280,
+      id: 'mobile-small',
+      name: 'Mobile S',
+      icon: 'smartphone',
+      width: 320,
+      height: 568,
       diceCount: 2,
-      description: 'Ultra-compact mobile view',
-      breakpoint: 'compact',
+      description: 'iPhone SE, Galaxy S8',
+      category: 'mobile',
     },
     {
-      name: 'Small',
-      emoji: '📱',
-      width: 380,
+      id: 'mobile-medium',
+      name: 'Mobile M',
+      icon: 'phone_iphone',
+      width: 375,
+      height: 667,
       diceCount: 2,
-      description: 'Mobile device container',
-      breakpoint: 'compact',
+      description: 'iPhone 8, iPhone X',
+      category: 'mobile',
     },
     {
-      name: 'Medium',
-      emoji: '💻',
-      width: 550,
+      id: 'mobile-large',
+      name: 'Mobile L',
+      icon: 'phone_android',
+      width: 414,
+      height: 896,
       diceCount: 3,
-      description: 'Tablet & small desktop',
-      breakpoint: 'standard',
+      description: 'iPhone 14 Pro Max, Pixel 7',
+      category: 'mobile',
     },
     {
-      name: 'Large',
-      emoji: '🖥️',
-      width: 750,
+      id: 'tablet',
+      name: 'Tablet',
+      icon: 'tablet_mac',
+      width: 768,
+      height: 1024,
       diceCount: 4,
-      description: 'Desktop container',
-      breakpoint: 'expanded',
+      description: 'iPad, Galaxy Tab',
+      category: 'tablet',
     },
     {
-      name: 'XL',
-      emoji: '🎬',
-      width: 1000,
+      id: 'laptop',
+      name: 'Laptop',
+      icon: 'laptop',
+      width: 1024,
+      height: 768,
       diceCount: 4,
-      description: 'Wide desktop layout',
-      breakpoint: 'expanded',
+      description: 'Small laptops, netbooks',
+      category: 'desktop',
     },
     {
-      name: 'XXL',
-      emoji: '🖼️',
-      width: 1400,
+      id: 'desktop',
+      name: 'Desktop',
+      icon: 'desktop_windows',
+      width: 1440,
+      height: 900,
       diceCount: 5,
-      description: 'Ultra-wide display',
-      breakpoint: 'expanded',
+      description: 'Standard desktop monitors',
+      category: 'desktop',
+    },
+    {
+      id: 'desktop-large',
+      name: 'Desktop L',
+      icon: 'monitor',
+      width: 1920,
+      height: 1080,
+      diceCount: 6,
+      description: 'Full HD displays',
+      category: 'desktop',
+    },
+    {
+      id: 'ultrawide',
+      name: 'Ultrawide',
+      icon: 'tv',
+      width: 2560,
+      height: 1080,
+      diceCount: 6,
+      description: 'Ultrawide monitors, 4K displays',
+      category: 'desktop',
     },
   ];
 
-  // Example code for documentation
-  protected readonly exampleCode = `<ngx-dice-captcha
-  [config]="{
-    diceCount: 3,
-    fillContainer: false,
-    maintainAspectRatio: true,
-    enableDynamicResize: true,
-    resizeThreshold: 50
-  }"
-  [autoStart]="false">
-</ngx-dice-captcha>`;
-
-  constructor() {
-    // Bind event listeners for resize
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
+  protected onTabChange(index: number): void {
+    this.selectedIndex.set(index);
   }
 
-  ngOnDestroy(): void {
-    // Clean up event listeners
-    this.stopResize();
+  protected onVerified(result: any, screenName: string): void {
+    console.log(`✓ Verified on ${screenName}:`, result);
   }
 
-  /**
-   * Set container width to predefined size
-   */
-  protected setContainerWidth(width: number): void {
-    this.interactiveWidth.set(width);
+  protected getCaptchaConfig(screenId: string): any {
+    return this.captchaConfigs.get(screenId) || {};
   }
 
-  /**
-   * Start resize operation
-   */
-  protected startResize(event: MouseEvent | TouchEvent): void {
-    event.preventDefault();
-    this.isResizing = true;
-
-    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-    this.startX = clientX;
-    this.startWidth = this.interactiveWidth();
-
-    // Add global event listeners
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
-    document.addEventListener('touchmove', this.onMouseMove);
-    document.addEventListener('touchend', this.onMouseUp);
-
-    // Prevent text selection during resize
-    document.body.style.userSelect = 'none';
-    document.body.style.cursor = 'ew-resize';
+  protected getCategoryColor(category: string): string {
+    switch (category) {
+      case 'mobile':
+        return 'primary';
+      case 'tablet':
+        return 'accent';
+      case 'desktop':
+        return 'warn';
+      default:
+        return 'primary';
+    }
   }
 
-  /**
-   * Handle mouse/touch move during resize
-   */
-  private onMouseMove(event: MouseEvent | TouchEvent): void {
-    if (!this.isResizing) return;
-
-    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-    const deltaX = clientX - this.startX;
-    const newWidth = Math.max(200, Math.min(1600, this.startWidth + deltaX));
-
-    this.interactiveWidth.set(Math.round(newWidth));
-  }
-
-  /**
-   * Stop resize operation
-   */
-  private onMouseUp(): void {
-    if (!this.isResizing) return;
-
-    this.stopResize();
-  }
-
-  /**
-   * Clean up resize listeners
-   */
-  private stopResize(): void {
-    this.isResizing = false;
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('mouseup', this.onMouseUp);
-    document.removeEventListener('touchmove', this.onMouseMove);
-    document.removeEventListener('touchend', this.onMouseUp);
-
-    // Restore normal cursor and text selection
-    document.body.style.userSelect = '';
-    document.body.style.cursor = '';
-  }
-
-  /**
-   * Toggle dynamic resize feature
-   */
-  protected toggleDynamicResize(): void {
-    this.enableDynamicResize.update((value) => !value);
-  }
-
-  /**
-   * Toggle autoStart feature
-   */
-  protected toggleAutoStart(): void {
-    this.autoStartEnabled.update((value) => !value);
-  }
-
-  /**
-   * Update resize threshold
-   */
-  protected updateResizeThreshold(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.resizeThreshold.set(parseInt(input.value, 10));
-  }
-
-  /**
-   * Handle verification result
-   */
-  protected onVerificationResult(result: any, containerName: string): void {
-    console.log(`Verification result from ${containerName}:`, result);
+  protected goHome(): void {
+    this.router.navigate(['/']);
   }
 }
