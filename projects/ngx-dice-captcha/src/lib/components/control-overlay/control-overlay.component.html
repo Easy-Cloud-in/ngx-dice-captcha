@@ -1,5 +1,6 @@
-<mat-card class="control-overlay" [class]="getPositionClass() + ' ' + getLayoutClass()" role="region"
-    aria-label="Dice CAPTCHA controls">
+<mat-card class="control-overlay" [class]="getPositionClass() + ' ' + getLayoutClass()"
+    [class.layout-vertical]="layoutMode() === 'vertical'" [class.layout-horizontal]="layoutMode() === 'horizontal'"
+    role="region" aria-label="Dice CAPTCHA controls">
 
     <!-- Cooldown Message -->
     @if (isInCooldown()) {
@@ -59,9 +60,7 @@
             aria-label="Verify your dice values and sum">
             <!-- <mat-icon aria-hidden="true">check_circle</mat-icon> -->
             <span class="btn-text">Verify</span>
-        </button>After each task is completed, Kiro automatically generates a summary of the work done. However, this
-        behavior can be disabled. Ideally, Kiro should only create a summary after the user has reviewed and confirmed
-        the task’s outcome. At present, it generates the summary prematurely—before the user verifies the results.
+        </button>
         }
     </form>
     }

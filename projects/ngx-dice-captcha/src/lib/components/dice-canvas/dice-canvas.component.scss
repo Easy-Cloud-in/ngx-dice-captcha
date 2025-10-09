@@ -290,8 +290,8 @@
 // Small containers (< 500px width) - Typically mobile devices
 @container dice-canvas (max-width: 500px) {
   .dice-canvas-container {
-    aspect-ratio: 4 / 3; // Square-ish aspect ratio for mobile
-    min-height: 400px; // Significantly increased from 300px for better visibility
+    aspect-ratio: 3 / 4; // Taller aspect ratio for mobile (portrait)
+    min-height: 500px; // Increased for more vertical space for dice to fall
   }
 
   .dice-results {
@@ -512,8 +512,8 @@
 @supports not (container-type: size) {
   @include mobile {
     .dice-canvas-container {
-      aspect-ratio: 4 / 3; // Match container query value
-      min-height: 400px;
+      aspect-ratio: 3 / 4; // Match container query value - taller for portrait
+      min-height: 500px;
     }
 
     .dice-results {

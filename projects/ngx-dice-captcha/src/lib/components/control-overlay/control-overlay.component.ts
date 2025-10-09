@@ -8,6 +8,8 @@ import {
   ElementRef,
   inject,
   linkedSignal,
+  OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +19,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { FormFocusFlowDirective } from '../../directives/form-focus-flow.directive';
+
+/**
+ * Layout mode for control overlay.
+ * - 'vertical': Left-aligned, stacked layout for small screens (< 785px)
+ * - 'horizontal': Centered, row layout for large screens (≥ 785px)
+ */
+type ControlOverlayLayoutMode = 'vertical' | 'horizontal';
 
 /**
  * Control overlay component that displays dice roll and verification controls.
@@ -60,7 +69,7 @@ import { FormFocusFlowDirective } from '../../directives/form-focus-flow.directi
   templateUrl: './control-overlay.component.html',
   styleUrls: ['./control-overlay.component.scss'],
 })
-export class ControlOverlayComponent {
+export class ControlOverlayComponent implements OnInit, OnDestroy {
   /**
    * Number of dice in the challenge
    */
@@ -200,6 +209,33 @@ export class ControlOverlayComponent {
   shouldAutoFocus = signal<boolean>(false);
 
   /**
+   * Signal tracking the container width for responsive layout detection.
+   * Updated by ResizeObserver for browsers without container query support.
+   * Default value (1024) ensures horizontal layout as fallback.
+   * @since 2.3.0
+   */
+  containerWidth = signal<number>(1024);
+
+  /**
+   * Computed signal for layout mode based on container width.
+   * Returns 'vertical' for < 600px, 'horizontal' for ≥ 600px.
+   * Used as fallback for browsers without container query support.
+   * @since 2.3.0
+   */
+  readonly layoutMode = computed<ControlOverlayLayoutMode>(() => {
+    const width = this.containerWidth();
+    return width < 600 ? 'vertical' : 'horizontal';
+  });
+
+  /**
+   * ResizeObserver instance for monitoring container size changes.
+   * Only used as fallback for browsers without container query support.
+   * Cleaned up in ngOnDestroy to prevent memory leaks.
+   * @since 2.3.0
+   */
+  private resizeObserver?: ResizeObserver;
+
+  /**
    * Signal to trigger focus on roll button
    */
   shouldFocusRollButton = signal<boolean>(false);
@@ -241,6 +277,29 @@ export class ControlOverlayComponent {
         }, 100);
       }
     });
+  }
+
+  /**
+   * Initialize component and set up container monitoring for responsive layout.
+   * Requirements: 1.1, 9.6
+   * @since 2.3.0
+   */
+  ngOnInit(): void {
+    // Initialize container monitoring for fallback
+    this.initializeContainerMonitoring();
+  }
+
+  /**
+   * Clean up resources on component destruction.
+   * Disconnects ResizeObserver to prevent memory leaks.
+   * Requirements: 9.5
+   * @since 2.3.0
+   */
+  ngOnDestroy(): void {
+    // Disconnect ResizeObserver if it exists
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   /**
@@ -377,7 +436,8 @@ export class ControlOverlayComponent {
    * Get CSS classes for layout
    */
   getLayoutClass(): string {
-    return this.isHorizontal() ? 'layout-horizontal' : 'layout-vertical';
+    // Use computed layoutMode based on container width instead of isHorizontal input
+    return this.layoutMode() === 'horizontal' ? 'layout-horizontal' : 'layout-vertical';
   }
 
   /**
@@ -557,5 +617,62 @@ export class ControlOverlayComponent {
     setTimeout(() => {
       this.isAnimatingPosition.set(false);
     }, 300);
+  }
+
+  /**
+   * Checks if browser supports CSS container queries.
+   * Uses CSS.supports() to detect 'container-type: inline-size' support.
+   * Requirements: 9.1, 9.2
+   * @returns boolean indicating container query support
+   * @since 2.3.0
+   */
+  private supportsContainerQueries(): boolean {
+    return CSS.supports('container-type: inline-size');
+  }
+
+  /**
+   * Initializes container size monitoring using ResizeObserver.
+   * Monitors the parent canvas container width and updates containerWidth signal.
+   * Used for both container query support detection and fallback.
+   * Handles errors gracefully with fallback to default width (1024px).
+   * Requirements: 1.6, 1.10, 9.3, 9.4
+   * @since 2.3.0
+   */
+  private initializeContainerMonitoring(): void {
+    try {
+      // Find the parent .dice-canvas-container element
+      const canvasContainer = this.elementRef.nativeElement.closest('.dice-canvas-container');
+
+      if (!canvasContainer) {
+        // Fallback to default horizontal layout
+        console.warn('Control overlay: Canvas container not found, using default layout');
+        this.containerWidth.set(1024);
+        return;
+      }
+
+      // Create ResizeObserver to monitor canvas container size
+      this.resizeObserver = new ResizeObserver((entries) => {
+        try {
+          for (const entry of entries) {
+            // Update containerWidth signal on resize
+            const width = entry.contentRect.width;
+            this.containerWidth.set(width);
+          }
+        } catch (error) {
+          console.warn('Control overlay: Resize observation error', error);
+        }
+      });
+
+      // Start observing the canvas container
+      this.resizeObserver.observe(canvasContainer);
+
+      // Set initial width
+      const rect = canvasContainer.getBoundingClientRect();
+      this.containerWidth.set(rect.width);
+    } catch (error) {
+      // Handle errors gracefully with fallback to default width
+      console.warn('Control overlay: Failed to initialize container monitoring', error);
+      this.containerWidth.set(1024); // Default to horizontal
+    }
   }
 }

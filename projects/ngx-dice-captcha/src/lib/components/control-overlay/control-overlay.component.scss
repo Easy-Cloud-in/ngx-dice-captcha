@@ -1,6 +1,11 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+// Set up container context for responsive layout
+:host {
+  display: contents; // Make host transparent in layout
+}
+
 .control-overlay {
   position: absolute;
   z-index: 1000;
@@ -29,6 +34,9 @@
       transform: scale(1);
     }
   }
+
+  // Smooth transitions for responsive layout changes
+  transition: all 300ms ease-in-out;
 
   // Smooth position transitions
   &.animating-position {
@@ -490,5 +498,750 @@
     min-height: 36px !important;
     padding: 0 16px !important;
     line-height: 36px !important;
+  }
+}
+
+// ============================================================================
+// MOBILE LAYOUTS - Progressive sizing based on container width
+// ============================================================================
+
+// Mobile Small (< 360px) - Ultra-compact
+@container dice-canvas (max-width: 359px) {
+  .control-overlay {
+    top: 0.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100% - 0.5rem);
+    padding: 0.2rem !important;
+    border-radius: 6px !important;
+  }
+
+  .controls-wrapper {
+    flex-direction: row;
+    gap: 0.2rem;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .dice-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    gap: 0.15rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dice-input {
+    width: 22px;
+    height: 22px;
+    font-size: 0.5625rem;
+  }
+
+  .input-label {
+    font-size: 0.4375rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .sum-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sum-input {
+    width: 28px;
+    height: 22px;
+    font-size: 0.5625rem;
+  }
+
+  .inputs-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    align-items: center;
+  }
+
+  .sum-wrapper {
+    margin-top: 0;
+  }
+
+  .btn-roll,
+  .btn-verify {
+    width: auto !important;
+    min-width: auto !important;
+    max-width: fit-content !important;
+    min-height: 22px !important;
+    padding: 2px 5px !important;
+    font-size: 0.5rem !important;
+    line-height: 18px !important;
+    border-radius: 11px !important;
+    flex-shrink: 0;
+
+    ::ng-deep .mat-icon {
+      font-size: 11px;
+      width: 11px;
+      height: 11px;
+    }
+
+    .btn-text {
+      font-size: 0.5rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+// Mobile Medium (360px - 414px) - Balanced
+@container dice-canvas (min-width: 360px) and (max-width: 414px) {
+  .control-overlay {
+    top: 0.3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100% - 0.6rem);
+    padding: 0.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .controls-wrapper {
+    flex-direction: row;
+    gap: 0.25rem;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .dice-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    gap: 0.2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dice-input {
+    width: 26px;
+    height: 26px;
+    font-size: 0.6875rem;
+  }
+
+  .input-label {
+    font-size: 0.5rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .sum-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sum-input {
+    width: 34px;
+    height: 26px;
+    font-size: 0.6875rem;
+  }
+
+  .inputs-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .sum-wrapper {
+    margin-top: 0;
+  }
+
+  .btn-roll,
+  .btn-verify {
+    width: auto !important;
+    min-width: auto !important;
+    max-width: fit-content !important;
+    min-height: 24px !important;
+    padding: 2px 6px !important;
+    font-size: 0.5625rem !important;
+    line-height: 20px !important;
+    border-radius: 12px !important;
+    flex-shrink: 0;
+
+    ::ng-deep .mat-icon {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    .btn-text {
+      font-size: 0.5625rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+// Mobile Large (415px - 599px) - More spacious
+@container dice-canvas (min-width: 415px) and (max-width: 599px) {
+  .control-overlay {
+    top: 0.375rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100% - 0.75rem);
+    padding: 0.3rem !important;
+    border-radius: 8px !important;
+  }
+
+  .controls-wrapper {
+    flex-direction: row;
+    gap: 0.3rem;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .dice-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    gap: 0.25rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dice-input {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .input-label {
+    font-size: 0.5625rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .sum-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sum-input {
+    width: 38px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .inputs-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    align-items: center;
+  }
+
+  .sum-wrapper {
+    margin-top: 0;
+  }
+
+  .btn-roll,
+  .btn-verify {
+    width: auto !important;
+    min-width: auto !important;
+    max-width: fit-content !important;
+    min-height: 26px !important;
+    padding: 3px 8px !important;
+    font-size: 0.625rem !important;
+    line-height: 20px !important;
+    border-radius: 13px !important;
+    flex-shrink: 0;
+
+    ::ng-deep .mat-icon {
+      font-size: 13px;
+      width: 13px;
+      height: 13px;
+    }
+
+    .btn-text {
+      font-size: 0.625rem;
+      white-space: nowrap;
+    }
+  }
+
+  // Overlay header (if present)
+  .overlay-header {
+    font-size: 0.6875rem;
+    padding: 0.375rem;
+    gap: 0.25rem;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  // Instructions text
+  .instructions-text {
+    font-size: 0.625rem;
+    line-height: 1.3;
+    padding: 0.375rem;
+  }
+}
+
+// ============================================================================
+// HORIZONTAL LAYOUT - Container width ≥ 600px
+// ============================================================================
+
+@container dice-canvas (min-width: 600px) {
+  .control-overlay {
+    // Position at top-left
+    top: 1rem;
+    left: 1rem;
+    transform: none;
+
+    // Auto width to fit content
+    max-width: none;
+    width: auto;
+  }
+
+  .controls-wrapper {
+    // Horizontal row layout
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  // Dice inputs - horizontal row
+  .dice-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+  }
+
+  .input-wrapper {
+    gap: 0.375rem;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dice-input {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .input-label {
+    font-size: 0.625rem;
+  }
+
+  // Sum wrapper
+  .sum-wrapper {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  // Sum input
+  .sum-input {
+    width: 60px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  // Inputs group - horizontal
+  .inputs-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  // Action buttons
+  .btn-roll,
+  .btn-verify {
+    min-width: auto;
+    padding: 0 16px !important;
+    font-size: 0.8125rem !important;
+    border-radius: 20px !important;
+    flex-shrink: 0;
+
+    ::ng-deep .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Overlay header (if present)
+  .overlay-header {
+    // Set font-size to 0.875rem
+    font-size: 0.875rem;
+    // Set padding to 0.5rem
+    padding: 0.5rem;
+    // Set gap to 0.5rem
+    gap: 0.5rem;
+
+    // Set icon size to 18px
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Instructions text
+  .instructions-text {
+    // Set font-size to 0.875rem
+    font-size: 0.875rem;
+    // Set line-height to 1.5
+    line-height: 1.5;
+    // Set padding to 0.5rem
+    padding: 0.5rem;
+  }
+}
+
+// ============================================================================
+// DESKTOP AND WIDER SCREENS - Container width ≥ 1400px
+// ============================================================================
+
+@container dice-canvas (min-width: 1400px) {
+  .control-overlay {
+    // Increased spacing for desktop and wider screens
+    padding: 1rem;
+  }
+
+  // Override position classes for desktop spacing
+  .overlay-top-left {
+    top: 2rem;
+    left: 2rem;
+  }
+
+  .overlay-top-right {
+    top: 2rem;
+    right: 2rem;
+  }
+
+  .overlay-top-center {
+    top: 2rem;
+  }
+
+  .overlay-bottom-left {
+    bottom: 2rem;
+    left: 2rem;
+  }
+
+  .overlay-bottom-right {
+    bottom: 2rem;
+    right: 2rem;
+  }
+
+  .controls-wrapper {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .dice-inputs {
+    gap: 0.5rem;
+  }
+
+  .inputs-group {
+    gap: 0.75rem;
+  }
+}
+
+// ============================================================================
+// FALLBACK STYLES - For browsers without container query support
+// ============================================================================
+
+@supports not (container-type: inline-size) {
+  // Vertical layout fallback (< 600px) - now horizontal for compact display
+  .control-overlay.layout-vertical {
+    // Position at top-center for horizontal layout
+    top: 0.375rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    // Auto width to fit horizontal content
+    width: auto;
+    max-width: calc(100% - 0.75rem);
+
+    // Minimal padding
+    padding: 0.25rem !important;
+    border-radius: 8px !important;
+
+    .controls-wrapper {
+      flex-direction: row;
+      gap: 0.25rem;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    // Dice inputs - horizontal row
+    .dice-inputs {
+      display: flex;
+      flex-direction: row;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    .input-wrapper {
+      gap: 0.2rem;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dice-input {
+      width: 24px;
+      height: 24px;
+      font-size: 0.625rem;
+    }
+
+    .input-label {
+      font-size: 0.5rem;
+      min-width: auto;
+      text-align: center;
+      line-height: 1;
+    }
+
+    // Sum wrapper - vertical (label on top)
+    .sum-wrapper {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // Sum input
+    .sum-input {
+      width: 32px;
+      height: 24px;
+      font-size: 0.625rem;
+    }
+
+    // Inputs group - horizontal row
+    .inputs-group {
+      display: flex;
+      flex-direction: row;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    // Remove margin from sum wrapper
+    .sum-wrapper {
+      margin-top: 0;
+    }
+
+    // Action buttons - very compact
+    .btn-roll,
+    .btn-verify {
+      width: auto !important;
+      min-width: auto !important;
+      max-width: fit-content !important;
+      min-height: 24px !important;
+      padding: 2px 6px !important;
+      font-size: 0.5625rem !important;
+      line-height: 20px !important;
+      border-radius: 12px !important;
+      flex-shrink: 0;
+
+      ::ng-deep .mat-icon {
+        font-size: 12px;
+        width: 12px;
+        height: 12px;
+      }
+
+      .btn-text {
+        font-size: 0.5625rem;
+        white-space: nowrap;
+      }
+    }
+
+    // Overlay header (if present)
+    .overlay-header {
+      font-size: 0.6875rem;
+      padding: 0.375rem;
+      gap: 0.25rem;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    // Instructions text
+    .instructions-text {
+      font-size: 0.625rem;
+      line-height: 1.3;
+      padding: 0.375rem;
+    }
+  }
+
+  // Horizontal layout fallback (≥ 600px)
+  .control-overlay.layout-horizontal {
+    // Position at top-left
+    top: 1rem;
+    left: 1rem;
+    transform: none;
+
+    // Auto width to fit content
+    max-width: none;
+    width: auto;
+
+    .controls-wrapper {
+      // Horizontal row layout
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+
+    // Dice inputs - horizontal row
+    .dice-inputs {
+      display: flex;
+      flex-direction: row;
+      gap: 0.375rem;
+    }
+
+    .input-wrapper {
+      gap: 0.375rem;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .dice-input {
+      width: 36px;
+      height: 36px;
+      font-size: 1rem;
+    }
+
+    .input-label {
+      font-size: 0.625rem;
+    }
+
+    // Sum wrapper
+    .sum-wrapper {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    // Sum input
+    .sum-input {
+      width: 60px;
+      height: 36px;
+      font-size: 1rem;
+    }
+
+    // Inputs group - horizontal
+    .inputs-group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    // Action buttons
+    .btn-roll,
+    .btn-verify {
+      min-width: auto;
+      padding: 0 16px !important;
+      font-size: 0.8125rem !important;
+      border-radius: 20px !important;
+      flex-shrink: 0;
+
+      ::ng-deep .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    // Overlay header (if present)
+    .overlay-header {
+      // Set font-size to 0.875rem
+      font-size: 0.875rem;
+      // Set padding to 0.5rem
+      padding: 0.5rem;
+      // Set gap to 0.5rem
+      gap: 0.5rem;
+
+      // Set icon size to 18px
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    // Instructions text
+    .instructions-text {
+      // Set font-size to 0.875rem
+      font-size: 0.875rem;
+      // Set line-height to 1.5
+      line-height: 1.5;
+      // Set padding to 0.5rem
+      padding: 0.5rem;
+    }
+  }
+
+  // Desktop and wider screens fallback (≥ 1400px)
+  @media (min-width: 1400px) {
+    .control-overlay.layout-horizontal {
+      // Increased spacing for desktop and wider screens
+      padding: 1rem;
+
+      &.overlay-top-left {
+        top: 2rem;
+        left: 2rem;
+      }
+
+      &.overlay-top-right {
+        top: 2rem;
+        right: 2rem;
+      }
+
+      &.overlay-top-center {
+        top: 2rem;
+      }
+
+      &.overlay-bottom-left {
+        bottom: 2rem;
+        left: 2rem;
+      }
+
+      &.overlay-bottom-right {
+        bottom: 2rem;
+        right: 2rem;
+      }
+
+      .controls-wrapper {
+        gap: 0.75rem;
+        padding: 0.75rem;
+      }
+
+      .dice-inputs {
+        gap: 0.5rem;
+      }
+
+      .inputs-group {
+        gap: 0.75rem;
+      }
+    }
   }
 }

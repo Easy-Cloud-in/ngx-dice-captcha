@@ -11,6 +11,88 @@ A modern Angular 20 library providing an interactive 3D dice-based CAPTCHA syste
 
 > 🎲 **Interactive 3D Dice CAPTCHA** - Engage users with realistic physics-based dice rolling in a beautiful WebGL canvas with customizable themes and multiple verification modes.
 
+---
+
+## ⚠️ SECURITY WARNING - READ BEFORE USE
+
+> **🚨 This library is NOT SECURE for production use in security-critical applications.**
+
+### Current Security Status (v2.x)
+
+| Aspect               | Status  | Details                           |
+| -------------------- | ------- | --------------------------------- |
+| **Security Rating**  | 2/10 ⚠️ | Client-side only, easily bypassed |
+| **Bot Resistance**   | 0%      | Bots bypass in < 1 second         |
+| **Production Ready** | ❌ NO   | Educational/demo use only         |
+
+### Critical Limitations
+
+- ❌ **Client-side only validation** - All verification happens in the browser
+- ❌ **No backend integration** - Tokens can be easily forged (Base64, not encrypted)
+- ❌ **Easily bypassed by bots** - Simple browser console commands bypass it
+- ❌ **No replay attack prevention** - Tokens can be reused indefinitely
+- ❌ **No rate limiting** - Client-side rate limits are easily bypassed
+
+### ✅ Safe Use Cases (Educational/Non-Critical)
+
+- 📚 **Educational projects** - Learning Angular, Three.js, or physics simulation
+- 🎨 **UX prototypes** - Demonstrating interactive CAPTCHA concepts
+- 📝 **Non-critical forms** - Surveys, feedback forms, newsletter signups (with spam monitoring)
+- 🧪 **Development/testing** - Testing form flows and user interactions
+- 🎮 **Gamification** - Adding interactive elements to non-security contexts
+
+### ❌ DO NOT USE FOR (Security-Critical)
+
+- 🔐 **Authentication** - Login, registration, password reset forms
+- 💳 **Financial transactions** - Payments, banking, e-commerce checkouts
+- 🛡️ **Data protection** - Forms handling sensitive personal information
+- 🚫 **Spam prevention** - Contact forms, comment sections (it won't work)
+- 🤖 **Bot protection** - API endpoints, automated abuse prevention (it won't work)
+
+### 🔒 Production-Ready Alternatives
+
+If you need actual security, use these proven solutions:
+
+| Solution                                                               | Security | Privacy               | Cost | Best For               |
+| ---------------------------------------------------------------------- | -------- | --------------------- | ---- | ---------------------- |
+| [reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3)        | 9/10     | Low (Google tracking) | Free | Most applications      |
+| [hCaptcha](https://www.hcaptcha.com/)                                  | 8/10     | High                  | Free | Privacy-conscious apps |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | 9/10     | High                  | Free | Cloudflare users       |
+
+### 🚀 Future: v3.0.0 (Planned)
+
+We're working on making this production-ready:
+
+**Planned Features:**
+
+- ✅ Backend validation service (Node.js, Express, NestJS)
+- ✅ Cryptographic token signing (JWT with HMAC-SHA256)
+- ✅ Server-side rate limiting (Redis-based)
+- ✅ Bot detection (behavioral analysis, device fingerprinting)
+- ✅ Replay attack prevention
+- ✅ **Target Security Rating: 7-8/10**
+
+**Timeline:** Q2-Q3 2025 (tentative)
+
+### 📚 Security Documentation
+
+**Before using this library, please read:**
+
+- [Security Analysis Report](../../docs/SECURITY_ANALYSIS.md) - Complete vulnerability assessment (10 critical issues)
+- [Security Improvement Roadmap](../../docs/SECURITY_IMPROVEMENT_ROADMAP.md) - Detailed plan for v3.0.0
+- [Security Summary](../../docs/SECURITY_SUMMARY.md) - Executive summary and recommendations
+
+### 💡 Responsible Use
+
+By using this library, you acknowledge:
+
+1. You understand it is **not secure** for production security use
+2. You will **not use it** for authentication, payments, or sensitive data
+3. You will implement **additional security layers** if using in production
+4. You will **inform users** if using it in a public-facing application
+
+---
+
 ## ✨ Features
 
 - 🎲 **Realistic 3D Dice** - Physics-based dice rolling using Three.js and Cannon-es

@@ -7,6 +7,53 @@
 
 A modern Angular workspace containing an interactive 3D dice-based CAPTCHA library with realistic physics simulation using Three.js and Cannon-es.
 
+---
+
+## ⚠️ SECURITY WARNING - READ BEFORE USE
+
+> **This library is currently NOT SECURE for production use in security-critical applications.**
+
+### Current Limitations (v2.x)
+
+- ❌ **Client-side only validation** - All verification happens in the browser
+- ❌ **No backend integration** - Tokens can be easily forged
+- ❌ **Easily bypassed by bots** - 100% bypass rate with simple scripts
+- ❌ **No replay attack prevention** - Tokens can be reused indefinitely
+
+**Security Rating: 2/10** ⚠️ | **Bot Resistance: 0%** - Bots can bypass this in under 1 second.
+
+### ✅ Appropriate Use Cases
+
+- 📚 Educational demonstrations and learning projects
+- 🎨 UX prototypes and design mockups
+- 📝 Non-security-critical forms (surveys, feedback)
+- 🧪 Development and testing environments
+
+### ❌ DO NOT USE FOR
+
+- 🔐 Login or registration forms
+- 💳 Payment or financial transactions
+- 🛡️ Any security-critical applications
+- 🚫 Spam prevention or bot protection
+
+### 🔒 For Production Use
+
+Consider these production-ready alternatives:
+
+- [reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) - Google's invisible CAPTCHA
+- [hCaptcha](https://www.hcaptcha.com/) - Privacy-focused alternative
+- [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) - Privacy-first CAPTCHA
+
+Or wait for **v3.0.0** (planned) which will include backend validation and production-ready security.
+
+**📚 Detailed Security Analysis:**
+
+- [Security Analysis Report](./docs/SECURITY_ANALYSIS.md) - Complete vulnerability assessment
+- [Security Improvement Roadmap](./docs/SECURITY_IMPROVEMENT_ROADMAP.md) - Path to v3.0.0
+- [Security Summary](./docs/SECURITY_SUMMARY.md) - Executive summary
+
+---
+
 ## 📦 What's Included
 
 This workspace contains:

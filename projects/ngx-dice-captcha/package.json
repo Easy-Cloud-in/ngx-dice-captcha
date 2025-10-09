@@ -1,7 +1,7 @@
 {
   "name": "ngx-dice-captcha",
   "version": "1.0.0",
-  "description": "A modern Angular 20 library implementing an interactive 3D dice-based CAPTCHA system with Three.js rendering and Cannon-es physics simulation",
+  "description": "⚠️ EDUCATIONAL ONLY - NOT PRODUCTION READY. Interactive 3D dice CAPTCHA for Angular 20 with Three.js. Client-side only, easily bypassed by bots. Use for learning/demos only, not for security. See security docs before use.",
   "author": "Sakr.sr <contact@easy-cloud.in>",
   "license": "MIT",
   "homepage": "https://github.com/Easy-Cloud-in/ngx-dice-captcha#readme",

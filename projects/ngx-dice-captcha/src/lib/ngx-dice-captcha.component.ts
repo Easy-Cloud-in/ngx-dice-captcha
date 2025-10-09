@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
   viewChild,
   HostListener,
+  isDevMode,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DiceCanvasComponent } from './components/dice-canvas/dice-canvas.component';
@@ -207,10 +208,39 @@ export class NgxDiceCaptchaComponent implements OnInit, OnDestroy {
   readonly overlayPosition = computed(() => this.effectiveConfig().overlayPosition ?? 'top-center');
 
   ngOnInit(): void {
+    // Display security warning in development mode
+    if (isDevMode()) {
+      this.displaySecurityWarning();
+    }
+
     this.checkMobileView();
     if (this.autoStart()) {
       this.startNewChallenge();
     }
+  }
+
+  /**
+   * Displays a security warning in the console to inform developers
+   * about the limitations of client-side only validation.
+   *
+   * @private
+   */
+  private displaySecurityWarning(): void {
+    console.warn(
+      '%c⚠️ NGX-DICE-CAPTCHA SECURITY WARNING',
+      'color: #ff6b6b; font-size: 16px; font-weight: bold; padding: 10px;',
+      '\n\n🚨 This CAPTCHA is NOT SECURE for production use!\n',
+      '\n❌ Client-side only validation',
+      '\n❌ Easily bypassed by bots (100% success rate)',
+      '\n❌ No backend verification',
+      '\n❌ Tokens can be forged',
+      '\n\n✅ Safe for: Education, demos, non-critical forms',
+      '\n❌ Do NOT use for: Login, payments, security-critical apps',
+      '\n\n📚 Read security analysis:',
+      '\nhttps://github.com/Easy-Cloud-in/ngx-dice-captcha/blob/main/docs/SECURITY_ANALYSIS.md',
+      '\n\n💡 For production, use: reCAPTCHA v3, hCaptcha, or Cloudflare Turnstile',
+      '\n🚀 Or wait for v3.0.0 with backend validation (planned Q2-Q3 2025)\n'
+    );
   }
 
   ngOnDestroy(): void {

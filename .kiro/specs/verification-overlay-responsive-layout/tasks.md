@@ -8,7 +8,7 @@ This implementation plan breaks down the responsive control overlay feature into
 
 ## Tasks
 
-- [ ] 1. Set up TypeScript infrastructure for layout detection
+- [x] 1. Set up TypeScript infrastructure for layout detection
 
   - Add layout mode type definition to control-overlay component
   - Add containerWidth signal for tracking canvas size
@@ -16,15 +16,15 @@ This implementation plan breaks down the responsive control overlay feature into
   - Add ResizeObserver property for cleanup
   - _Requirements: 1.1, 1.6, 1.10_
 
-- [ ] 2. Implement container query support detection
+- [x] 2. Implement container query support detection
 
-  - [ ] 2.1 Add supportsContainerQueries() private method
+  - [x] 2.1 Add supportsContainerQueries() private method
 
     - Use CSS.supports() to check for 'container-type: inline-size'
     - Return boolean indicating support
     - _Requirements: 9.1, 9.2_
 
-  - [ ] 2.2 Add initializeContainerMonitoring() private method
+  - [x] 2.2 Add initializeContainerMonitoring() private method
 
     - Check if container queries are supported, return early if yes
     - Find closest .dice-canvas-container element
@@ -33,49 +33,62 @@ This implementation plan breaks down the responsive control overlay feature into
     - Handle errors gracefully with fallback to default width
     - _Requirements: 1.6, 1.10, 9.3, 9.4_
 
-  - [ ] 2.3 Update ngOnInit lifecycle hook
+  - [x] 2.3 Update ngOnInit lifecycle hook
 
     - Call initializeContainerMonitoring() after existing initialization
     - Ensure no breaking changes to existing initialization logic
     - _Requirements: 1.1, 9.6_
 
-  - [ ] 2.4 Update ngOnDestroy lifecycle hook
+  - [x] 2.4 Update ngOnDestroy lifecycle hook
     - Disconnect ResizeObserver if it exists
     - Ensure proper cleanup to prevent memory leaks
     - _Requirements: 9.5_
 
-- [ ] 3. Update component template for layout mode binding
+- [x] 3. Update component template for layout mode binding
 
-  - [ ] 3.1 Add layout mode class bindings to overlay container
+  - [x] 3.1 Add layout mode class bindings to overlay container
+
     - Add [class.layout-vertical] binding to layoutMode() === 'vertical'
     - Add [class.layout-horizontal] binding to layoutMode() === 'horizontal'
     - Maintain all existing HTML structure and bindings
     - _Requirements: 1.7, 9.6_
 
-- [ ] 4. Implement CSS container query setup
+  - [x] 3.2 Update getLayoutClass() method to use layoutMode()
+    - Changed from using isHorizontal() input to layoutMode() computed signal
+    - This ensures layout is based on actual container width, not parent input
+    - _Requirements: 1.1, 1.7_
 
-  - [ ] 4.1 Add container context to :host
+- [x] 4. Implement CSS container query setup
+
+  - [x] 4.1 Add container context to :host
 
     - Set container-type: inline-size
     - Set container-name: control-overlay
     - _Requirements: 9.1_
 
-  - [ ] 4.2 Update base .control-overlay styles
+  - [x] 4.2 Fix container query selectors
+
+    - Removed container name from @container queries (use implicit container)
+    - Changed from `@container control-overlay (max-width: 784px)` to `@container (max-width: 784px)`
+    - This ensures queries work correctly with the :host container
+    - _Requirements: 9.1_
+
+  - [x] 4.2 Update base .control-overlay styles
     - Add smooth transition for all properties (300ms ease-in-out)
     - Add prefers-reduced-motion media query to disable transitions
     - Maintain existing positioning as default (horizontal layout)
     - _Requirements: 8.1, 8.2, 8.3, 8.9_
 
-- [ ] 5. Implement vertical layout styles (< 785px)
+- [x] 5. Implement vertical layout styles (< 785px)
 
-  - [ ] 5.1 Add container query for max-width 784px
+  - [x] 5.1 Add container query for max-width 784px
 
     - Position overlay at top-left (0.25rem, 0.25rem)
     - Set width to calc(100% - 0.5rem)
     - Remove transform (no centering)
     - _Requirements: 2.1, 2.2, 2.3, 2.9_
 
-  - [ ] 5.2 Style control card for vertical layout
+  - [x] 5.2 Style control card for vertical layout
 
     - Set padding to 0.5rem
     - Set border-radius to 8px
@@ -83,7 +96,7 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set gap to 0.5rem
     - _Requirements: 2.9_
 
-  - [ ] 5.3 Style dice inputs grid for vertical layout
+  - [x] 5.3 Style dice inputs grid for vertical layout
 
     - Set grid-template-columns to repeat(2, 1fr)
     - Set gap to 0.375rem
@@ -91,13 +104,13 @@ This implementation plan breaks down the responsive control overlay feature into
     - Reduce input padding to 0.375rem
     - _Requirements: 2.6, 4.1, 4.2, 5.1, 5.2_
 
-  - [ ] 5.4 Style sum input for vertical layout
+  - [x] 5.4 Style sum input for vertical layout
 
     - Set width to 100%
     - Set font-size to 0.875rem
     - _Requirements: 4.3, 4.4_
 
-  - [ ] 5.5 Style action buttons for vertical layout
+  - [x] 5.5 Style action buttons for vertical layout
 
     - Set flex-direction to column
     - Set gap to 0.375rem
@@ -108,7 +121,7 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set icon size to 16px
     - _Requirements: 2.4, 2.5, 4.5, 4.6, 6.1, 6.3, 6.5, 6.7, 6.10_
 
-  - [ ] 5.6 Style overlay header for vertical layout
+  - [x] 5.6 Style overlay header for vertical layout
 
     - Set font-size to 0.6875rem
     - Set padding to 0.375rem
@@ -116,22 +129,22 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set icon size to 14px
     - _Requirements: 4.7, 4.8_
 
-  - [ ] 5.7 Style instructions text for vertical layout
+  - [x] 5.7 Style instructions text for vertical layout
     - Set font-size to 0.625rem
     - Set line-height to 1.3
     - Set padding to 0.375rem
     - _Requirements: 4.9, 4.10_
 
-- [ ] 6. Implement horizontal layout styles (≥ 785px)
+- [x] 6. Implement horizontal layout styles (≥ 785px)
 
-  - [ ] 6.1 Add container query for min-width 785px
+  - [x] 6.1 Add container query for min-width 785px
 
     - Position overlay at top-center (1rem from top, centered)
     - Set max-width to 500px
     - Apply translateX(-50%) for centering
     - _Requirements: 3.1, 3.2, 3.3, 3.9_
 
-  - [ ] 6.2 Style control card for horizontal layout
+  - [x] 6.2 Style control card for horizontal layout
 
     - Set padding to 1rem
     - Set border-radius to 12px
@@ -139,7 +152,7 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set gap to 1rem
     - _Requirements: 3.8_
 
-  - [ ] 6.3 Style dice inputs grid for horizontal layout
+  - [x] 6.3 Style dice inputs grid for horizontal layout
 
     - Set grid-template-columns to repeat(auto-fit, minmax(80px, 1fr))
     - Set gap to 0.75rem
@@ -147,12 +160,12 @@ This implementation plan breaks down the responsive control overlay feature into
     - Use standard input padding (0.5rem)
     - _Requirements: 3.5, 4.1, 4.2, 5.3, 5.4_
 
-  - [ ] 6.4 Style sum input for horizontal layout
+  - [x] 6.4 Style sum input for horizontal layout
 
     - Use standard font-size (1rem)
     - _Requirements: 4.3, 4.4_
 
-  - [ ] 6.5 Style action buttons for horizontal layout
+  - [x] 6.5 Style action buttons for horizontal layout
 
     - Set flex-direction to row
     - Set justify-content to center
@@ -164,7 +177,7 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set icon size to 20px
     - _Requirements: 3.4, 4.5, 4.6, 6.2, 6.4, 6.6, 6.8_
 
-  - [ ] 6.6 Style overlay header for horizontal layout
+  - [x] 6.6 Style overlay header for horizontal layout
 
     - Set font-size to 0.875rem
     - Set padding to 0.5rem
@@ -172,15 +185,15 @@ This implementation plan breaks down the responsive control overlay feature into
     - Set icon size to 18px
     - _Requirements: 4.7, 4.8_
 
-  - [ ] 6.7 Style instructions text for horizontal layout
+  - [x] 6.7 Style instructions text for horizontal layout
     - Set font-size to 0.875rem
     - Set line-height to 1.5
     - Set padding to 0.5rem
     - _Requirements: 4.9, 4.10_
 
-- [ ] 7. Implement fallback styles for non-container-query browsers
+- [x] 7. Implement fallback styles for non-container-query browsers
 
-  - [ ] 7.1 Add @supports not (container-type: inline-size) block
+  - [x] 7.1 Add @supports not (container-type: inline-size) block
     - Duplicate vertical layout styles under .layout-vertical class
     - Duplicate horizontal layout styles under .layout-horizontal class
     - Ensure styles match container query versions exactly
