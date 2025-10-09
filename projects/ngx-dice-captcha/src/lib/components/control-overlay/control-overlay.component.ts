@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { FormFocusFlowDirective } from '../../directives/form-focus-flow.directive';
 
 /**
  * Control overlay component that displays dice roll and verification controls.
@@ -54,6 +55,7 @@ import { MatCardModule } from '@angular/material/card';
     MatInputModule,
     MatIconModule,
     MatCardModule,
+    FormFocusFlowDirective,
   ],
   templateUrl: './control-overlay.component.html',
   styleUrls: ['./control-overlay.component.scss'],
@@ -192,6 +194,16 @@ export class ControlOverlayComponent {
 
   private elementRef = inject(ElementRef);
 
+  /**
+   * Signal to trigger auto-focus when dice are rolled
+   */
+  shouldAutoFocus = signal<boolean>(false);
+
+  /**
+   * Signal to trigger focus on roll button
+   */
+  shouldFocusRollButton = signal<boolean>(false);
+
   constructor() {
     // React to position changes for smart positioning
     effect(() => {
@@ -199,6 +211,71 @@ export class ControlOverlayComponent {
         this.optimalPosition(); // Trigger recalculation
       }
     });
+
+    // Reset auto-focus after inputs are rendered
+    effect(() => {
+      if (this.diceRolled() && this.shouldAutoFocus()) {
+        // Reset after a delay to allow directive to process
+        setTimeout(() => {
+          this.shouldAutoFocus.set(false);
+        }, 200);
+      }
+    });
+
+    // Focus roll button on initial load or when cooldown ends
+    effect(() => {
+      if (!this.diceRolled() && !this.isInCooldown() && this.shouldFocusRollButton()) {
+        this.focusRollButton();
+        this.shouldFocusRollButton.set(false);
+      }
+    });
+
+    // Focus roll button when cooldown ends
+    effect(() => {
+      const inCooldown = this.isInCooldown();
+
+      // When cooldown becomes false, focus the roll button
+      if (!inCooldown && !this.diceRolled()) {
+        setTimeout(() => {
+          this.focusRollButton();
+        }, 100);
+      }
+    });
+  }
+
+  /**
+   * Initialize focus on the roll button (call after component is rendered)
+   */
+  initializeFocus(): void {
+    this.shouldFocusRollButton.set(true);
+  }
+
+  /**
+   * Focus the roll/re-roll button
+   */
+  private focusRollButton(): void {
+    setTimeout(() => {
+      const button = this.elementRef.nativeElement.querySelector('.btn-roll') as HTMLButtonElement;
+      button?.focus();
+    }, 100);
+  }
+
+  /**
+   * Focus the re-roll button after verification failure
+   * @public
+   */
+  focusReRollButton(): void {
+    if (this.diceRolled()) {
+      this.focusRollButton();
+    }
+  }
+
+  /**
+   * Trigger auto-focus on first dice input (for re-roll scenario)
+   * @public
+   */
+  triggerAutoFocus(): void {
+    this.shouldAutoFocus.set(true);
   }
 
   /**
@@ -212,6 +289,8 @@ export class ControlOverlayComponent {
         this.reRollClicked.emit();
       } else {
         this.rollClicked.emit();
+        // Trigger auto-focus via directive
+        this.shouldAutoFocus.set(true);
       }
     }
   }
@@ -228,13 +307,21 @@ export class ControlOverlayComponent {
   }
 
   /**
-   * Update the sum input value
+   * Update the sum input value (accepts multiple digits)
    */
   updateSumInput(value: string): void {
-    const numValue = value === '' ? null : parseInt(value, 10);
+    // Remove non-numeric characters
+    const cleanValue = value.replace(/[^0-9]/g, '');
 
-    // Validate reasonable range
-    if (numValue !== null && (numValue < 1 || numValue > 120)) {
+    if (cleanValue === '') {
+      this.sumInput.set(null);
+      return;
+    }
+
+    const numValue = parseInt(cleanValue, 10);
+
+    // Validate reasonable range (1 to 999)
+    if (numValue < 1 || numValue > 999) {
       return;
     }
 
@@ -242,13 +329,24 @@ export class ControlOverlayComponent {
   }
 
   /**
-   * Update a specific dice input value
+   * Update a specific dice input value (single digit only)
    */
   updateDiceInput(index: number, value: string): void {
-    const numValue = value === '' ? null : parseInt(value, 10);
+    // Extract only the last digit entered
+    const cleanValue = value.replace(/[^1-6]/g, '');
+    const lastDigit = cleanValue.slice(-1);
+
+    if (lastDigit === '') {
+      const currentInputs = [...this.diceInputs()];
+      currentInputs[index] = null;
+      this.diceInputs.set(currentInputs);
+      return;
+    }
+
+    const numValue = parseInt(lastDigit, 10);
 
     // Validate range (1-6)
-    if (numValue !== null && (numValue < 1 || numValue > 6)) {
+    if (numValue < 1 || numValue > 6) {
       return;
     }
 
@@ -263,6 +361,7 @@ export class ControlOverlayComponent {
   reset(): void {
     this.diceInputs.set(Array(this.diceCount()).fill(null));
     this.sumInput.set(null);
+    this.shouldAutoFocus.set(false);
   }
 
   /**

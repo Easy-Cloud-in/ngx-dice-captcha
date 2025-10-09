@@ -262,6 +262,15 @@ export class NgxDiceCaptchaComponent implements OnInit, OnDestroy {
     this.storedDiceValues.set(results); // Store the actual dice values
     this.isRolling.set(false);
     this.diceRolled.emit(results);
+
+    // Trigger autofocus on first dice input after roll completes
+    const canvas = this.diceCanvas();
+    const overlay = canvas?.controlOverlay();
+    if (overlay) {
+      setTimeout(() => {
+        overlay.triggerAutoFocus();
+      }, 150); // Delay to ensure inputs are rendered
+    }
   }
 
   /**
@@ -293,6 +302,15 @@ export class NgxDiceCaptchaComponent implements OnInit, OnDestroy {
     } else {
       // Don't show popup for failures, just emit the failed event
       this.failed.emit(result);
+
+      // Focus the re-roll button after verification failure
+      const canvas = this.diceCanvas();
+      const overlay = canvas?.controlOverlay();
+      if (overlay) {
+        setTimeout(() => {
+          overlay.focusReRollButton();
+        }, 100);
+      }
 
       // Check if max attempts reached
       if (this.attemptsUsed() >= this.effectiveConfig().maxAttempts) {

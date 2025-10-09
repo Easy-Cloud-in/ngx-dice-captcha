@@ -259,7 +259,23 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       if (this.autoRoll()) {
         this.rollDice();
       }
+
+      // Initialize focus on roll button after scene is ready
+      this.initializeFocus();
     }, 0);
+  }
+
+  /**
+   * Initialize focus on the roll button
+   * @private
+   */
+  private initializeFocus(): void {
+    const overlay = this.controlOverlay();
+    if (overlay) {
+      setTimeout(() => {
+        overlay.initializeFocus();
+      }, 200); // Delay to ensure overlay is fully rendered
+    }
   }
 
   ngOnDestroy(): void {

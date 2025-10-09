@@ -39,6 +39,7 @@ export * from './lib/utils/color.util';
 
 // Directives
 export * from './lib/directives/accessibility.directive';
+export * from './lib/directives/form-focus-flow.directive';
 
 // Tokens
 export * from './lib/tokens/dice-captcha-i18n.token';

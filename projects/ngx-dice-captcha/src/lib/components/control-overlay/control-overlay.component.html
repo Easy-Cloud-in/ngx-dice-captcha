@@ -14,7 +14,7 @@
 
     <!-- Main Controls (always visible when not in cooldown) -->
     @if (!isInCooldown()) {
-    <div class="controls-wrapper">
+    <div class="controls-wrapper" ngxFormFocusFlow [autoFocus]="shouldAutoFocus()" submitButtonSelector=".btn-verify">
         <!-- Roll/Re-Roll Button -->
         <button mat-raised-button color="primary" class="btn-roll" type="button" [disabled]="!canRoll()"
             (click)="onRoll()" [attr.aria-busy]="isRolling()"
@@ -34,23 +34,23 @@
         <div class="inputs-group">
             <div class="dice-inputs" role="group" aria-label="Enter dice values">
                 @for (index of diceIndices(); track index) {
-                <mat-form-field class="dice-input-field" appearance="outline" subscriptSizing="dynamic">
-                    <mat-label>ca D{{ index + 1 }}</mat-label>
-                    <input matInput type="number" min="1" max="6" step="1" [value]="diceInputs()[index] ?? ''"
+                <div class="input-wrapper">
+                    <span class="input-label">D{{ index + 1 }}</span>
+                    <input type="text" class="dice-input" maxlength="1" [value]="diceInputs()[index] ?? ''"
                         (input)="updateDiceInput(index, $any($event.target).value)"
                         [attr.aria-label]="'Enter value for die ' + (index + 1)" placeholder="-" inputmode="numeric"
                         pattern="[1-6]" />
-                </mat-form-field>
+                </div>
                 }
             </div>
 
-            <mat-form-field class="sum-input-field" appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Sum</mat-label>
-                <mat-icon matPrefix aria-hidden="true">functions</mat-icon>
-                <input matInput type="number" min="1" max="120" step="1" [value]="sumInput() ?? ''"
+            <div class="input-wrapper sum-wrapper">
+                <span class="input-label">Sum</span>
+                <!-- <mat-icon class="sum-icon" aria-hidden="true">functions</mat-icon> -->
+                <input type="text" class="sum-input" [value]="sumInput() ?? ''"
                     (input)="updateSumInput($any($event.target).value)" aria-label="Enter the total sum of all dice"
-                    placeholder="Total" inputmode="numeric" />
-            </mat-form-field>
+                    placeholder="0" inputmode="numeric" pattern="[0-9]*" />
+            </div>
         </div>
 
         <!-- Verify Button -->
