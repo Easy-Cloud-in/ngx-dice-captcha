@@ -1016,6 +1016,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    *
    * Instantiates the specified number of dice, positions them in the scene,
    * and adds them to both the Three.js scene and Cannon-es physics world.
+   * Enhanced with proper spacing to prevent dice from landing too close together.
    *
    * @private
    */
@@ -1031,20 +1032,26 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
     const dropAreaWidth = this.sceneScale.width * 0.25; // Use 25% of width
     const dropHeight = 5; // Fixed reasonable drop height
 
-    // Spacing for dice in drop zone
-    const spacing = Math.min(dropAreaWidth / (count + 1), size * 2);
+    // Enhanced spacing: Ensure minimum gap of 1.5x dice size between dice centers
+    // This prevents dice from landing too close together
+    const minSpacing = size * 2.5; // Minimum 2.5x dice size for proper gaps
+    const availableWidth = dropAreaWidth * 2; // Use more horizontal space
+    const calculatedSpacing = availableWidth / (count + 1);
+    const spacing = Math.max(minSpacing, calculatedSpacing);
 
     for (let i = 0; i < count; i++) {
-      // Position dice at top-center, spread horizontally
+      // Position dice at top-center, spread horizontally with proper spacing
       // Keep all dice at same Z depth for uniform size appearance
       const startX = (i - (count - 1) / 2) * spacing;
-      const startZ = -this.sceneScale.depth * 0.35 + (Math.random() - 0.5) * 0.5;
+
+      // Add slight Z variation to prevent perfect alignment (more natural)
+      const startZ = -this.sceneScale.depth * 0.35 + (Math.random() - 0.5) * size * 0.8;
 
       const config: DiceConfig = {
         type,
         size,
         position: new THREE.Vector3(
-          startX + (Math.random() - 0.5) * spacing * 0.3,
+          startX + (Math.random() - 0.5) * size * 0.4, // Reduced randomness for better spacing
           dropHeight + Math.random() * 0.5,
           startZ
         ),
@@ -1111,6 +1118,7 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
    * Resets dice positions and velocities, applies random impulses and torques,
    * and respects reduced motion preferences by adjusting force intensity.
    * Announces the action to screen readers for accessibility.
+   * Enhanced with proper spacing to prevent dice from landing too close together.
    *
    * @public
    */
@@ -1131,16 +1139,23 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
     const dropHeight = 5; // Fixed reasonable drop height
     const userSize = this.diceSize();
     const size = userSize; // No 2x scaling
-    const spacing = Math.min(dropAreaWidth / (this.dice.length + 1), size * 2);
+
+    // Enhanced spacing: Ensure minimum gap of 1.5x dice size between dice centers
+    const minSpacing = size * 2.5; // Minimum 2.5x dice size for proper gaps
+    const availableWidth = dropAreaWidth * 2; // Use more horizontal space
+    const calculatedSpacing = availableWidth / (this.dice.length + 1);
+    const spacing = Math.max(minSpacing, calculatedSpacing);
 
     this.dice.forEach((dice, index) => {
-      // Position dice at top-center, spread horizontally
+      // Position dice at top-center, spread horizontally with proper spacing
       // Keep all dice at same Z depth for uniform size appearance
       const startX = (index - (this.dice.length - 1) / 2) * spacing;
-      const startZ = -this.sceneScale.depth * 0.35 + (Math.random() - 0.5) * 0.5;
+
+      // Add slight Z variation to prevent perfect alignment (more natural)
+      const startZ = -this.sceneScale.depth * 0.35 + (Math.random() - 0.5) * size * 0.8;
 
       dice.body.position.set(
-        startX + (Math.random() - 0.5) * spacing * 0.3,
+        startX + (Math.random() - 0.5) * size * 0.4, // Reduced randomness for better spacing
         dropHeight + Math.random() * 0.5,
         startZ
       );
@@ -1172,8 +1187,10 @@ export class DiceCanvasComponent implements OnInit, OnDestroy {
       }
 
       // Apply gentle random forces in all horizontal directions for varied rolling
+      // Slightly varied per dice to encourage separation
+      const lateralVariation = (index - (this.dice.length - 1) / 2) * 0.3; // Spread dice apart
       const force = new CANNON.Vec3(
-        (Math.random() - 0.5) * 4 * forceFactor, // Random horizontal force (left/right)
+        ((Math.random() - 0.5) * 4 + lateralVariation) * forceFactor, // Random horizontal force with separation bias
         -1.5 * forceFactor, // Downward force
         (Math.random() * 0.8 + 0.2) * 6 * forceFactor // Forward force (toward bottom) with bias
       );
