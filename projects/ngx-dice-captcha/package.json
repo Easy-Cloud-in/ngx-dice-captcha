@@ -1,6 +1,6 @@
 {
   "name": "ngx-dice-captcha",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "⚠️ EDUCATIONAL ONLY - NOT PRODUCTION READY. Interactive 3D dice CAPTCHA for Angular 20 with Three.js. Client-side only, easily bypassed by bots. Use for learning/demos only, not for security. See security docs before use.",
   "author": "Sakr.sr <contact@easy-cloud.in>",
   "license": "MIT",
