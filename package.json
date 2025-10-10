@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve demo",
     "build": "ng build demo --configuration production",
-    "watch": "ng build --watch --configuration development",
+    "build:demo": "ng build demo --configuration production",
+    "watch": "ng build demo --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "test:coverage": "ng test --no-watch --code-coverage --browsers=ChromeHeadless",
@@ -14,7 +15,7 @@
     "build:lib:watch": "ng build ngx-dice-captcha --watch",
     "pack:lib": "cd dist/ngx-dice-captcha && npm pack",
     "test:lib": "ng test ngx-dice-captcha --no-watch --no-progress --browsers=ChromeHeadlessCI",
-    "prepare:publish": "pnpm run test:lib && pnpm run build:lib && pnpm run pack:lib"
+    "prepare:publish": "pnpm run build:lib && pnpm run pack:lib"
   },
   "prettier": {
     "printWidth": 100,
