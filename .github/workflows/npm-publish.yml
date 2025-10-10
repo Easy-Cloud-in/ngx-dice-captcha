@@ -73,7 +73,13 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
         run: |
           cd dist/ngx-dice-captcha
-          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          # Check if version is different before updating
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$CURRENT_VERSION" != "${{ github.event.inputs.version }}" ]; then
+            npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          else
+            echo "Version already matches, skipping update"
+          fi
 
       - name: Publish to NPM (dry-run)
         if: steps.check-version.outputs.exists == 'true'
