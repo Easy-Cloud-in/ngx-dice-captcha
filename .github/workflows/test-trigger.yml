@@ -1,0 +1,36 @@
+name: Test Trigger Debug
+
+on:
+  release:
+    types: [published, created]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Event
+        run: |
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Ref Name: ${{ github.ref_name }}"
+          echo "Release Tag: ${{ github.event.release.tag_name }}"
+          echo "Release Action: ${{ github.event.action }}"
+
+          # Check if this is a tag push
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "✅ This is a tag push"
+          else
+            echo "❌ This is not a tag push"
+          fi
+
+          # Check if this is a release
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "✅ This is a release event"
+            echo "Release action: ${{ github.event.action }}"
+          else
+            echo "❌ This is not a release event"
+          fi
