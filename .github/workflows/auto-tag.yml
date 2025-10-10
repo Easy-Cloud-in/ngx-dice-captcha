@@ -23,20 +23,20 @@ jobs:
       - name: Check NPM Token Configuration
         id: check-npm
         run: |
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+          if [ -z "${{ secrets.NGX_DICE_CAPTCHA }}" ]; then
             echo "configured=false" >> $GITHUB_OUTPUT
-            echo "❌ NPM_TOKEN is not configured in repository secrets"
+            echo "❌ NGX_DICE_CAPTCHA token is not configured in repository secrets"
             echo ""
             echo "To configure NPM publishing:"
             echo "1. Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
             echo "2. Create a new 'Automation' token"
-            echo "3. Add it as NPM_TOKEN in repository secrets:"
+            echo "3. Add it as NGX_DICE_CAPTCHA in repository secrets:"
             echo "   Settings → Secrets and variables → Actions → New repository secret"
             echo ""
             echo "⚠️ Skipping auto-tag workflow - NPM not configured"
           else
             echo "configured=true" >> $GITHUB_OUTPUT
-            echo "✅ NPM_TOKEN is configured"
+            echo "✅ NGX_DICE_CAPTCHA token is configured"
           fi
 
       - name: Exit if NPM not configured
@@ -48,7 +48,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### To Enable Auto-Publishing:" >> $GITHUB_STEP_SUMMARY
           echo "1. Create an NPM automation token at https://www.npmjs.com/settings" >> $GITHUB_STEP_SUMMARY
-          echo "2. Add it as \`NPM_TOKEN\` in repository secrets" >> $GITHUB_STEP_SUMMARY
+          echo "2. Add it as \`NGX_DICE_CAPTCHA\` in repository secrets" >> $GITHUB_STEP_SUMMARY
           echo "3. Push your changes again to trigger auto-tagging" >> $GITHUB_STEP_SUMMARY
           exit 0
 
