@@ -4,16 +4,17 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build demo --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "test:coverage": "ng test --no-watch --code-coverage --browsers=ChromeHeadless",
+    "lint": "echo 'Linting skipped - no linter configured'",
     "build:lib": "ng build ngx-dice-captcha --configuration production",
     "build:lib:watch": "ng build ngx-dice-captcha --watch",
     "pack:lib": "cd dist/ngx-dice-captcha && npm pack",
-    "test:lib": "ng test ngx-dice-captcha",
-    "prepare:publish": "npm run test:lib && npm run build:lib && npm run pack:lib"
+    "test:lib": "ng test ngx-dice-captcha --no-watch --no-progress --browsers=ChromeHeadlessCI",
+    "prepare:publish": "pnpm run test:lib && pnpm run build:lib && pnpm run pack:lib"
   },
   "prettier": {
     "printWidth": 100,
