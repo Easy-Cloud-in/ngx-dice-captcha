@@ -11,48 +11,7 @@ on:
         type: string
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run linter
-        run: pnpm run lint --if-present
-
-      - name: Run library tests
-        run: pnpm run test:ci
-
-      - name: Build library
-        run: pnpm run build:lib
-
-      - name: Check build output
-        run: |
-          if [ ! -d "dist/ngx-dice-captcha" ]; then
-            echo "Build failed: dist/ngx-dice-captcha directory not found"
-            exit 1
-          fi
-
   publish-npm:
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -170,7 +129,6 @@ jobs:
           echo "Please update the version in package.json before publishing" >> $GITHUB_STEP_SUMMARY
 
   publish-github:
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read

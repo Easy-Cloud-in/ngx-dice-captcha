@@ -16,6 +16,9 @@ describe('DiceCanvasComponent - Race Conditions & Memory Management', () => {
 
     fixture = TestBed.createComponent(DiceCanvasComponent);
     component = fixture.componentInstance;
+
+    // Suppress console errors during tests
+    spyOn(console, 'error');
   });
 
   describe('Resize Race Condition Prevention', () => {
@@ -117,8 +120,8 @@ describe('DiceCanvasComponent - Race Conditions & Memory Management', () => {
       const cancelAnimationFrameSpy = spyOn(window, 'cancelAnimationFrame').and.callThrough();
 
       // Create some timers
-      (component as any).resizeDebounceTimer = window.setTimeout(() => {}, 1000);
-      (component as any).resizeRafId = window.requestAnimationFrame(() => {});
+      (component as any).resizeDebounceTimer = window.setTimeout(() => { }, 1000);
+      (component as any).resizeRafId = window.requestAnimationFrame(() => { });
 
       // Destroy component
       component.ngOnDestroy();

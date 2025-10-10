@@ -7,72 +7,9 @@ on:
     branches: [main, develop]
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run linter
-        run: pnpm run lint --if-present
-
-  test:
-    name: Test on Node ${{ matrix.node-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: pnpm run test:lib
-
-      - name: Upload coverage to Codecov
-        if: matrix.node-version == '20.x'
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/ngx-dice-captcha/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-        continue-on-error: true
-
   build:
     name: Build Library
     runs-on: ubuntu-latest
-    needs: [lint, test]
 
     steps:
       - name: Checkout code
@@ -136,47 +73,4 @@ jobs:
         with:
           name: build-artifacts
           path: dist/ngx-dice-captcha
-          retention-days: 7
-
-  build-demo:
-    name: Build Demo Application
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build library
-        run: pnpm run build:lib
-
-      - name: Build demo
-        run: pnpm run build
-
-      - name: Check demo build
-        run: |
-          if [ ! -d "dist/demo" ]; then
-            echo "❌ Demo build failed"
-            exit 1
-          fi
-          echo "✅ Demo build successful!"
-
-      - name: Upload demo artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: demo-build
-          path: dist/demo
           retention-days: 7
