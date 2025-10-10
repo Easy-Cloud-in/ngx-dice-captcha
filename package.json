@@ -1,6 +1,6 @@
 {
   "name": "ngx-dice-captcha-workspace",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve demo",
