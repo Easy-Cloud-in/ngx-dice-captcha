@@ -90,3 +90,8 @@ lerna-debug.log*
 # Documentation build output
 /docs/.vitepress/dist
 /docs/.vitepress/cache
+
+# Backup files
+/backups/
+*.bundle
+*.zip
