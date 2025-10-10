@@ -132,7 +132,8 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.should-tag.outputs.create == 'true'
-        uses: softprops/action-gh-release@v1
+        id: create-release
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.package-version.outputs.version }}
           name: Release v${{ steps.package-version.outputs.version }}
@@ -140,6 +141,15 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          generate_release_notes: false
+
+      - name: Verify Release Created
+        if: steps.should-tag.outputs.create == 'true'
+        run: |
+          echo "✅ Release created successfully"
+          echo "Release URL: ${{ steps.create-release.outputs.url }}"
+          echo "This should trigger the NPM publish workflow automatically"
 
       - name: Success summary
         if: steps.should-tag.outputs.create == 'true'
