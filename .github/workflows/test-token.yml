@@ -1,0 +1,20 @@
+name: Test Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if token exists
+        run: |
+          if [ -z "${{ secrets.NGX_DICE_CAPTCHA }}" ]; then
+            echo "❌ NGX_DICE_CAPTCHA token NOT found"
+            exit 1
+          else
+            echo "✅ NGX_DICE_CAPTCHA token found"
+            echo "Token length: ${#TOKEN}"
+          fi
+        env:
+          TOKEN: ${{ secrets.NGX_DICE_CAPTCHA }}

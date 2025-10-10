@@ -20,53 +20,18 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history including tags
 
-      - name: Check NPM Token Configuration
-        id: check-npm
-        run: |
-          if [ -z "${{ secrets.NGX_DICE_CAPTCHA }}" ]; then
-            echo "configured=false" >> $GITHUB_OUTPUT
-            echo "❌ NGX_DICE_CAPTCHA token is not configured in repository secrets"
-            echo ""
-            echo "To configure NPM publishing:"
-            echo "1. Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
-            echo "2. Create a new 'Automation' token"
-            echo "3. Add it as NGX_DICE_CAPTCHA in repository secrets:"
-            echo "   Settings → Secrets and variables → Actions → New repository secret"
-            echo ""
-            echo "⚠️ Skipping auto-tag workflow - NPM not configured"
-          else
-            echo "configured=true" >> $GITHUB_OUTPUT
-            echo "✅ NGX_DICE_CAPTCHA token is configured"
-          fi
-
-      - name: Exit if NPM not configured
-        if: steps.check-npm.outputs.configured == 'false'
-        run: |
-          echo "## ⚠️ Auto-Tag Skipped" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "NPM is not configured for this repository." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### To Enable Auto-Publishing:" >> $GITHUB_STEP_SUMMARY
-          echo "1. Create an NPM automation token at https://www.npmjs.com/settings" >> $GITHUB_STEP_SUMMARY
-          echo "2. Add it as \`NGX_DICE_CAPTCHA\` in repository secrets" >> $GITHUB_STEP_SUMMARY
-          echo "3. Push your changes again to trigger auto-tagging" >> $GITHUB_STEP_SUMMARY
-          exit 0
-
       - name: Setup pnpm
-        if: steps.check-npm.outputs.configured == 'true'
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
       - name: Setup Node.js
-        if: steps.check-npm.outputs.configured == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'pnpm'
 
       - name: Read package.json version
-        if: steps.check-npm.outputs.configured == 'true'
         id: package-version
         run: |
           VERSION=$(node -p "require('./projects/ngx-dice-captcha/package.json').version")
@@ -75,7 +40,6 @@ jobs:
           echo "📦 Package version: $VERSION"
 
       - name: Check if tag exists locally
-        if: steps.check-npm.outputs.configured == 'true'
         id: check-local-tag
         run: |
           TAG="v${{ steps.package-version.outputs.version }}"
@@ -88,7 +52,6 @@ jobs:
           fi
 
       - name: Check if tag exists on remote
-        if: steps.check-npm.outputs.configured == 'true'
         id: check-remote-tag
         run: |
           TAG="v${{ steps.package-version.outputs.version }}"
@@ -101,7 +64,6 @@ jobs:
           fi
 
       - name: Determine if tag should be created
-        if: steps.check-npm.outputs.configured == 'true'
         id: should-tag
         run: |
           LOCAL_EXISTS="${{ steps.check-local-tag.outputs.exists }}"
@@ -116,7 +78,7 @@ jobs:
           fi
 
       - name: Skip summary (tag exists)
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'false'
+        if: steps.should-tag.outputs.create == 'false'
         run: |
           echo "## ⏭️ Tag Already Exists" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -129,7 +91,7 @@ jobs:
           echo "2. Commit and push changes" >> $GITHUB_STEP_SUMMARY
 
       - name: Get latest commit message
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        if: steps.should-tag.outputs.create == 'true'
         id: commit-message
         run: |
           MESSAGE=$(git log -1 --pretty=%B)
@@ -137,7 +99,7 @@ jobs:
           echo "📝 Commit message: $MESSAGE"
 
       - name: Create and push tag
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        if: steps.should-tag.outputs.create == 'true'
         run: |
           TAG="v${{ steps.package-version.outputs.version }}"
           git config user.name "github-actions[bot]"
@@ -147,7 +109,7 @@ jobs:
           echo "✅ Created and pushed tag: $TAG"
 
       - name: Read CHANGELOG for release notes
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        if: steps.should-tag.outputs.create == 'true'
         id: changelog
         run: |
           VERSION="${{ steps.package-version.outputs.version }}"
@@ -169,7 +131,7 @@ jobs:
           echo "✅ Extracted release notes"
 
       - name: Create GitHub Release
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        if: steps.should-tag.outputs.create == 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.package-version.outputs.version }}
@@ -180,7 +142,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Success summary
-        if: steps.check-npm.outputs.configured == 'true' && steps.should-tag.outputs.create == 'true'
+        if: steps.should-tag.outputs.create == 'true'
         run: |
           echo "## 🎉 Tag and Release Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
